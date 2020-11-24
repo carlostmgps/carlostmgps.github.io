@@ -1,11 +1,12 @@
+@media only screen and (max-width: 768px) {
 /* For mobile phones: */
-.logo{
-  height:auto;
-  width:30%;
+  .logo{
+    height:auto;
+    width:30%;
+  }
+  .nav-normal{display:none;}
+  .nav-show-mobile{float:right;width:300px;height:auto;}
 }
-.nav-normal{display:none;}
-.nav-show-mobile{float:right;width:300px;height:auto;}
-
 @media only screen and (min-width: 768px) {
   /* For desktop: */
   .nav-for-mobile{display:none;}
