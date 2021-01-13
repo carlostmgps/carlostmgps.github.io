@@ -34,6 +34,32 @@
       var str = location.href; //取得整個地址欄
       var num = str.indexOf("?")
       str = str.substr(num + 1); //取得所有參數   stringvar.substr(start [, length ]
-      var arr = str.split("&"); //各個參數放到數組裏
+      var arr = str.split("&"); //各個參數放到數組
 
+      for (var i = 0; i < arr.length; i++) {
+        num = arr[i].indexOf("=");
+        if (num > 0) {
+            name = arr[i].substring(0, num);
+            value = arr[i].substr(num + 1);
+            this[name] = value;
+        }
+      }
+     };
+     firebase.initializeApp(firebaseConfig);
+     firebase.analytics();
+     firebase.auth().signInAnonymously()
+     .then(() => {
+       var Request = new UrlSearch();
+       code = Request.code == undefined ? "" : Request.code;
+       alert(code);
+     })
+     .catch((error) => {
+       var errorCode = error.code;
+       var errorMessage = error.message
+       return errorMessage
+        
+     });
+    </script>
+  </body>
+</html>
        
