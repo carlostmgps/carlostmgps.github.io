@@ -10,10 +10,11 @@
     </script>
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.2.2/firebase-app.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.2.2/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.2/firebase-auth.js"></script>
 
     <script>
      // Your web app's Firebase configuration
@@ -28,8 +29,11 @@
        measurementId: "G-0RZ3HRXJ36"
       };
      // Initialize Firebase
-     firebase.initializeApp(firebaseConfig);
-     firebase.analytics();
-    </script>
-  </body>
-</html>
+     function UrlSearch() {
+      var name, value;
+      var str = location.href; //取得整個地址欄
+      var num = str.indexOf("?")
+      str = str.substr(num + 1); //取得所有參數   stringvar.substr(start [, length ]
+      var arr = str.split("&"); //各個參數放到數組裏
+
+       
