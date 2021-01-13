@@ -50,7 +50,8 @@
      firebase.analytics();
      firebase.auth().signInAnonymously()
      .then(() => {
-       alert("method" + UrlSearch()["method"]);
+       alert("method:" + UrlSearch()["method"]);
+       alert("value:" + UrlSearch()["value"]);
      })
      .catch((error) => {
        var errorCode = error.code;
