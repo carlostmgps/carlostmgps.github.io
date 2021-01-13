@@ -41,16 +41,15 @@
         if (num > 0) {
             name = arr[i].substring(0, num);
             value = arr[i].substr(num + 1);
-            back[name] = value;
+            this[name] = value;
         }
       }
-      return back
      };
      firebase.initializeApp(firebaseConfig);
      firebase.analytics();
      firebase.auth().signInAnonymously()
      .then(() => {
-       alert("values" + UrlSearch());
+       alert("method" + UrlSearch()["method"]);
      })
      .catch((error) => {
        var errorCode = error.code;
