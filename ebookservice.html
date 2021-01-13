@@ -52,6 +52,7 @@
        var Request = new UrlSearch();
        code = Request.code == undefined ? "" : Request.code;
        alert(code);
+       alert(location.href);
      })
      .catch((error) => {
        var errorCode = error.code;
