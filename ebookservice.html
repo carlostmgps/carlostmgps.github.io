@@ -33,7 +33,9 @@
       var name, value;
       var str = location.href; //取得整個地址欄
       var num = str.indexOf("?")
+      alert(num);
       str = str.substr(num + 1); //取得所有參數   stringvar.substr(start [, length ]
+      alert(str);
       var arr = str.split("&"); //各個參數放到數組
 
       for (var i = 0; i < arr.length; i++) {
