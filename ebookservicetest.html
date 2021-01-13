@@ -51,6 +51,7 @@
      firebase.analytics();
      firebase.auth().signInAnonymously()
      .then(() => {
+       var storage = firebase.storage();
        alert("method:" + UrlSearch()["method"]);
        alert("value:" + UrlSearch()["value"]);
        if(UrlSearch()["method"] == "cover"){
