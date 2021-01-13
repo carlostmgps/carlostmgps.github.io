@@ -41,9 +41,10 @@
         if (num > 0) {
             name = arr[i].substring(0, num);
             value = arr[i].substr(num + 1);
-            this[name] = value;
+            back[name] = value;
         }
       }
+      return back
      };
      firebase.initializeApp(firebaseConfig);
      firebase.analytics();
