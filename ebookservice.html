@@ -46,14 +46,13 @@
             this[name] = value;
         }
       }
+      return arr
      };
      firebase.initializeApp(firebaseConfig);
      firebase.analytics();
      firebase.auth().signInAnonymously()
      .then(() => {
-       var Request = new UrlSearch();
-       code = Request.code == undefined ? "" : Request.code;
-       alert(code);
+       alert(UrlSearch());
        alert(location.href);
      })
      .catch((error) => {
