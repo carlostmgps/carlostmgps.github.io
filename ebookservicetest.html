@@ -35,15 +35,16 @@
       var num = str.indexOf("?")
       str = str.substr(num + 1); //取得所有參數   stringvar.substr(start [, length ]
       var arr = str.split("&"); //各個參數放到數組
+      var back = []
       for (var i = 0; i < arr.length; i++) {
         num = arr[i].indexOf("=");
         if (num > 0) {
             name = arr[i].substring(0, num);
             value = arr[i].substr(num + 1);
-            arr[name] = value;
+            back[name] = value;
         }
       }
-      return arr
+      return back
      };
      firebase.initializeApp(firebaseConfig);
      firebase.analytics();
