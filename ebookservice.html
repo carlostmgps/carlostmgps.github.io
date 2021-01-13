@@ -51,6 +51,8 @@
      firebase.auth().signInAnonymously()
      .then(() => {
        alert(UrlSearch());
+       datas = UrlSearch().split(",");
+       alert(datas);
      })
      .catch((error) => {
        var errorCode = error.code;
