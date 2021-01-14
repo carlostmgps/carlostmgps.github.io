@@ -54,8 +54,8 @@
      firebase.auth().signInAnonymously()
      .then(() => {
        var storage = firebase.storage();
-       alert("method:" + UrlSearch()["method"]);
-       alert("value:" + UrlSearch()["value"]);
+       console.log("method:" + UrlSearch()["method"]);
+       console.log("value:" + UrlSearch()["value"]);
        if(UrlSearch()["method"] == "cover"){
          storageRef = storage.ref('');
          storageRef.child(UrlSearch()["name"]).getDownloadURL().then(function(url) {
