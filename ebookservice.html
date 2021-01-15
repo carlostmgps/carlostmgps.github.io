@@ -83,14 +83,15 @@
            var book = {"Pdf":UrlSearch()["pdfurl"],
                    "cover":UrlSearch()["coverurl"],
                    "介紹":UrlSearch()["info"]
-                  }
+                  };
+           console.log("adding");
            database.ref("書本").ref(UrlSearch()["book"]).set(book);
            alert("ok!");
        };
      });
      .catch((error) => {
        var errorCode = error.code;
-       var errorMessage = error.message
+       var errorMessage = error.message;
        alert(errorMessage);
        
         
