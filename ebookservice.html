@@ -77,16 +77,17 @@
          }).catch(function(error) {
           // Handle any errors
          });
-       }elif(UrlSearch()["method"] == "addbook"){
+       };
+       if(UrlSearch()["method"] == "addbook"){
            database = firebase.database();
            book = {"Pdf":UrlSearch()["pdfurl"],
                    "cover":UrlSearch()["coverurl"],
                    "介紹":UrlSearch()["info"]
                   }
-           database.ref("書本").ref(UrlSearch()["book"]).set(book)
-           alert("ok!")
+           database.ref("書本").ref(UrlSearch()["book"]).set(book);
+           alert("ok!");
        };
-     })
+     });
      .catch((error) => {
        var errorCode = error.code;
        var errorMessage = error.message
