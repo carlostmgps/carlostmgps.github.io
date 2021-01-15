@@ -79,8 +79,8 @@
          });
        };
        if(UrlSearch()["method"] == "addbook"){
-           database = firebase.database();
-           book = {"Pdf":UrlSearch()["pdfurl"],
+           var database = firebase.database();
+           var book = {"Pdf":UrlSearch()["pdfurl"],
                    "cover":UrlSearch()["coverurl"],
                    "介紹":UrlSearch()["info"]
                   }
