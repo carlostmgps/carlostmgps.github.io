@@ -80,10 +80,10 @@
        };
        if(UrlSearch()["method"] == "addbook"){
            var database = firebase.database();
-           var book = {"Pdf":UrlSearch()["pdfurl"],
-                   "cover":UrlSearch()["coverurl"],
-                   "介紹":UrlSearch()["info"]
-                  };
+           var book = {Pdf:UrlSearch()["pdfurl"],
+                       cover:UrlSearch()["coverurl"],
+                       介紹:UrlSearch()["info"]
+                      };
            console.log("adding");
            database.ref("書本").ref(UrlSearch()["book"]).set(book);
            alert("ok!");
