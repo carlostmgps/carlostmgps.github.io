@@ -59,7 +59,7 @@
        console.log("value:" + UrlSearch()["value"]);
        if(UrlSearch()["method"] == "cover"){
          storageRef = storage.ref('');
-         storageRef.child(UrlSearch()["name"]).getDownloadURL().then(function(url) {
+         storageRef.child(firebase.database().ref("書本").ref(UrlSearch()["name"]).ref("cover")).getDownloadURL().then(function(url) {
           // `url` is the download URL for 'images/stars.jpg'
 
           // This can be downloaded directly:
@@ -78,15 +78,24 @@
           // Handle any errors
          });
        };
-       if(UrlSearch()["method"] == "addbook"){
-           var database = firebase.database();
-           var book = {Pdf:UrlSearch()["pdfurl"],
-                       cover:UrlSearch()["coverurl"],
-                       介紹:UrlSearch()["info"]
-                      };
-           console.log("adding");
-           database.ref("書本").ref(UrlSearch()["book"]).set(book);
-           alert("ok!");
+       if(UrlSearch["method"] == "booklist"){
+         var list = [];
+         var database = firebase.database();
+         var ref = database.ref("書本");
+         list = ref.key();
+         alert(list);
+         return list
+       };
+       if(UrlSearch["method"] == "info"){
+         var database = firebase.database();
+         var books = database.ref("書本");
+         var info = books.ref(UrlSearch["book"]).ref("介紹");
+         return info
+       };
+       if(UrlSearch["method"] == "read"){
+         var books = firebase.database().ref("書本");
+         var url = books.ref(UrlSearch["book"]).ref("Pdf");
+         return url
        };
      });
      .catch((error) => {
