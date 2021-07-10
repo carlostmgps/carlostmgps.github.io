@@ -1,0 +1,32 @@
+10/7 tin sui wai heung dou zhong hok stem day
+
+
+
+brainstorming for pets
+
+what's a pet?
+pet:
+.cute
+.need your caryying
+.need food
+.need airs
+.need waters 
+.can play with you
+.can feel your feeling
+.always with you
+
+answer
+
+status
+1.normal
+2.hungry
+3.cold
+4.hot
+5.sleepy
+
+activities
+1.feeding
+2.playing
+
+start code :
+open makecode.org.
