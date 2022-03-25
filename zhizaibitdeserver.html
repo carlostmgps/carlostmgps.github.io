@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>server</title>
+  <script>
+    function UrlSearch() {
+      var name, value;
+      var str = location.href; //取得整個地址欄
+      var num = str.indexOf("?")
+      str = str.substr(num + 1); //取得所有參數   stringvar.substr(start [, length ]
+      var arr = str.split("&"); //各個參數放到數組
+      var back = []
+      for (var i = 0; i < arr.length; i++) {
+        num = arr[i].indexOf("=");
+        if (num > 0) {
+            name = arr[i].substring(0, num);
+            value = arr[i].substr(num + 1);
+            back[name] = value;
+        }
+      }
+      return back
+     };
+    
+    if(UrlSearch()["method"] == "test"){
+      return "server running"
+    };
+  </script>
+</head>
+<body>
+
+</body>
+</html>
