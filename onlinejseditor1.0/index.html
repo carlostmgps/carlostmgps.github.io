@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+		<link rel="shortcut icon" href="img/logo.svg">
+		<link rel="stylesheet" href="css/style.css">
+		<meta charset="utf-8" />
+		<title>online-js-editor</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.0/styles/default.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.0/highlight.min.js"></script>
+    </head>
+	<body>
+        <div id="set">
+            <div id="set1">
+                <details id="lang">
+                    <summary>請選擇語言</summary>
+                    <pre>
+<!--                 --><a href="indexzh.html">中文繁體</a>
+
+<!--                 --><a href="index.html">English</a>
+                    </pre>
+                </details>
+            </div>
+            <input type="number" id="size" onchange="font()" oninput="font()" value="18" step="2" />
+        </div>    
+        <div id="editor">
+            <img class="img" src="img/logo.svg" alt="logo">
+            <iframe style="display: none;" name="hid" title="hid"></iframe>
+            <form method="get" target="hid">
+                <textarea id="textarea"></textarea>
+                <input type="submit" value="Run!" id="ok">
+            </form>
+        </div>
+        <script>    
+            $("input").click(function(){
+                let val = $("#textarea").val();
+                //alert(val)
+                eval(val)
+            })
+            function font(){
+                let num = $("#size").val()
+                //console.log("Sucuess")
+                $("textarea").css("font-size", num+"px")
+            }
+            
+        </script>
+	</body>
+</html>
