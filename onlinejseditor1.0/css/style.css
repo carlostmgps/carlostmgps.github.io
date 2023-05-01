@@ -1,0 +1,43 @@
+html, body{
+    margin: 0;
+    padding: 0;
+    background-color: #dddddd;
+    position: relative;
+}
+
+details{
+    float: right;
+    padding-top: 10px;
+}
+
+#textarea {
+    resize: none;
+    width: 99%;
+    height: 420px;
+    font-size: 18px;
+}
+
+img{
+    width: 100px;
+    height: 100px;
+}
+
+#editor{
+    width: 50%;
+    height: 100vh;
+    float: left;
+    border-right: 2px solid #666666;
+}
+
+#ok{
+    clear: left;
+    display: block;
+    margin: auto;
+    width: 80%;
+    font-family: Consolas;
+    font-size: 30px; 
+}
+
+#set{
+    float: right;
+}
