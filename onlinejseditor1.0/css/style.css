@@ -13,6 +13,13 @@ html, body{
     font-size: 18px;
 }
 
+#textareaconsole {
+    resize: none;
+    width: 99%;
+    height: 420px;
+    font-size: 18px;
+}
+
 img{
     width: 100px;
     height: 100px;
