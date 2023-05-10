@@ -38,7 +38,7 @@
 	
 	    var LOG_PREFIX = new Date().getDate() + '.' + new Date().getMonth() + '.' + new Date().getFullYear() + ' / ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
 	    var oldlog = console.log;
-
+	    const textarea = document.getElementById('console');
 	    console.log = function(){
 
     	    	// 1. Convert args to a normal array
