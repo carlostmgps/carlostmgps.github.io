@@ -15,7 +15,7 @@
 			<h2>font sizes</h2>
             		<input type="number" id="size" onchange="font()" oninput="font()" value="18" step="2" />
 	    		<h2>Console</h2>
-	    		<textarea readonly id="textarea"></textarea>
+	    		<textarea readonly id="textareaconsole"></textarea>
 		</div>
 	    
         </div>    
@@ -38,7 +38,7 @@
 	
 	    var LOG_PREFIX = new Date().getDate() + '.' + new Date().getMonth() + '.' + new Date().getFullYear() + ' / ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
 	    var oldlog = console.log;
-	    const textarea = document.getElementById('console');
+	    const textarea = document.getElementById('textareaconsole');
 	    console.log = function(){
 
     	    	// 1. Convert args to a normal array
