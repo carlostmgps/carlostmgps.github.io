@@ -27,10 +27,10 @@
             <img class="img" src="img/logo.png" alt="logo">
             <iframe style="display: none;" name="hid" title="hid"></iframe>
             <textarea id="textarea"></textarea>
-            <input value="Run!" id="ok">
+            <button type="button">Run</button>
         </div>
         <script>    
-            $("input").click(function(){
+            $("button").click(function(){
                 let val = $("#textarea").val();
                 //alert(val)
                 eval(val)
