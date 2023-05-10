@@ -48,6 +48,8 @@
         
     	    	// 2. Prepend log prefix log string
     	    	args.unshift(LOG_PREFIX + ": ");
+		textarea.value += '\n';
+		textarea.value += args;
         
     	    	// 3. Pass along arguments to console.log
     	    	oldlog.apply(console, args);
