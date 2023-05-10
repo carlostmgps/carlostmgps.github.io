@@ -5,10 +5,6 @@ html, body{
     position: relative;
 }
 
-details{
-    float: right;
-    padding-top: 10px;
-}
 
 #textarea {
     resize: none;
@@ -40,4 +36,10 @@ img{
 
 #set{
     float: right;
+}
+
+#settings{
+    width: 99%;
+    height: 99%;
+    border-left: 2px solid #666666;
 }
