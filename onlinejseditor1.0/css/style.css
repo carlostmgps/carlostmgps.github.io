@@ -43,10 +43,11 @@ img{
 
 #set{
     float: right;
+    width: 99%;
+    height: 99%;
 }
 
 #settings{
     width: 99%;
     height: 99%;
-    border-left: 2px solid #666666;
 }
