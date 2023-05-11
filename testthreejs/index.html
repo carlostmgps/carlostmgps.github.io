@@ -17,7 +17,23 @@
 		         "three/addons/": "https://unpkg.com/three@<version>/examples/jsm/"
   		  		}
 		  }
-</script>
+		  
+		</script>
+		<script>
+		import WebGL from 'three/addons/capabilities/WebGL.js';
+
+		if ( WebGL.isWebGLAvailable() ) {
+
+			// Initiate function or other initializations here
+			animate();
+
+		} else {
+
+			const warning = WebGL.getWebGLErrorMessage();
+			document.getElementById( 'container' ).appendChild( warning );
+
+		}
+		</script>
 		<script type="module" src="main.js"></script>
 	</body>
 </html>
