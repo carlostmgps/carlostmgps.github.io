@@ -20,20 +20,18 @@
 		  
 		</script>
 		<script>
-		
-		import WebGL from 'three/addons/capabilities/WebGL.js';
+		import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+		const loader = new GLTFLoader();
 
-		if ( WebGL.isWebGLAvailable() ) {
+		loader.load( 'path/to/model.glb', function ( gltf ) {
 
-			// Initiate function or other initializations here
-			animate();
+			scene.add( gltf.scene );
 
-		} else {
+		}, undefined, function ( error ) {
 
-			const warning = WebGL.getWebGLErrorMessage();
-			document.getElementById( 'container' ).appendChild( warning );
+			console.error( error );
 
-		}
+		} );
 		</script>
 		<script type="module" src="main.js"></script>
 	</body>
