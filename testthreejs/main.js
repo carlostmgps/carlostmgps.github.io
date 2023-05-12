@@ -15,6 +15,7 @@ const light = new THREE.AmbientLight( 0xcccccc ); // soft white light
 scene.add( light );
 scene.add( directionalLight );
 scene.add( cube );
+renderer.setClearColor( 0x10ff10, 0);
 window.addEventListener( 'resize', onWindowResize, false );
 
 function onWindowResize(){
