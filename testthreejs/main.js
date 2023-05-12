@@ -27,7 +27,7 @@ function onWindowResize(){
     renderer.setSize( window.innerWidth, window.innerHeight );
 
 }
-camera.position.z = 5;
+camera.position.z = 50;
 
 function animate() {
 	requestAnimationFrame( animate );
