@@ -7,7 +7,8 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+//const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+const geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
 const material = new THREE.MeshPhongMaterial( { color: 0x00ff00} );
 const cube = new THREE.Mesh( geometry, material );
 const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
