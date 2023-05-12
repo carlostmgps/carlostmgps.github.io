@@ -11,11 +11,20 @@ const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshPhongMaterial( { color: 0x00ff00} );
 const cube = new THREE.Mesh( geometry, material );
 const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+const light = new THREE.AmbientLight( 0xcccccc ); // soft white light
 scene.add( light );
 scene.add( directionalLight );
 scene.add( cube );
+window.addEventListener( 'resize', onWindowResize, false );
 
+function onWindowResize(){
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
 camera.position.z = 5;
 
 function animate() {
