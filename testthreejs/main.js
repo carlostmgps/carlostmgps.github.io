@@ -10,7 +10,23 @@ document.body.appendChild( renderer.domElement );
 //const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
 const material = new THREE.MeshPhongMaterial( { color: 0x00ff00} );
-const cube = new THREE.Mesh( geometry, material );
+
+
+
+const loader = new THREE.TextureLoader();
+const cubeMaterials = [
+    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: true, side: THREE.DoubleSide }), //right side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: true, side: THREE.DoubleSide }), //left side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/grass.png'), transparent: true, side: THREE.DoubleSide }), //top side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/full.png'), transparent: true, side: THREE.DoubleSide }), //bottom side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: true, side: THREE.DoubleSide }), //front side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: true, side: THREE.DoubleSide }), //back side
+];
+
+
+
+
+const cube = new THREE.Mesh( geometry, cubeMaterials );
 const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
 const light = new THREE.AmbientLight( 0xcccccc ); // soft white light
 scene.add( light );
