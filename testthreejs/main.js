@@ -12,7 +12,6 @@ const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshPhongMaterial( { color: 0x00ff00} );
 
 
-
 const loader = new THREE.TextureLoader();
 const cubeMaterials = [
     new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: true, side: THREE.DoubleSide }), //right side
@@ -43,13 +42,13 @@ function onWindowResize(){
     renderer.setSize( window.innerWidth, window.innerHeight );
 
 }
-camera.position.z = 5;
+camera.position.z = 2;
 
 function animate() {
 	requestAnimationFrame( animate );
 
-	cube.rotation.x += 0.01;
-	cube.rotation.y += 0.02;
+	cube.rotation.x += 0.001;
+	cube.rotation.y += 0.002;
 
 	renderer.render( scene, camera );
 }
