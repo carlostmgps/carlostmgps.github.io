@@ -14,12 +14,12 @@ const material = new THREE.MeshPhongMaterial( { color: 0x00ff00} );
 
 const loader = new THREE.TextureLoader();
 const cubeMaterials = [
-    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: true, side: THREE.DoubleSide }), //right side
-    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: true, side: THREE.DoubleSide }), //left side
-    new THREE.MeshPhongMaterial({ map: loader.load('images/grass.png'), transparent: true, side: THREE.DoubleSide }), //top side
-    new THREE.MeshPhongMaterial({ map: loader.load('images/full.png'), transparent: true, side: THREE.DoubleSide }), //bottom side
-    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: true, side: THREE.DoubleSide }), //front side
-    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: true, side: THREE.DoubleSide }), //back side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: false, side: THREE.DoubleSide }), //right side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: false, side: THREE.DoubleSide }), //left side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/grass.png'), transparent: false, side: THREE.DoubleSide }), //top side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/full.png'), transparent: false, side: THREE.DoubleSide }), //bottom side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: false, side: THREE.DoubleSide }), //front side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: false, side: THREE.DoubleSide }), //back side
 ];
 
 
