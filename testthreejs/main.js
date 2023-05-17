@@ -49,8 +49,32 @@ function animate() {
 
 	cube.rotation.x += 0.001;
 	cube.rotation.y += 0.002;
-
 	renderer.render( scene, camera );
 }
 
 animate();
+
+
+document.addEventListener('keydown', function(event) {
+    if(event.keyCode == 87) {
+        console.log('W was pressed');
+	camera.position.x += Math.sin(camera.direction.x)
+	camera.position.z += Math.cos(camera.direction.x)
+    }
+    else if(event.keyCode == 65) {
+        console.log('A was pressed');
+	camera.position.x -= Math.cos(camera.direction.x)
+	camera.position.z += Math.sin(camera.direction.x)
+    }
+    else if(event.keyCode == 83) {
+        console.log('S was pressed');
+	camera.position.x -= Math.sin(camera.direction.x)
+	camera.position.z -= Math.cos(camera.direction.x)
+    }
+    else if(event.keyCode == 68) {
+        console.log('D was pressed');
+	camera.position.x += Math.cos(camera.direction.x)
+	camera.position.z -= Math.sin(camera.direction.x)
+    }
+});
+
