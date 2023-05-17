@@ -56,7 +56,7 @@ animate();
 
 var cameraDirection = new THREE.Vector3();
 document.addEventListener('keydown', function(event) {
-    cameraDirection = camera.getWorldDirection9);
+    cameraDirection = camera.getWorldDirection();
     if(event.keyCode == 87) {
         console.log('W was pressed');
 	camera.position.x += Math.sin(cameraDirection.x);
