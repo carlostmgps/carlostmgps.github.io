@@ -14,12 +14,12 @@ const material = new THREE.MeshPhongMaterial( { color: 0x00ff00} );
 
 const loader = new THREE.TextureLoader();
 const cubeMaterials = [
-    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: false, side: THREE.FrontSide }), //right side
-    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: false, side: THREE.FrontSide }), //left side
-    new THREE.MeshPhongMaterial({ map: loader.load('images/grass.png'), transparent: false, side: THREE.FrontSide }), //top side
-    new THREE.MeshPhongMaterial({ map: loader.load('images/full.png'), transparent: false, side: THREE.FrontSide }), //bottom side
-    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: false, side: THREE.FrontSide }), //front side
-    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: false, side: THREE.FrontSide }), //back side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: false, side: THREE.DoubleSide }), //right side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: false, side: THREE.DoubleSide }), //left side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/grass.png'), transparent: false, side: THREE.DoubleSide }), //top side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/full.png'), transparent: false, side: THREE.DoubleSide }), //bottom side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: false, side: THREE.DoubleSide }), //front side
+    new THREE.MeshPhongMaterial({ map: loader.load('images/side.png'), transparent: false, side: THREE.DoubleSide }), //back side
 ];
 
 
@@ -59,23 +59,25 @@ document.addEventListener('keydown', function(event) {
     camera.getWorldDirection(cameraDirection);
     if(event.keyCode == 87) {
         console.log('W was pressed');
-	camera.position.x += Math.sin(cameraDirection.x);
-	camera.position.z += Math.cos(cameraDirection.x);
+	camera.position.x += Math.sin(cameraDirection.y);
+	camera.position.z += Math.cos(cameraDirection.y);
     }
     else if(event.keyCode == 65) {
         console.log('A was pressed');
-	camera.position.x -= Math.cos(cameraDirection.x);
-	camera.position.z += Math.sin(cameraDirection.x);
+	
+	camera.position.x += Math.cos(cameraDirection.y);
+	camera.position.z -= Math.sin(cameraDirection.y);
     }
     else if(event.keyCode == 83) {
         console.log('S was pressed');
-	camera.position.x -= Math.sin(cameraDirection.x);
-	camera.position.z -= Math.cos(cameraDirection.x);
+	camera.position.x -= Math.sin(cameraDirection.y);
+	camera.position.z -= Math.cos(cameraDirection.y);
     }
     else if(event.keyCode == 68) {
         console.log('D was pressed');
-	camera.position.x += Math.cos(cameraDirection.x);
-	camera.position.z -= Math.sin(cameraDirection.x);
+	    
+	camera.position.x -= Math.cos(cameraDirection.y);
+	camera.position.z += Math.sin(cameraDirection.y);
     }
 });
 
