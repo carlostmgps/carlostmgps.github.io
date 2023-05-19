@@ -65,8 +65,8 @@ document.addEventListener('keydown', function(event) {
     else if(event.keyCode == 65) {
         console.log('A was pressed');
 	
-	camera.position.x += Math.cos(cameraDirection.y);
-	camera.position.z -= Math.sin(cameraDirection.y);
+	camera.position.x -= Math.cos(cameraDirection.y);
+	camera.position.z += Math.sin(cameraDirection.y);
     }
     else if(event.keyCode == 83) {
         console.log('S was pressed');
@@ -76,8 +76,8 @@ document.addEventListener('keydown', function(event) {
     else if(event.keyCode == 68) {
         console.log('D was pressed');
 	    
-	camera.position.x -= Math.cos(cameraDirection.y);
-	camera.position.z += Math.sin(cameraDirection.y);
+	camera.position.x += Math.cos(cameraDirection.y);
+	camera.position.z -= Math.sin(cameraDirection.y);
     }
 });
 
