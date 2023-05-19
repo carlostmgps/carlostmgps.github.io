@@ -80,16 +80,16 @@ document.addEventListener('keydown', function(event) {
 	camera.position.z += Math.sin(cameraDirection.x);
     }
     else if(event.keyCode == 38) {
-        camera.rotation.y += 0.05
-    }
-    else if(event.keyCode == 40) {
-        camera.rotation.y -= 0.05
-    }
-    else if(event.keyCode == 39) {
         camera.rotation.x += 0.05
     }
-    else if(event.keyCode == 37) {
+    else if(event.keyCode == 40) {
         camera.rotation.x -= 0.05
+    }
+    else if(event.keyCode == 39) {
+        camera.rotation.y += 0.05
+    }
+    else if(event.keyCode == 37) {
+        camera.rotation.y -= 0.05
     }
 });
 
