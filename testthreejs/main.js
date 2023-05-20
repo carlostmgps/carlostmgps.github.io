@@ -47,8 +47,9 @@ camera.position.z = 2;
 function animate() {
 	requestAnimationFrame( animate );
 
-	cube.rotation.x += 0.001;
-	cube.rotation.y += 0.002;
+	cube.rotation.x = 0;
+	cube.rotation.y = 0;
+	cube.rotation.z = 0;
 	renderer.render( scene, camera );
 }
 
@@ -57,39 +58,42 @@ animate();
 var cameraDirection = new THREE.Vector3();
 document.addEventListener('keydown', function(event) {
     camera.getWorldDirection(cameraDirection);
+	
+	camera.position.x -= Math.cos(cameraDirection.y) * 0.1;
+	camera.position.z += Math.sin(cameraDirecti
     if(event.keyCode == 87) {
         console.log('W was pressed');
-	camera.position.x -= Math.sin(cameraDirection.x);
-	camera.position.z -= Math.cos(cameraDirection.x);
+	camera.position.x -= Math.sin(cameraDirection.y) * 0.1;
+	camera.position.z -= Math.cos(cameraDirection.y) * 0.1;
     }
     else if(event.keyCode == 65) {
-        console.log('A was pressed');
-	
-	camera.position.x -= Math.cos(cameraDirection.x);
-	camera.position.z += Math.sin(cameraDirection.x);
+        console.log('A was pressed');on.y) * 0.1;
     }
     else if(event.keyCode == 83) {
         console.log('S was pressed');
-	camera.position.x += Math.sin(cameraDirection.x);
-	camera.position.z += Math.cos(cameraDirection.x);
+	camera.position.x += Math.sin(cameraDirection.y) * 0.1;
+	camera.position.z += Math.cos(cameraDirection.y) * 0.1;
     }
     else if(event.keyCode == 68) {
         console.log('D was pressed');
 	    
-	camera.position.x += Math.cos(cameraDirection.x);
-	camera.position.z -= Math.sin(cameraDirection.x);
+	camera.position.x += Math.cos(cameraDirection.y) * 0.1;
+	camera.position.z -= Math.sin(cameraDirection.y) * 0.1;
     }
     else if(event.keyCode == 38) {
-        camera.rotation.x += 0.05
+        //up
+	camera.rotation.x += 0.1
     }
     else if(event.keyCode == 40) {
-        camera.rotation.x -= 0.05
+	//down
+        camera.rotation.x -= 0.1
     }
     else if(event.keyCode == 37) {
-        camera.rotation.y += 0.05
+	//left
+        camera.rotation.y += 0.1
     }
     else if(event.keyCode == 39) {
-        camera.rotation.y -= 0.05
+	//right
+        camera.rotation.y -= 0.1
     }
 });
-
