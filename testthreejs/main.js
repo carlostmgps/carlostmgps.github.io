@@ -59,25 +59,25 @@ document.addEventListener('keydown', function(event) {
     camera.getWorldDirection(cameraDirection);
     if(event.keyCode == 87) {
         console.log('W was pressed');
-	camera.position.x += Math.sin(cameraDirection.x);
-	camera.position.z += Math.cos(cameraDirection.x);
+	camera.position.x += Math.sin(cameraDirection.y);
+	camera.position.z += Math.cos(cameraDirection.y);
     }
     else if(event.keyCode == 65) {
         console.log('A was pressed');
 	
-	camera.position.x += Math.cos(cameraDirection.x);
-	camera.position.z -= Math.sin(cameraDirection.x);
+	camera.position.x += Math.cos(cameraDirection.y);
+	camera.position.z -= Math.sin(cameraDirection.y);
     }
     else if(event.keyCode == 83) {
         console.log('S was pressed');
-	camera.position.x -= Math.sin(cameraDirection.x);
-	camera.position.z -= Math.cos(cameraDirection.x);
+	camera.position.x -= Math.sin(cameraDirection.y);
+	camera.position.z -= Math.cos(cameraDirection.y);
     }
     else if(event.keyCode == 68) {
         console.log('D was pressed');
 	    
-	camera.position.x -= Math.cos(cameraDirection.x);
-	camera.position.z += Math.sin(cameraDirection.x);
+	camera.position.x -= Math.cos(cameraDirection.y);
+	camera.position.z += Math.sin(cameraDirection.y);
     }
     else if(event.keyCode == 38) {
         camera.rotation.x += 0.05
@@ -85,10 +85,10 @@ document.addEventListener('keydown', function(event) {
     else if(event.keyCode == 40) {
         camera.rotation.x -= 0.05
     }
-    else if(event.keyCode == 39) {
+    else if(event.keyCode == 37) {
         camera.rotation.y += 0.05
     }
-    else if(event.keyCode == 37) {
+    else if(event.keyCode == 39) {
         camera.rotation.y -= 0.05
     }
 });
