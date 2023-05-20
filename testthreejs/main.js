@@ -59,15 +59,17 @@ var cameraDirection = new THREE.Vector3();
 document.addEventListener('keydown', function(event) {
     camera.getWorldDirection(cameraDirection);
 	
-	camera.position.x -= Math.cos(cameraDirection.y) * 0.1;
-	camera.position.z += Math.sin(cameraDirecti
+	
     if(event.keyCode == 87) {
         console.log('W was pressed');
 	camera.position.x -= Math.sin(cameraDirection.y) * 0.1;
 	camera.position.z -= Math.cos(cameraDirection.y) * 0.1;
     }
     else if(event.keyCode == 65) {
-        console.log('A was pressed');on.y) * 0.1;
+        console.log('A was pressed');
+	    
+	camera.position.x -= Math.cos(cameraDirection.y) * 0.1;
+	camera.position.z += Math.sin(cameraDirection.y) * 0.1;
     }
     else if(event.keyCode == 83) {
         console.log('S was pressed');
