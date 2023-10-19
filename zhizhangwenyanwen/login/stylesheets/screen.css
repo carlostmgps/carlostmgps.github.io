@@ -1,0 +1,113 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+/*This mixin sets the font size in rem's with a px fallback.*/
+/*This mixin sets the line height in rem's with a px fallback.*/
+/* line 24, ../sass/screen.scss */
+/* line 29, ../sass/screen.scss */
+
+/* line 31, ../sass/screen.scss */
+.massive {
+  font-size: 160px !important;
+}
+
+/* line 35, ../sass/screen.scss */
+.log-fail-wrap {
+  line-height: 1.4rem;
+}
+
+/* line 43, ../sass/screen.scss */
+.logFail-modal p {
+  font-size: 12px;
+  font-size: 1.5rem;
+}
+/* line 47, ../sass/screen.scss */
+.logFail-modal .modal-header {
+  background-color: #2c95ff;
+  color: white;
+  font-weight: 700;
+  border-bottom: transparent;
+}
+/* line 58, ../sass/screen.scss */
+.logFail-modal .modal-body {
+  background-color: #2c95ff;
+  color: white;
+  padding: 50px 0px;
+  min-height: 285px;
+  text-align: center;
+  background-size: 70%;
+  background-image: url(https://www8.i-learner.com.hk/login/bg.png);
+  background-repeat: no-repeat;
+  background-position: -50%;
+}
+/* line 69, ../sass/screen.scss */
+.logFail-modal .modal-body .frame {
+  line-height: 14px;
+
+  margin: 70px 25px 25px 25px;
+}
+/* line 75, ../sass/screen.scss */
+.logFail-modal .modal-body .frame h2, .logFail-modal .modal-body .frame h3 {
+  font-size: 18px;
+
+}
+/* line 79, ../sass/screen.scss */
+.logFail-modal .modal-body .frame .details {
+  font-size: 12px;
+;
+}
+/* line 85, ../sass/screen.scss */
+.logFail-modal .modal-body .hi-li {
+  color: #2c95ff;
+}
+/* line 93, ../sass/screen.scss */
+.logFail-modal .address {
+  background-color: #188bff;
+  color: white;
+  font-size: 12px;
+  line-height: 14px;
+  line-height: 1.75rem;
+  padding: 15px 15px;
+}
+/* line 100, ../sass/screen.scss */
+.logFail-modal .address h4 {
+  font-weight: 700;
+}
+/* line 105, ../sass/screen.scss */
+.logFail-modal .modal-footer {
+  text-align: center;
+}
+
+@media (max-width: 464px) {
+  /* line 121, ../sass/screen.scss */
+  .logFail-modal .modal-body {
+    background-image: none;
+  }
+}
+
+
+/* line 145, ../sass/screen.scss */
+.lang {
+  color: white;
+  background-color: #2c95ff;
+  padding: 13px;
+  position: absolute;
+  z-index: 1;
+  right: 0;
+}
+/* line 153, ../sass/screen.scss */
+.lang select {
+  background-color: #2c95ff;
+  border: transparent;
+  padding: 10px;
+}
+/* line 158, ../sass/screen.scss */
+.lang select option {
+  background-color: white;
+  color: #2c95ff;
+  font-size:12pt;
+}
+.langsw{
+	font-size:12pt;
+}
