@@ -1,0 +1,75 @@
+.left_menu{
+	font-size: 10pt;
+	color: #808080;
+	font-family: Helvetica,Arial,Lucida Sans Unicode;
+
+}
+
+.middle_title{
+	font-size:18pt;
+	color: #FF8117;
+	font-family: Helvetica,Arial,Lucida Sans Unicode;
+	font-weight:bold;
+}
+
+.services{
+	font-size: 9pt;
+	color: #696969;
+	font-family: Helvetica,Arial,Lucida Sans Unicode;
+}
+
+.login{
+	font-size: 12pt;
+	color: #FFFFFF;
+	font-family: Helvetica,Arial,Lucida Sans Unicode;
+}
+
+.login2{
+	font-size: 10pt;
+	color: #000000;
+	font-family: Helvetica,Arial,Lucida Sans Unicode;
+}
+
+.small_txt{
+	font-size: 8pt;
+	color: #000000;
+	font-family: Helvetica,Arial,Lucida Sans Unicode;
+}
+
+.content{
+	font-size: 9pt;
+	color: #000000;
+	font-family: Helvetica,Arial,Lucida Sans Unicode;
+	line-height: "120%";
+}
+
+.left_btn{
+	font-size: 10pt;
+	color: #000000;
+	font-family: Helvetica,Arial,Lucida Sans Unicode;
+
+}
+
+.subtitle{
+	font-size: 12pt;
+	color: #F77D25;
+	font-family: Helvetica,Arial,Lucida Sans Unicode;
+	font-weight: bold;
+}
+
+.subtitle2{
+	font-size: 12pt;
+	color: #F7420A;
+	font-family: Helvetica,Arial,Lucida Sans Unicode;
+	font-weight: bold;
+}
+
+.small{
+	font-size: 8pt;
+	color: #909090;
+	font-family: Helvetica,Arial,Lucida Sans Unicode;
+}
+
+.loginfield{
+	width: 110px;
+}
