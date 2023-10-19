@@ -1,0 +1,283 @@
+@charset "utf-8";
+*{margin:0;padding:0;border:0;}
+img{border:0;}
+ul{list-style:none;padding:0;margin:0}
+a:link{color:#333;text-decoration:none;}
+a:visited{color:#333;text-decoration:none;}
+a:hover{color:#F60;text-decoration:underline;}
+
+.header{
+	width: 1280px;
+	margin: 0 auto;
+	background: #DDDDDD; 
+	padding: 0px;
+}
+.header #top_banner{
+	height: 295px;
+}
+.header #top_menu{
+	margin: 0 auto;
+	height: 32px;
+	background: #fff;
+}
+.header #top_menu li, #top_menu a{
+	display:block;
+	float:left;
+	height: 32px;
+}
+.header #top_menu #menu0{
+	width:197px;
+	background-image:url(images_2011/top_menu_0.jpg);
+}
+.header #top_menu #menu1 a:link, #top_menu #menu1 a:visited{
+	width:112px;
+	background-image:url(images_2011/top_menu_1.jpg);
+}
+.header #top_menu #menu1 a:hover, #top_menu #menu1 a:focus{
+	background-image:url(images_2011/top_menu_mo_1.jpg);
+}
+.header #top_menu #menu2 a:link, #top_menu #menu2 a:visited{
+	width:125px;
+	background-image:url(images_2011/top_menu_2.jpg);
+}
+.header #top_menu #menu2 a:hover, #top_menu #menu2 a:focus{
+	background-image:url(images_2011/top_menu_mo_2.jpg);
+}
+.header #top_menu #menu3 a:link, #top_menu #menu3 a:visited{
+	width:134px;
+	background-image:url(images_2011/top_menu_3.jpg);
+}
+.header #top_menu #menu3 a:hover, #top_menu #menu3 a:focus{
+	background-image:url(images_2011/top_menu_mo_3.jpg);
+}
+.header #top_menu #menu4 a:link, #top_menu #menu4 a:visited{
+	width:129px;
+	background-image:url(images_2011/top_menu_4.jpg);
+}
+.header #top_menu #menu4 a:hover, #top_menu #menu4 a:focus{
+	background-image:url(images_2011/top_menu_mo_4.jpg);
+}
+.header #top_menu #menu5 a:link, #top_menu #menu5 a:visited{
+	width:125px;
+	background-image:url(images_2011/top_menu_5.jpg);
+}
+.header #top_menu #menu5 a:hover, #top_menu #menu5 a:focus{
+	background-image:url(images_2011/top_menu_mo_5.jpg);
+}
+.header #top_menu #menu6 a:link, #top_menu #menu6 a:visited{
+	width:138px;
+	background-image:url(images_2011/top_menu_6.jpg);
+}
+.header #top_menu #menu6 a:hover, #top_menu #menu6 a:focus{
+	background-image:url(images_2011/top_menu_mo_6.jpg);
+}
+.header #top_menu #menu7 a:link, #top_menu #menu7 a:visited{
+	width:125px;
+	background-image:url(images_2011/top_menu_7.jpg);
+}
+.header #top_menu #menu7 a:hover, #top_menu #menu7 a:focus{
+	background-image:url(images_2011/top_menu_mo_7.jpg);
+}
+.header #top_menu #menu8{
+	width:195px;
+	background-image:url(images_2011/top_menu_8.jpg);
+}
+#location_info {
+	margin: 20px 30px;
+}
+#location_info #break_line{
+	background:#cab69e;
+	width:100%;
+	height:2px;
+}
+#footer{
+	display:block;
+	width: 1280px;
+	height: 165px;
+	background: #DDDDDD;
+	background-image:url(images_2011/footer_bg.png);	
+}
+#footer #content{
+	text-align:center;
+}
+#footer p{
+	margin:3px;
+	padding:0px;
+}
+
+body {
+	font: 100% Verdana, Arial, Helvetica, sans-serif;
+	background: #DDDDDD;
+	margin: 0; /* it's good practice to zero the margin and padding of the body element to account for differing browser defaults */
+	padding: 0;
+	text-align: center; /* this centers the container in IE 5* browsers. The text is then set to the left aligned default in the #container selector */
+	color: #000000;
+}
+#body_container{
+	background:#FFF;
+	width: 1280px;
+	margin: 0 auto;
+}
+/* Tips for Elastic layouts 
+1. Since the elastic layouts overall sizing is based on the user's default fonts size, they are more unpredictable. Used correctly, they are also more accessible for those that need larger fonts size since the line length remains proportionate.
+2. Sizing of divs in this layout are based on the 100% font size in the body element. If you decrease the text size overall by using a font-size: 80% on the body element or the #container, remember that the entire layout will downsize proportionately. You may want to increase the widths of the various divs to compensate for this.
+3. If font sizing is changed in differing amounts on each div instead of on the overall design (ie: #sidebar1 is given a 70% font size and #mainContent is given an 85% font size), this will proportionately change each of the divs overall size. You may want to adjust based on your final font sizing.
+*/
+#container { 
+	width: 920px; 
+	margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
+	background: #FFFFFF;
+	text-align: left; /* this overrides the text-align: center on the body element. */
+} 
+
+.indexPage #sidebar1{
+	float: right; 
+	width: 250px; /* since this element is floated, a width must be given */
+	background: #FFFFFF; /* the background color will be displayed for the length of the content in the column, but no further */
+}
+.indexPage #sidebar1 #login_box{
+	background-color:#FBF6EB;
+	height:150px;
+	border-radius: 0px 0px 20px 20px;
+	border: 1px solid #c3b298;
+}
+.indexPage #sidebar1 #login_box p{
+	margin: 10px;
+	text-align:center;
+}
+.indexPage #sidebar1 #news{
+	height:200px;
+}
+.indexPage #sidebar1 #ranking{
+	height:200px;
+}
+.indexPage #sidebar1 #ranking #ranking_list{
+	height:160px;
+}
+.indexPage #sidebar1 #ranking ul{
+	margin: 1px 10px;
+	list-style:none;
+	list-style-type:none;
+	padding:0px;
+}
+.indexPage #sidebar1 #ranking ul li div{
+	font-size:12px;
+	width: 220px;
+	height: 25px;
+	margin: 5px auto;
+	padding-left:30px;
+	background-repeat:no-repeat;
+}
+.indexPage #sidebar1 h3, .indexPage #sidebar1 p {
+	margin-left: 10px; /* the left and right margin should be given to every element that will be placed in the side columns */
+	margin-right: 10px;
+}
+
+/* Tips for mainContent:
+1. If you give this #mainContent div a font-size value different than the #sidebar1 div, the margins of the #mainContent div will be based on its font-size and the width of the #sidebar1 div will be based on its font-size. You may wish to adjust the values of these divs.
+2. The space between the mainContent and sidebar1 is created with the left margin on the mainContent div.  No matter how much content the sidebar1 div contains, the column space will remain. You can remove this left margin if you want the #mainContent div's text to fill the #sidebar1 space when the content in #sidebar1 ends.
+3. To avoid float drop, you may need to test to determine the approximate maximum image/element size since this layout is based on the user's font sizing combined with the values you set. However, if the user has their browser font size set lower than normal, less space will be available in the #mainContent div than you may see on testing.
+4. In the Internet Explorer Conditional Comment below, the zoom property is used to give the mainContent "hasLayout." This avoids several IE-specific bugs that may occur.
+*/
+.indexPage #mainContent {
+  	margin: 0 auto; /* the left margin will look best if you match the padding amount to the header and footer. */
+} 
+
+#side_menu{
+	float: left; 
+	width: 250px; /* since this element is floated, a width must be given */
+	background: #FFFFFF; /* the background color will be displayed for the length of the content in the column, but no further */
+	padding: 5px 0px; /* top and bottom padding create visual space within this div */
+}
+#side_menu li{
+	display:block;
+	height: 25px;
+	width: 190px;
+	background-image:url(images_2011/sidemenu_1.png);
+	background-repeat:no-repeat;
+	margin: 10px 30px;
+}
+#side_menu li div {
+	margin-left:10px;
+	margin-top:5px;
+	cursor:pointer;
+}
+#side_menu li div:hover, #side_menu li div:focus{
+	color:#990000;
+}
+#side_menu #side_menu_sub li{
+	list-style:none;
+	list-style-position:inside;	
+	background-image:url(images_2011/sidemenu_2.png);
+}
+#side_menu #side_menu_sub li div{
+	margin-left:30px;
+}
+#mainContent{
+  	margin: 0px 10px 0px 250px;
+	padding: 5px 3px;
+} 
+#mainContent div{
+	display: none;
+} 
+#mainContent div h1, h2, h3, h4{
+	margin:5px;
+	color:#600;
+}
+#mainContent div h1 {
+	font-size:1.6em;
+} 
+#mainContent div h2 {
+	font-size:1.2em;
+} 
+#mainContent div h3 {
+	font-size:1em;
+	text-decoration:underline;
+} 
+/*
+#mainContent ul{
+	list-style:inside;
+	list-style-type:circle;
+	margin: 5px;
+} */
+#content_box{
+	background-color:#f8f5f2;
+	width: 70%;
+	margin: 10px auto;
+	border:3px solid #CCC;
+	overflow:auto;
+}
+#content_box p{
+	margin:10px;
+}
+#content_box li{
+	margin:10px;
+}
+
+
+/* Miscellaneous classes for reuse */
+.fltrt { /* this class can be used to float an element right in your page. The floated element must precede the element it should be next to on the page. */
+	float: right;
+	margin-left: 8px;
+}
+.fltlft { /* this class can be used to float an element left in your page */
+	float: left;
+	margin-right: 8px;
+}
+.clearfloat { /* this class should be placed on a div or break element and should be the final element before the close of a container that should fully contain a float */
+	clear:both;
+    height:0;
+    font-size: 1px;
+    line-height: 0px;
+}
+.orange_b{
+	font-size:13px;
+	color:#F60;
+	font-weight:bold;
+}
+.deepred{
+	color:#990000;
+}
+.center{
+	text-align:center;
+}
