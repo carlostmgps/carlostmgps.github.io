@@ -1,0 +1,338 @@
+<script>
+  const bootcode = "31 FE FF AF 21 FF 9F 32 CB 7C 20 FB 21 26 FF 0E 11 3E 80 32 E2 0C 3E F3 E2 32 3E 77 77 3E FC E0 47 11 A8 00 21 10 80 1A CD 95 00 CD 96 00 13 7B FE 34 20 F3 11 D8 00 06 08 1A 13 22 23 05 20 F9 3E 19 EA 10 99 21 2F 99 0E 0C 3D 28 08 32 0D 20 F9 2E 0F 18 F3 67 3E 64 57 E0 42 3E 91 E0 40 04 1E 02 0E 0C F0 44 FE 90 20 FA 0D 20 F7 1D 20 F2 0E 13 24 7C 1E 83 FE 62 28 06 1E C1 FE 64 20 06 7B E2 0C 3E 87 E2 F0 42 90 E0 42 15 20 D2 05 20 4F 16 20 18 CB 4F 06 04 C5 CB 11 17 C1 CB 11 17 05 20 F5 22 23 22 23 C9 00 00 00 0D 00 09 11 09 89 39 08 C9 00 0B 00 03 00 0C CC CC 00 0F 00 00 00 00 EC CC EC CC DD DD 99 99 98 89 EE FB 67 63 6E 0E CC DD 1F 9F 88 88 00 00 00 00 00 00 00 00 21 A8 00 11 A8 00 1A 13 BE 20 FE 23 7D FE 34 20 F5 06 19 78 86 23 05 20 FB 86 20 FE 3E 01 E0 50".split(" ").map(x => parseInt(x,16))
+/*
+Memory map
+
+	$FFFF       	Interrupt Enable Flag
+	$FF80-$FFFE 	HRAM - 127 bytes
+	$FF00-$FF7F 	Hardware I/O Registers
+	$FEA0-$FEFF 	Unusable Memory
+	$FE00-$FE9F 	OAM - Object Attribute Memory
+	$E000-$FDFF 	Echo RAM - Reserved, Do Not Use
+	$D000-$DFFF 	Internal RAM - Bank 1-7 (switchable - CGB only)
+	$C000-$CFFF 	Internal RAM - Bank 0 (fixed)
+	$A000-$BFFF 	Cartridge RAM (If Available)
+	$9C00-$9FFF 	BG Map Data 2
+	$9800-$9BFF 	BG Map Data 1
+	$8000-$97FF 	Character RAM
+	$4000-$7FFF 	Cartridge ROM - Switchable Banks 1-xx
+	$0150-$3FFF 	Cartridge ROM - Bank 0 (fixed)
+	$0100-$014F 	Cartridge Header Area
+	$0000-$00FF 	Restart and Interrupt Vectors
+
+Bank switch:  write bank number to $2000 
+
+  Cartridge RAM has separate bank number to cartridge ROM
+
+
+Bootcode: 
+  load first bank of rom into MEM
+  overwrite first 256 bytes with bootcode
+  after verification, overwrite first 256 bytes with data from rom
+
+*/
+  // Interrupts
+  // FFFF - IE - Interrupt Enable (R/W)
+  // FF0F - IF - Interrupt Flag (R/W)
+  // Bit 0: V-Blank  Interrupt Enable  (INT 40h)  (1=Enable)
+  // Bit 1: LCD STAT Interrupt Enable  (INT 48h)  (1=Enable)
+  // Bit 2: Timer    Interrupt Enable  (INT 50h)  (1=Enable)
+  // Bit 3: Serial   Interrupt Enable  (INT 58h)  (1=Enable)
+  // Bit 4: Joypad   Interrupt Enable  (INT 60h)  (1=Enable)
+
+
+var rom = new Uint8Array(0x0020);
+var firstrompage = new Uint8Array(0x0020);
+
+var memory = new Uint8Array(0x10000);
+var cartridgeram = new Uint8Array();
+var rombank = 0;
+var romoffset = (rombank-1)*0x4000;
+
+var rambank = 0;
+var ramoffset = rambank*0x2000 - 0xa000;
+var ram_en = false;
+
+var mbcrammode = 0
+
+//rom and rams
+
+var timer_en = false;
+var timer_len = 1;
+var timer_prescaler = 0;
+var divPrescaler=0;
+//timer
+
+var register = new Uint8Array(8);
+var flags = {
+  Z:false,
+  N:false,
+  H:false,
+  C:false
+}
+var pc = 0;
+var sp = 0;
+var ime = false; //ime = interupt.master.enable.
+var cpu_halted = false;
+
+const A = 0b111;
+const B = 0b000;
+const C = 0b001;
+const D = 0b010
+const E = 0b011
+const H = 0b100
+const L = 0b101
+
+const HL = 0b110
+const Immediate = 257
+const BC = 258
+const DE = 259
+const SPr = 260
+
+const opcodes = Array(256);
+for (var n = 0;n < 256;n++) {
+  opcodes[n] = function()
+}
+const cbcodes = Array(256);
+for (var n = 0;n < 256;n++) {
+  cbcodes[n] = function()
+}
+
+
+
+//register & opcodes
+
+function memread(address){
+  if (address <= 0x3fff){
+    return rom[address];
+  //ROMBANK 1
+  if (address <= 0x7fff){
+    return rom[address + romoffset];
+  }
+  //ROMBANK ?
+  if (address >= 0xa000 && address <= 0xbfff){
+    return cartridgeram[ address + romoffset]
+  }
+  //CARTRIDGE ram
+  if (address == 0xff00) {
+    if (memory[0xff00] & 0x20) {
+      return dpad;
+    } else if (memory[0xff00] & 0x10){
+      return button;
+    } else {
+      return 0xff;
+    }
+  }
+  //Input read
+  return memory[address]
+};
+function memreadhex(addr){
+  return [memread(address+1),memread(address)]
+}
+function memwrite(address,data){
+  if (address <= 0x7fff) {
+    mbcmodify(address,data);
+    return;
+  }
+  // mbc write
+  if (address >= 0xa000 && address <= 0xbfff && ram_en){
+    cartridgeram[ address + ramoffset] = data;
+    return;
+  }
+  // cartridgeram writing
+  if (address == 0xff04) {
+    memory[0xff04]=0;
+    return;
+  }
+  // DIV Register: write == reset
+  if (address == 0xff07) {
+    /*
+    timer control
+    bit 1-0 - input clock select
+    00 4096Hz
+    01 262144Hz
+    10 65536Hz
+    11 16384Hz
+    bit 2 - timer enable
+    
+    */
+    timer_en = ((data & 0b00000100) != 0);
+    timer_len = [1024,16,64,256][ data & 0b00000011];
+    timer_prescaler = timer_len;
+    memory[address] = 0xF8|data;
+  }
+
+  if (address >= 0xff10 && address <= 0xff3f) {
+    //SOUND,NOT FINISHED
+    return;
+  }
+  if (address == 0xff40) {
+    var tmp = data & 0b10000000;
+    if (lcd_en != tmp){
+      lcd_en = tmp;
+      if (!lcd_en){
+        lcd_scan=0;
+        memory[0xff41] = (memory[0xff41] & 0xfc) + 1;
+      }
+    }
+    //lcd enable
+  }
+  if (address == 0xff41) {
+    memory[0xff41] &= 0x3;
+    data &= 0xFC
+    memory[0xff41] |= 0x80|data;
+    return
+    //stats
+  }
+  if (address == 0xff44) {
+    memory[0xff44] = 0;
+    return
+    //LY - reset
+  }
+  if (address == 0xff46){
+    var tmp = data << 8;
+    for (var n = 0;n <= 0x9f;n++){
+      memory[0xfe00 + n] = memread(tmp + i);
+    }
+    return;
+    //DMA TRANSFER (Graphics)
+  }
+  if (address == 0xff50) {
+    for (var n = 0;n < 256;n++){
+      rom[n] = firstrompage[i];
+    }
+    return
+    //disable bootrom
+  }
+  
+  memory[address] = data;
+  //otherwise,write data!
+}
+
+function memwritehex(address, datahigh, datalow){
+  memwrite(addess, datalow);
+  memwrite(address + 1,datahigh);
+}
+
+function mbcmodify(address,data){
+  switch (ROM[0x147]) {
+      //cart type in rom 0x147
+    case 0: //ROM ONLY CARTRIDGE
+    break;
+    case 0x01: // MBC1
+    case 0x02: // MBC1 + RAM
+    case 0x03: // MBC1 + RAM + BATTERY
+      if (address <= 0x1fff) {
+        ram_en = ((data & 0x0f) == 0xa)
+      } else if (address <= 0x3fff){
+        data &= 0x1f;
+        if (data == 0){
+          data = 1;
+          //MBC1 bank 0 to bank 1
+        }
+        if (mbcrammode == 0) {
+          rombank = (rombank & 0xe0) | (data & 0x1f);
+          romoffset = (rombank-1)*0x4000  %rom.length;
+        } else if {
+          rambank = data;
+          ramoffset = rambank*0x2000 - 0xa000
+        }
+      } else {
+        mbcrammode = data & 1;
+        if (mbcrammode == 0){
+          rambank = 0;
+          ramoffset = rambank*0x2000 - 0xa000;
+        } else {
+          rombank &= 0x1f;
+          romoffset = (rombank - 1)*0x4000  &rom.length
+        }
+      }
+    break;
+
+    case 0x05:
+    case 0x06:
+      if (address <= 0x1fff) {
+        if ((address & 0x0100) == 0){
+          ram_en = ((data & 0x0f) == 0xa)
+        }
+      } else if (address <= 0x3fff){
+          data &= 0x0f;
+          if (data == 0){
+            data = 1;
+          }
+          rombank = data;
+          romoffset = (rombank-1)*0x4000  %rom.length
+      }
+    break;
+    //case 0x08:
+    //case 0x09:
+    //case 0x0b:
+    //case 0x0c:
+    //case 0x0d:
+    //case 0x0f:
+    //case 0x10:
+    case 0x11:
+    case 0x12:
+    case 0x13:
+      if (address <= 0x1fff) {
+        ram_en = ((data & 0x0f) == 0xa)
+      } else if (address <= 0x3fff){
+        if (data == 0){
+          data = 1;
+        }
+      } else if (address <= 0x5fff) {
+        if (data < 8) {
+          rambank = data;
+          ramoffset = rambank*0x2000 - 0xa000;
+        } else {
+          //RTC REGISTERS
+        }
+      } else {
+        //RTC latch
+      }
+    break;
+    case 0x19: //  MBC5
+    case 0x1a: //  MBC5+RAM
+    case 0x1b: //  MBC5+RAM+BATTERY
+    // case 0x1c: //  MBC5+RUMBLE
+    // case 0x1d: //  MBC5+RUMBLE+RAM
+    // case 0x1e: //  MBC5+RUMBLE+RAM+BATTERY
+      if (address <= 0x1fff) {
+        ram_en = ((data & 0x0f) == 0xa) 
+      } else if (address <= 0x2fff){
+        // Allows access to bank 0
+        rombank &= 0x100;
+        rombank |= data;
+        romoffset = (rombank-1)*0x4000;
+        while (romoffset>rom.length) romoffset-=rom.length;
+      } else if (address <= 0x3fff){
+        rombank &= 0xff;
+        if (data&1) rombank+=0x100;
+        romoffset = (rombank-1)*0x4000;
+        while (romoffset>rom.length) romoffset-=rom.length;
+      } else if (address<=0x5fff) {
+        rambank=data&0x0f;
+        ramoffset = rambank*0x2000 - 0xa000;
+      }
+    break;
+
+    // case 0x20:   MBC6
+    // case 0x22:   MBC7+SENSOR+RUMBLE+RAM+BATTERY
+    // case 0xFC:   POCKET CAMERA
+    // case 0xFD:   BANDAI TAMA5
+    // case 0xFE:   HuC3
+    // case 0xFF:   HuC1+RAM+BATTERY
+
+    default: throw Error("Unimplemented memory controller");
+  }
+}
+
+//memory read and write
+function nop(){
+  return;
+};
+
+function ld(a,b){
+  
+};
+</script>
