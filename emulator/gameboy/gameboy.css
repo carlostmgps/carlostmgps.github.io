@@ -229,8 +229,8 @@ body {
   top: 82px;
   left: 50%;
   margin-left: -284px;
-  width: 568px;
-  height: 410px;
+  width: auto;
+  height: auto;
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
   border-bottom-left-radius: 18px;
