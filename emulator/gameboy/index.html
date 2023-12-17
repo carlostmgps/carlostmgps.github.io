@@ -50,12 +50,11 @@ iframe{display:block;border:0;margin:auto}
   </div>
 
 
-  <br><br>
+  <br></br>
 
 
-  <a href='#' onclick='saveSram(this);'>save .sav file</a> / 
-  <a href='#' onclick='document.getElementById("loadsav").click(); return false;'>load .sav file</a>
-  <input type='file' id=loadsav style='display:none' accept='.sav' onchange='loadSram(event)'>
+  <a href='#' onclick='saveSram(this);'>Save save file</a> / 
+  <a href='#' onclick='document.getElementById("loadsav").click(); return false;'>Load save file</a>
   <button onclick="saveState(); return false">save state</button>
   <button onclick="loadState(); return false">load state</button>
   <button onclick="showDebug(!debugOn); return false">Debug</button>
@@ -92,7 +91,7 @@ iframe{display:block;border:0;margin:auto}
         </div>
   
         <div class="screen">
-          <canvas id=display class="game-canvas" onclick="runto(0x10000);" ondblclick="fullScreen(this)">
+          <canvas id=display width=176 height=158 onclick="runto(0x10000);" ondblclick="fullScreen(this)">
           </canvas>
         </div>
       </div>
