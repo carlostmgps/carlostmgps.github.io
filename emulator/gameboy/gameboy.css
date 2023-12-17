@@ -277,8 +277,8 @@ body {
   z-index: 1;
 }
 .screen-container .screen {
-  width: auto;
-  height: auto;
+  width: 352px;
+  height: 316px;
   box-sizing: border-box;
   position: absolute;
   background-color: #9aa13c;
