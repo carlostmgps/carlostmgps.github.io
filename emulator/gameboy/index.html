@@ -607,6 +607,11 @@ document.onkeydown=function(e){
       keys_buttons &=~(1<<2); break;
   }
 }
+
+const dpaddown = function(n){keys_dpad &=~(1<<n); break;}
+const dpadup = function(n){keys_dpad |=(1<<n); break;}
+const btdown = function(n){keys_buttons &=~(1<<n); break;}
+const btup = function(n){keys_buttons |=(1<<n); break;}
 document.onkeyup=function(e){
   switch (e.keyCode){
     case 87: //Up
