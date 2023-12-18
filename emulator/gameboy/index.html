@@ -131,7 +131,7 @@ iframe{display:block;border:0;margin:auto}
   
     </div>
   
-    <div class="power-button"><div></div></div>
+    <div class="power-button"><div onclick='requestStop? runto(0x10000) : requestStop=true'></div></div>
   </div>
   <div id=dbg>
     <pre id=out></pre>
@@ -587,23 +587,23 @@ var keys_dpad = 0xef, keys_buttons=0xdf; // 0=pressed
 
 document.onkeydown=function(e){
   switch (e.keyCode){
-    case 38: //Up
+    case 87: //Up
       if (!requestStop) {e.preventDefault(); e.stopPropagation();}
       keys_dpad &=~(1<<2); break;
-    case 40: //Down
+    case 83: //Down
       if (!requestStop) {e.preventDefault(); e.stopPropagation();}
       keys_dpad &=~(1<<3); break;
-    case 37: //Left
+    case 65: //Left
       keys_dpad &=~(1<<1); break;
-    case 39: //Right
+    case 68: //Right
       keys_dpad &=~(1<<0); break;
-    case 83: //A
+    case 39: //A
       keys_buttons &=~(1<<0); break;
-    case 65: //B
+    case 40: //B
       keys_buttons &=~(1<<1); break;
-    case 13: //Start
+    case 49: //Start
       keys_buttons &=~(1<<3); break;
-    case 16: //Select
+    case 50: //Select
       keys_buttons &=~(1<<2); break;
   }
 }
