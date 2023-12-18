@@ -9,7 +9,11 @@ document.write("<style>img[onload]{opacity:0;transition:opacity 2s}</style>");
 <style>body {font-family: Helvetica, sans-serif; margin:10px 0px 0px 0px;}
 iframe{display:block;border:0;margin:auto}
 #mxmain{width:80%;margin:auto}
-/*
+@media(max-width:1024px){
+ #mxmain{width:90%}
+ img,canvas{max-width:100%}
+ iframe{max-width:90vw;max-height:50.625vw}
+}
 #display{
   width:480px; height:432px; display:block;
   outline:3px solid #ccc; margin:5px auto;
@@ -20,33 +24,7 @@ iframe{display:block;border:0;margin:auto}
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
-*/
 
-.screen-new {
-    width: 352px;
-    height: 316px;
-    box-sizing: border-box;
-    position: absolute;
-    background-color: #9aa13c;
-    overflow: hidden;
-    display:block;
-}
-.screen-new:after {
-    content: "";
-    position: absolute;
-    display: block;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    box-shadow: inset 4px 6px 12px 2px rgba(0, 0, 0, 0.7);
-    pointer-events: none;
-}
-
-
-
-	
 
 #io,#stack{float:left;height:400px;overflow-y:scroll}
 #out{float:left;margin-right:10px}
@@ -79,7 +57,7 @@ iframe{display:block;border:0;margin:auto}
         </div>
   
         <div class="screen">
-	  <canvas class="screen-new" id=display onclick="runto(0x10000);" ondblclick="fullScreen(this)">
+	  <canvas id=display width=160 height=144 onclick="runto(0x10000);" ondblclick="fullScreen(this)">
           </canvas>
         </div>
       </div>
