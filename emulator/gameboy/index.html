@@ -45,23 +45,25 @@ iframe{display:block;border:0;margin:auto}
   <canvas id=display width=160 height=144 onclick="runto(0x10000);" ondblclick="fullScreen(this)">
   </canvas>
   <div style='width:480px;margin:auto'>
-    <input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'>
-    <button onclick='requestStop? runto(0x10000) : requestStop=true'>Run/Stop</button>
-    <div style='display:inline-block;vertical-align:middle'>
-      <label style="display:block"><input type=checkbox checked=checked onchange="limitFrameRate=this.checked" autocomplete=off>Limit FPS</label>
-      <label style="display:block"><input type=checkbox onchange="showFrameRate=this.checked" autocomplete=off>Show FPS</label>
-    </div>
+    <ul class="framed buttons compact">
+      <li><input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'></li>
+      <li><button onclick='requestStop? runto(0x10000) : requestStop=true'>Run/Stop</button></li>
+      <div style='display:inline-block;vertical-align:middle'>
+        <li><label style="display:block"><input type=checkbox checked=checked onchange="limitFrameRate=this.checked" autocomplete=off>Limit FPS</label></li>
+        <li><label style="display:block"><input type=checkbox onchange="showFrameRate=this.checked" autocomplete=off>Show FPS</label></li>
+      </div>
 
 
-    <br><br>
+      <br><br>
 
 
-    <a href='#' onclick='saveSram(this);'>save .sav file</a> / 
-    <a href='#' onclick='document.getElementById("loadsav").click(); return false;'>load .sav file</a>
-    <input type='file' id=loadsav style='display:none' accept='.sav' onchange='loadSram(event)'>
-    <button onclick="saveState(); return false">save state</button>
-    <button onclick="loadState(); return false">load state</button>
-    <button onclick="showDebug(!debugOn); return false">Debug</button>
+      <li><a href='#' onclick='saveSram(this);'>save .sav file</a> / </li>
+      <li><a href='#' onclick='document.getElementById("loadsav").click(); return false;'>load .sav file</a></li>
+      <li><input type='file' id=loadsav style='display:none' accept='.sav' onchange='loadSram(event)'></li>
+      <li><button onclick="saveState(); return false">save state</button></li>
+      <li><button onclick="loadState(); return false">load state</button></li>
+      <li><button onclick="showDebug(!debugOn); return false">Debug</button></li>
+    </ul>
   </div>
 
   <br><br>
