@@ -608,10 +608,10 @@ document.onkeydown=function(e){
   }
 }
 
-var dpaddown = function(n){keys_dpad &=~(1<<n); break;}
-var dpadup = function(n){keys_dpad |=(1<<n); break;}
-var btdown = function(n){keys_buttons &=~(1<<n); break;}
-var btup = function(n){keys_buttons |=(1<<n); break;}
+var dpaddown = function(n){keys_dpad &=~(1<<n);}
+var dpadup = function(n){keys_dpad |=(1<<n);}
+var btdown = function(n){keys_buttons &=~(1<<n);}
+var btup = function(n){keys_buttons |=(1<<n);}
 document.onkeyup=function(e){
   switch (e.keyCode){
     case 87: //Up
