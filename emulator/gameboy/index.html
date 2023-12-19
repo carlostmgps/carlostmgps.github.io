@@ -65,14 +65,14 @@ iframe{display:block;border:0;margin:auto}
       <div id="controller">
   
         <div class="buttons-a-b">
-          <div onmousedown="btdown(1);" onmouseup="btup(1);" class="button-b button-key-j" id="controller_b"></div>
+          <div onmousedown="btdown(1);" onmouseup="btup(1);" ontouchstart="btdown(1);" ontouchend="btup(1);" class="button-b button-key-j" id="controller_b"></div>
   
-          <div onmousedown="btdown(0);" onmouseup="btup(0);" class="button-a button-key-k" id="controller_a"></div> 
+          <div onmousedown="btdown(0);" onmouseup="btup(0);" ontouchstart="btdown(0);" ontouchend="btup(0);" class="button-a button-key-k" id="controller_a"></div> 
         </div>
         
-        <div onmousedown="btdown(3);" onmouseup="btup(3);" class="start button-key-m" id="controller_start"><div></div></div>
+        <div onmousedown="btdown(3);" onmouseup="btup(3);" ontouchstart="btdown(3);" ontouchend="btup(3);" class="start button-key-m" id="controller_start"><div></div></div>
   
-        <div onmousedown="btdown(2);" onmouseup="btup(2); "class="select button-key-n" id="controller_select"><div></div></div>
+        <div onmousedown="btdown(2);" onmouseup="btup(2);" ontouchstart="btdown(2);" ontouchend="btup(2);" class="select button-key-n" id="controller_select"><div></div></div>
   
         <div class="cross-container">
           <div class="spike"><div></div></div>
@@ -82,12 +82,12 @@ iframe{display:block;border:0;margin:auto}
   
           <div class="cross" id="controller_dpad">
             <div class="top-down">
-              <div onmousedown="dpaddown(2);" onmouseup="dpadup(2);" class="button-top button-key-w" id="controller_up">
+              <div onmousedown="dpaddown(2);" onmouseup="dpadup(2);" ontouchstart="dpaddown(2);" ontouchend="dpadup(2);" class="button-top button-key-w" id="controller_up">
                 <div class="button-stripe"></div>
                 <div class="button-stripe"></div>
                 <div class="button-stripe"></div>
               </div>
-              <div onmousedown="dpaddown(3);" onmouseup="dpadup(3);" class="button-bottom button-key-s" id="controller_down">
+              <div onmousedown="dpaddown(3);" onmouseup="dpadup(3);" ontouchstart="dpaddown(3);" ontouchend="dpadup(3);" class="button-bottom button-key-s" id="controller_down">
                 <div class="button-stripe"></div>
                 <div class="button-stripe"></div>
                 <div class="button-stripe"></div>
@@ -95,12 +95,12 @@ iframe{display:block;border:0;margin:auto}
             </div>
   
             <div class="left-right">
-              <div onmousedown="dpaddown(1);" onmouseup="dpadup(1);" class="button-left button-key-a" id="controller_left">
+              <div onmousedown="dpaddown(1);" onmouseup="dpadup(1);" ontouchstart="dpaddown(1);" ontouchend="dpadup(1);" class="button-left button-key-a" id="controller_left">
                 <div class="button-stripe"></div>
                 <div class="button-stripe"></div>
                 <div class="button-stripe"></div>
               </div>
-              <div onmousedown="dpaddown(0);" onmouseup="dpadup(0);" class="button-right button-key-d" id="controller_right">
+              <div onmousedown="dpaddown(0);" onmouseup="dpadup(0);" ontouchstart="dpaddown(0);" ontouchend="dpadup(0);" class="button-right button-key-d" id="controller_right">
                 <div class="button-stripe"></div>
                 <div class="button-stripe"></div>
                 <div class="button-stripe"></div>
