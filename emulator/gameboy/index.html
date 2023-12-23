@@ -3036,7 +3036,7 @@ function f(a,l) {return ("0000"+a.toString(16).toUpperCase()).slice(-l||-2)}
 
 var openFile = function(event) {
   var input = event.target;
-
+  localStorage.infile = event.target.files[0];
   var reader = new FileReader();
   reader.onload = function(){
     ROM = new Uint8Array(reader.result);
