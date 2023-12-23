@@ -3120,6 +3120,16 @@ function loadState(){
   LCD_enabled= all.LCD_enabled;
   LCD_lastmode= all.LCD_lastmode;
 }
+function CloudFile(filePath) {
+  var result = null;
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.open("GET", filePath, false);
+  xmlhttp.send();
+  if (xmlhttp.status==200) {
+    result = xmlhttp.responseText;
+  }
+  return result;
+}
 
 if (fileinput.files.length) openFile({"target":{"files":fileinput.files}})
 </script>
