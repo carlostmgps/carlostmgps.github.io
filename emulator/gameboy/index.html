@@ -3131,7 +3131,7 @@ function CloudFile(filePath) {
   return result;
 }
 function texttofile(text) {
-  const file = new File(text, "loaded.gb", {
+  const file = new File([text], "loaded.gb", {
   type: "text/plain",
   });
   return file
