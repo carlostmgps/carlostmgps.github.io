@@ -3040,7 +3040,7 @@ var openFile = function(event) {
   var reader = new FileReader();
   reader.onload = function(){
     ROM = new Uint8Array(reader.result);
-    localStorage.infile = reader.result;
+    localStorage.infile = new Uint8Array(reader.result);
     FirstROMPage = ROM.slice(0,256)
 
     //Overwrite first page with bootcode
