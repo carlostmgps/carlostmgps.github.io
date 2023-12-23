@@ -3130,6 +3130,12 @@ function CloudFile(filePath) {
   }
   return result;
 }
+function texttofile(text) {
+  const file = new File(text, "loaded.gb", {
+  type: "text/plain",
+  });
+  return file
+}
 function insertInput(myFile) {
   const dataTransfer = new DataTransfer();
   dataTransfer.items.add(myFile);
