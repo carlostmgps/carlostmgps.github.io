@@ -3130,7 +3130,11 @@ function CloudFile(filePath) {
   }
   return result;
 }
-
+function insertInput(myFile) {
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(myFile);
+  fileinput.files = dataTransfer.files;
+}
 if (fileinput.files.length) openFile({"target":{"files":fileinput.files}})
 </script>
 
