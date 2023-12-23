@@ -3141,7 +3141,17 @@ function insertInput(myFile) {
   dataTransfer.items.add(myFile);
   fileinput.files = dataTransfer.files;
 }
+function trigger(){
+  if ("createEvent" in document) {
+    var evt = document.createEvent("HTMLEvents");
+    evt.initEvent("change", false, true);
+    fileinput.dispatchEvent(evt);
+  }
+  else
+    fileinput.fireEvent("onchange");
+}
 if (fileinput.files.length) openFile({"target":{"files":fileinput.files}})
+
 </script>
 
 
