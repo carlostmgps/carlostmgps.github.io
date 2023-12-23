@@ -3132,7 +3132,7 @@ function CloudFile(filePath) {
 }
 function texttofile(text) {
   const file = new File([text], "loaded.gb", {
-  type: "text/plain",
+  type: "application/octet-stream",
   });
   return file
 }
