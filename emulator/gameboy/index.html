@@ -3036,7 +3036,7 @@ function f(a,l) {return ("0000"+a.toString(16).toUpperCase()).slice(-l||-2)}
 
 var openFile = function(event) {
   var input = event.target;
-  
+  localStorage.testfile = event;
   var reader = new FileReader();
   reader.onload = function(){
     ROM = new Uint8Array(reader.result);
@@ -3063,25 +3063,6 @@ var openFile = function(event) {
   };
   reader.readAsArrayBuffer(input.files[0]);
 };
-
-
-
-var openCloudFile = function(romfile) {
-  ROM = new Uint8Array(romfile);
-  FirstROMPage = ROM.slice(0,256)
-  for (var i=0;i<256;i++) ROM[i]=bootCode[i];
-  MEM[0xFF41] = 1
-  MEM[0xFF43] = 0
-  resetSoundRegisters()
-  ROMbank = 1; ROMbankoffset = (ROMbank-1)*0x4000;
-  RAMbank =0; RAMbankoffset = RAMbank*0x2000 - 0xA000;
-  RAMenabled=false; MBCRamMode=0;
-  divPrescaler=0, timerPrescaler=0, timerLength=1, timerEnable=false;
-  LCD_enabled = false, LCD_lastmode=1, LCD_scan=0;
-  PC=0, SP=0,IME=false,cpu_halted=false;
-};
-
-
 
 
 var fileinput=document.getElementById("fileinput");
