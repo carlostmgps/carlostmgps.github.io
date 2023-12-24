@@ -3163,6 +3163,39 @@ function insertInput(myFile) {
   dataTransfer.items.add(myFile);
   fileinput.files = dataTransfer.files;
 }
+
+function fileurl(MY_URL){
+  var request = new XMLHttpRequest();
+  request.open('GET', MY_URL, true);
+  request.responseType = 'blob';
+  request.onload = function() {
+    var reader = new FileReader();
+    reader.readAsDataURL(request.response);
+    reader.onload =  function(e){
+      ROM = new Uint8Array(reader.result);
+      localStorage.infile = new Uint8Array(reader.result);
+      FirstROMPage = ROM.slice(0,256)
+      
+      //Overwrite first page with bootcode
+      for (var i=0;i<256;i++) ROM[i]=bootCode[i];
+      
+      // According to BGB
+      MEM[0xFF41] = 1
+      MEM[0xFF43] = 0
+      resetSoundRegisters()
+      ROMbank = 1; ROMbankoffset = (ROMbank-1)*0x4000;
+      RAMbank =0; RAMbankoffset = RAMbank*0x2000 - 0xA000;
+      RAMenabled=false; MBCRamMode=0;
+      divPrescaler=0, timerPrescaler=0, timerLength=1, timerEnable=false;
+      LCD_enabled = false, LCD_lastmode=1, LCD_scan=0;
+      PC=0, SP=0,IME=false,cpu_halted=false;
+    };
+  };
+  request.send();
+}
+
+
+
 function trigger(){
   if ("createEvent" in document) {
     var evt = document.createEvent("HTMLEvents");
@@ -3194,6 +3227,7 @@ function loadbinarytorom(bin){
     PC=0, SP=0,IME=false,cpu_halted=false;
 
 }
+
 </script>
 
 
