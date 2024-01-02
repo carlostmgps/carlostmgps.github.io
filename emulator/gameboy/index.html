@@ -3120,85 +3120,22 @@ function loadState(){
   LCD_enabled= all.LCD_enabled;
   LCD_lastmode= all.LCD_lastmode;
 }
-function CloudFile(filePath) {
-  var result = null;
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET", filePath, false);
-  xmlhttp.send();
-  if (xmlhttp.status==200) {
-    result = xmlhttp.responseText;
-  }
-  return result;
+
+
+async function UrlFile(url, name, defaultType = 'application/octet-stream') {
+  const response = await fetch(url)
+  const data = await response.blob()
+  return new File([data], name, {
+    type: data.type || defaultType,
+  })
 }
-function texttofile(text) {
-  const fromHexString = (hexString) =>
-  Uint8Array.from(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
-  test = fromHexString(text)
-  const file = new File(test, "loaded.gb", {
-  type: "application/octet-stream",
-  });
-  return file
-}
-function loadlink(link){
-  filegb = CloudFile(link);
-  const fromHexString = (hexString) =>
-  Uint8Array.from(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
-  binary = fromHexString(filegb)
-  ROM = binary;
-  FirstROMPage = ROM.slice(0,256);
-  for (var i=0;i<256;i++) ROM[i]=bootCode[i];
-  MEM[0xFF41] = 1
-  MEM[0xFF43] = 0
-  resetSoundRegisters()
-  ROMbank = 1; ROMbankoffset = (ROMbank-1)*0x4000;
-  RAMbank =0; RAMbankoffset = RAMbank*0x2000 - 0xA000;
-  RAMenabled=false; MBCRamMode=0;
-  divPrescaler=0, timerPrescaler=0, timerLength=1, timerEnable=false;
-  LCD_enabled = false, LCD_lastmode=1, LCD_scan=0;
-  PC=0, SP=0,IME=false,cpu_halted=false;
-  
-}
+
+
 function insertInput(myFile) {
   const dataTransfer = new DataTransfer();
   dataTransfer.items.add(myFile);
   fileinput.files = dataTransfer.files;
 }
-
-function fileurl(MY_URL){
-  var request = new XMLHttpRequest();
-  request.open('GET', MY_URL, true);
-  request.responseType = 'blob';
-  request.onload = function() {
-    console.log("loaded");
-    var reader = new FileReader();
-    console.log(request.response);
-    reader.readAsDataURL(request.response);
-    reader.onload =  function(e){
-      console.log("readed")
-      console.log(reader.result)
-      ROM = new Uint8Array(reader.result);
-      localStorage.infile = new Uint8Array(reader.result);
-      FirstROMPage = ROM.slice(0,256)
-      
-      //Overwrite first page with bootcode
-      for (var i=0;i<256;i++) ROM[i]=bootCode[i];
-      
-      // According to BGB
-      MEM[0xFF41] = 1
-      MEM[0xFF43] = 0
-      resetSoundRegisters()
-      ROMbank = 1; ROMbankoffset = (ROMbank-1)*0x4000;
-      RAMbank =0; RAMbankoffset = RAMbank*0x2000 - 0xA000;
-      RAMenabled=false; MBCRamMode=0;
-      divPrescaler=0, timerPrescaler=0, timerLength=1, timerEnable=false;
-      LCD_enabled = false, LCD_lastmode=1, LCD_scan=0;
-      PC=0, SP=0,IME=false,cpu_halted=false;
-    };
-  };
-  request.send();
-}
-
-
 
 function trigger(){
   if ("createEvent" in document) {
