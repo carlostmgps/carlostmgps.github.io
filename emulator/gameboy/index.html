@@ -3189,7 +3189,7 @@ function useOnlineRom(){
     ser = ["pkmn"];
     lan = ["zh","eng"];
     series = select("Please select series: \n 1:Pokemonsters",["1"]);
-    version = select("Please select version: \n" + sel[series.parseInt()-1].map((e, i) => String(i) + ":" + String(e)).join(" \n "),rangeStr(sel[series.parseInt()-1].length));
+    version = select("Please select version: \n" + sel[parseInt(series)-1].map((e, i) => String(i) + ":" + String(e)).join(" \n "),rangeStr(sel[series.parseInt()-1].length));
     language = select("Please select language: \n 1:Chinese \n 2:English",["1","2"]);
     readUrl("https://carlostmgps.github.io/emulator/gameboy/" + ser[series-1] + "_" + sel[series - 1][version - 1] + "_" + lan[language - 1] + ".gb");
 }
