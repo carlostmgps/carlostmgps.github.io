@@ -3169,6 +3169,12 @@ function loadbinarytorom(bin){
 
 }
 
+
+function readUrl(Url){
+    fileget = await UrlFile(Url,"load.gb")
+    insertInput(fileget)
+    trigger()
+}
 </script>
 
 
