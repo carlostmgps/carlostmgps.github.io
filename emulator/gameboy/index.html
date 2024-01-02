@@ -3178,7 +3178,7 @@ function select(title,selections){
 function rangeStr(n){
     r = [...Array(n).keys()]
     t = [...Array(n).keys()]
-    for (let i;i < n;i++) {
+    for (let i = 0;i < n;i++) {
         t[i] = String(r[i] + 1)
     }
     return t
