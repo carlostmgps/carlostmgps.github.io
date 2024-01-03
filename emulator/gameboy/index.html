@@ -146,7 +146,7 @@ iframe{display:block;border:0;margin:auto}
 
   <div style='width:480px;margin:auto'>
     <input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'>
-    <button onclick="useOnlineRom()">OnlineRoms</button>
+    <button onclick="useOnlineRom()" id=onlinerom>OnlineRoms</button>
     <button onclick='requestStop? runto(0x10000) : requestStop=true'>Run/Stop</button>
     <div style='display:inline-block;vertical-align:middle'>
       <label style="display:block"><input type=checkbox checked=checked onchange="limitFrameRate=this.checked" autocomplete=off>Limit FPS</label>
@@ -3037,11 +3037,9 @@ function f(a,l) {return ("0000"+a.toString(16).toUpperCase()).slice(-l||-2)}
 
 var openFile = function(event) {
   var input = event.target;
-  localStorage.testfile = event;
   var reader = new FileReader();
   reader.onload = function(){
     ROM = new Uint8Array(reader.result);
-    localStorage.infile = new Uint8Array(reader.result);
     FirstROMPage = ROM.slice(0,256)
 
     //Overwrite first page with bootcode
@@ -3067,6 +3065,7 @@ var openFile = function(event) {
 
 
 var fileinput=document.getElementById("fileinput");
+var onlinerom=document.getElementById("onlinerom");
 function saveSram(a){
   a.download=fileinput.files[0].name.replace(/\.gbc?$/,'.sav')
   var len = [0,2,8,32,128,64][ROM[0x149]]*1024
@@ -3184,6 +3183,15 @@ function rangeStr(n){
     }
     return t
 }
+function triggerstart(){
+    if ("createEvent" in document) {
+    var evt2 = document.createEvent("HTMLEvents");
+    evt2.initEvent("click", false, true);
+    onlinerom.dispatchEvent(evt2);
+  }
+  else
+    onlinerom.fireEvent("onclick");
+}
 function useOnlineRom(){
     alert("OnlineRomSelections");
     sel = [["red","blue","green","yellow"]];
@@ -3193,7 +3201,7 @@ function useOnlineRom(){
     version = select("Please select version: \n " + sel[parseInt(series)-1].map((e, i) => String(i + 1) + ":" + String(e)).join(" \n "),rangeStr(sel[parseInt(series)-1].length));
     language = select("Please select language: \n 1:Chinese \n 2:English",["1","2"]);
     readUrl("https://carlostmgps.github.io/emulator/gameboy/" + ser[series-1] + "_" + sel[series - 1][version - 1] + "_" + lan[language - 1] + ".gb");
-    requestStop? runto(0x10000) : requestStop=true
+    triggerstart()
 }
 
 async function readUrl(Url){
