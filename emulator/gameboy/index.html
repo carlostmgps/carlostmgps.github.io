@@ -146,8 +146,8 @@ iframe{display:block;border:0;margin:auto}
 
   <div style='width:480px;margin:auto'>
     <input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'>
-    <button onclick="useOnlineRom()" id=onlinerom>OnlineRoms</button>
-    <button onclick='requestStop? runto(0x10000) : requestStop=true'>Run/Stop</button>
+    <button onclick="useOnlineRom()">OnlineRoms</button>
+    <button onclick='requestStop? runto(0x10000) : requestStop=true' id=start>Run/Stop</button>
     <div style='display:inline-block;vertical-align:middle'>
       <label style="display:block"><input type=checkbox checked=checked onchange="limitFrameRate=this.checked" autocomplete=off>Limit FPS</label>
       <label style="display:block"><input type=checkbox onchange="showFrameRate=this.checked" autocomplete=off>Show FPS</label>
@@ -3065,7 +3065,7 @@ var openFile = function(event) {
 
 
 var fileinput=document.getElementById("fileinput");
-var onlinerom=document.getElementById("onlinerom");
+var start=document.getElementById("start");
 function saveSram(a){
   a.download=fileinput.files[0].name.replace(/\.gbc?$/,'.sav')
   var len = [0,2,8,32,128,64][ROM[0x149]]*1024
@@ -3187,10 +3187,10 @@ function triggerstart(){
     if ("createEvent" in document) {
     var evt2 = document.createEvent("HTMLEvents");
     evt2.initEvent("click", false, true);
-    onlinerom.dispatchEvent(evt2);
+    start.dispatchEvent(evt2);
   }
   else
-    onlinerom.fireEvent("onclick");
+    start.fireEvent("onclick");
 }
 function useOnlineRom(){
     alert("OnlineRomSelections");
