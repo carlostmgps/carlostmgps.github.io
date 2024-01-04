@@ -3240,44 +3240,40 @@ async function readUrl(Url){
 function pd(e){
     e.preventDefault();
 }
-</script>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
-  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-  function dbWrite(key,value) {
-    const database = getDatabase();
-    database.ref(key).set(value);
-  }
-  function dbRead(key) {
-    const database = getDatabase();
-    const dbRef = ref(database);
-    get(child(dbRef, key)).then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log(snapshot.val());
-	return snapshot.val()
-      } else {
-        console.log("No data available");
-	return ""
-      }
-    }).catch((error) => {
-      console.error(error);
-    });
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+function dbWrite(key,value) {
+  const database = getDatabase();
+  database.ref(key).set(value);
+}
+function dbRead(key) {
+  const database = getDatabase();
+  const dbRef = ref(database);
+  get(child(dbRef, key)).then((snapshot) => {
+    if (snapshot.exists()) {
+      cosole.log(snapshot.val());
+      return snapshot.val()
+    } else {
+      console.log("No data available");
+      return ""
+    }
+  }).catch((error) => {
+    console.error(error);
+  })
   }
   const firebaseConfig = {
-    apiKey: "AIzaSyAaW5hTL62TCnUs7guJa9adawQhpByngfg",
-    authDomain: "gameboy-data.firebaseapp.com",
-    projectId: "gameboy-data",
-    storageBucket: "gameboy-data.appspot.com",
-    messagingSenderId: "924831085457",
-    appId: "1:924831085457:web:64d39f1d88d358624d2030",
-    measurementId: "G-WT54QNW65S"
-  };
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const database = getDatabase();
+  apiKey: "AIzaSyAaW5hTL62TCnUs7guJa9adawQhpByngfg",
+  authDomain: "gameboy-data.firebaseapp.com",
+  projectId: "gameboy-data",
+  storageBucket: "gameboy-data.appspot.com",
+  messagingSenderId: "924831085457",
+  appId: "1:924831085457:web:64d39f1d88d358624d2030",
+  measurementId: "G-WT54QNW65S"
+};
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const database = getDatabase();
 </script>
-
-
 <br><br>
