@@ -3,6 +3,24 @@
 <script>
 document.write("<style>img[onload]{opacity:0;transition:opacity 2s}</style>");
 </script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyAaW5hTL62TCnUs7guJa9adawQhpByngfg",
+    authDomain: "gameboy-data.firebaseapp.com",
+    projectId: "gameboy-data",
+    storageBucket: "gameboy-data.appspot.com",
+    messagingSenderId: "924831085457",
+    appId: "1:924831085457:web:64d39f1d88d358624d2030",
+    measurementId: "G-WT54QNW65S"
+  };
+  export const app = initializeApp(firebaseConfig);
+  export const analytics = getAnalytics(app);
+  export const database = getDatabase();
+</script>
 <title>GameBoy Emulator</title>
 <meta name=Description content="Gameboy Emulator">
 <link rel="stylesheet" href="gameboy.css">
@@ -3258,22 +3276,5 @@ function dbRead(key) {
 }
 
 </script>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
-  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-  const firebaseConfig = {
-    apiKey: "AIzaSyAaW5hTL62TCnUs7guJa9adawQhpByngfg",
-    authDomain: "gameboy-data.firebaseapp.com",
-    projectId: "gameboy-data",
-    storageBucket: "gameboy-data.appspot.com",
-    messagingSenderId: "924831085457",
-    appId: "1:924831085457:web:64d39f1d88d358624d2030",
-    measurementId: "G-WT54QNW65S"
-  };
-  export const app = initializeApp(firebaseConfig);
-  export const analytics = getAnalytics(app);
-  export const database = getDatabase();
-</script>
+
 <br><br>
