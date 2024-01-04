@@ -1,11 +1,25 @@
 <!DOCTYPE html>
 <html><head><meta charset=utf-8>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script>
+   const firebaseApp = firebase.initializeApp({
+     apiKey: "AIzaSyAaW5hTL62TCnUs7guJa9adawQhpByngfg",
+     authDomain: "gameboy-data.firebaseapp.com",
+     databaseURL: "https://gameboy-data-default-rtdb.firebaseio.com",
+     projectId: "gameboy-data",
+     storageBucket: "gameboy-data.appspot.com",
+     messagingSenderId: "924831085457",
+     appId: "1:924831085457:web:64d39f1d88d358624d2030",
+     measurementId: "G-WT54QNW65S"
+   });
+   const db = firebaseApp.database();
+   const auth = firebaseApp.auth();
+</script>
 <script>
 document.write("<style>img[onload]{opacity:0;transition:opacity 2s}</style>");
 </script>
-<script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js"></script>
-<script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
 <title>GameBoy Emulator</title>
 <meta name=Description content="Gameboy Emulator">
 <link rel="stylesheet" href="gameboy.css">
@@ -3084,7 +3098,7 @@ function onlineSaveSram(){
   if (ROM[0x147]==5 || ROM[0x147]==6) len=512; //MBC2
   ascii = btoa(String.fromCharCode(...cartRAM.slice(0,len)));
   pass = prompt("Please set password(dont leave blank!):");
-  dbWrite(pass,ascii);
+  dbWrite(db,pass,ascii);
 }
 
 
@@ -3248,23 +3262,10 @@ function pd(e){
 
 
 
-let firebaseConfig = {
-  apiKey: "AIzaSyAaW5hTL62TCnUs7guJa9adawQhpByngfg",
-  authDomain: "gameboy-data.firebaseapp.com",
-  projectId: "gameboy-data",
-  storageBucket: "gameboy-data.appspot.com",
-  messagingSenderId: "924831085457",
-  appId: "1:924831085457:web:64d39f1d88d358624d2030",
-  measurementId: "G-WT54QNW65S"
-};
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const database = getDatabase();
-
-function dbWrite(key,value) {
+function dbWrite(database,key,value) {
   database.ref(key).set(value);
 }
-function dbRead(key) {
+function dbRead(database,key) {
   const dbRef = ref(database);
   get(child(dbRef, key)).then((snapshot) => {
   if (snapshot.exists()) {
