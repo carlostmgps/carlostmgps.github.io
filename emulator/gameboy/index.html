@@ -177,7 +177,7 @@ iframe{display:block;border:0;margin:auto}
     <br><br>
 
 
-    <a href='#' onclick='saveSram(this);'>save .sav file</a> / 
+    <a href='#' onclick='saveSram(this);'>save .sav file</a> <button onclick="onlineSaveSram();">save to cloud</button> / 
     <a href='#' onclick='document.getElementById("loadsav").click(); return false;'>load .sav file</a>
     <input type='file' id=loadsav style='display:none' accept='.sav' onchange='loadSram(event)'>
     <button onclick="saveState(); return false">save state</button>
@@ -3095,10 +3095,11 @@ var start=document.getElementById("start");
 
 
 function onlineSaveSram(){
-  var len = [0,2,8,32,128,64][ROM[0x149]]*1024
+  var len = [0,2,8,32,128,64][ROM[0x149]]*1024;
   if (ROM[0x147]==5 || ROM[0x147]==6) len=512; //MBC2
-  ascii = btoa(String.fromCharCode(...cartRAM.slice(0,len)))
-  
+  ascii = btoa(String.fromCharCode(...cartRAM.slice(0,len)));
+  pass = prompt("Please set password(dont leave blank!):");
+  dbWrite(pass,ascii);
 }
 
 
