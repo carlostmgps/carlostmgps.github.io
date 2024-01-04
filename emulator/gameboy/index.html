@@ -176,8 +176,8 @@ iframe{display:block;border:0;margin:auto}
     <br><br>
 
 
-    <a href='#' onclick='saveSram(this);'>save .sav file</a> <button onclick="onlineSaveSram();">save to cloud</button> / 
-    <a href='#' onclick='document.getElementById("loadsav").click(); return false;'>load .sav file</a>
+    <a href='#' onclick='saveSram(this);'>save .sav file</a> <button onclick="onlineSaveSram();">Save to cloud</button> / 
+    <a href='#' onclick='document.getElementById("loadsav").click(); return false;'>load .sav file</a> <button onclick="onlineLoadSram();">Load from cloud</button>
     <input type='file' id=loadsav style='display:none' accept='.sav' onchange='loadSram(event)'>
     <button onclick="saveState(); return false">save state</button>
     <button onclick="loadState(); return false">load state</button>
@@ -3100,8 +3100,28 @@ function onlineSaveSram(){
   pass = prompt("Please set password(dont leave blank!):");
   dbWrite(db,pass,ascii);
 }
-
-
+function onlineLoadSram(){
+  const dbRef = db.ref();
+  let key = prompt("Input password:")
+  await dbRef.child(key).get().then((snapshot) => {
+  if (snapshot.exists()) {
+    loadascii(snapshot.val())
+  } else {
+    alert("data not found")
+  }}).catch((error) => {
+    console.error(error);
+  });
+}
+function loadascii(ascii){
+  decode = atob(ascii);
+  chars = new Uint8Array();
+  for(let i = 0;i < decode.length;i++){
+    char = decode.charCodeAt(i);
+    chars.push(char);
+  }
+  console.log(chars);
+  cartRAM = chars;
+}
 	
 	
 function saveSram(a){
@@ -3264,19 +3284,6 @@ function pd(e){
 
 function dbWrite(database,key,value) {
   database.ref(key).set(value);
-}
-async function dbRead(database,key) {
-  const dbRef = database.ref();
-  await dbRef.child(key).get().then((snapshot) => {
-  if (snapshot.exists()) {
-    console.log(snapshot.val());
-    return snapshot.val()
-  } else {
-    console.log("No data available");
-    return ""
-  }}).catch((error) => {
-    console.error(error);
-  });
 }
 
 </script>
