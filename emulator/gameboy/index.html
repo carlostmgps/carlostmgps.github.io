@@ -3117,6 +3117,7 @@ function loadascii(ascii){
   chars = new Uint8Array();
   for(let i = 0;i < decode.length;i++){
     char = decode.charCodeAt(i);
+    console.log(char);
     chars.push(char);
   }
   console.log(chars);
