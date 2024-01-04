@@ -17,9 +17,9 @@ document.write("<style>img[onload]{opacity:0;transition:opacity 2s}</style>");
     appId: "1:924831085457:web:64d39f1d88d358624d2030",
     measurementId: "G-WT54QNW65S"
   };
-  export let app = initializeApp(firebaseConfig);
-  export let analytics = getAnalytics(app);
-  export let database = getDatabase();
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const database = getDatabase();
 </script>
 <title>GameBoy Emulator</title>
 <meta name=Description content="Gameboy Emulator">
@@ -190,7 +190,7 @@ iframe{display:block;border:0;margin:auto}
 
   <br><br>
   Keyboard: DPAD-WASD A:RIGHTARR B:DOWNARR Start:1 Select:2
-<script>
+<script defer>
 var font=new Image();
 font.src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAICAYAAAAGP/oPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALRJREFUeNrsVtsOgCAIleZ/V19u88HNUdwCrQfZelA8x4gDBCmlIy37zHIUUSll79cAcFJnOB+F1/BTd2Cslf8JL53R8kNEBeCgpY9AvRyF1/Bzd3CJ1/it8VrWeVap1cs0StIqTVKYVKVSFVqS1WLT4LFtf+mFLQBJjVhFGgXX/f7h2hLnl5JP4fs9zJs9pRg9P7wtAidldhzWKr7NAE8CPEM4YsiNHMIjfyJChvCy93YJMAD0L/qXa2HkvgAAAABJRU5ErkJggg==";
 
