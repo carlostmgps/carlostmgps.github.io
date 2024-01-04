@@ -3118,7 +3118,7 @@ function loadascii(ascii){
   for(let i = 0;i < decode.length;i++){
     char = decode.charCodeAt(i);
     console.log(char);
-    chars.push(char);
+    chars = appendlist(chars,char);
   }
   console.log(chars);
   cartRAM = chars;
@@ -3285,6 +3285,11 @@ function pd(e){
 
 function dbWrite(database,key,value) {
   database.ref(key).set(value);
+}
+function appendlist(ui8a, byte) {
+    var b = new Uint8Array(1);
+    b[0] = byte;
+    return concatTypedArrays(ui8a, b);
 }
 
 </script>
