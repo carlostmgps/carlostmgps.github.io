@@ -3073,7 +3073,7 @@ function saveSram(a){
   var len = [0,2,8,32,128,64][ROM[0x149]]*1024
 
   if (ROM[0x147]==5 || ROM[0x147]==6) len=512; //MBC2
-  console.log(btoa(String.fromCharCode(...cartRAM.slice(0,len)))
+  console.log(btoa(String.fromCharCode(...cartRAM.slice(0,len))))
   a.href='data:application/octet-stream;base64,'+btoa(String.fromCharCode(...cartRAM.slice(0,len)))
 }
 function loadSram(e) {
