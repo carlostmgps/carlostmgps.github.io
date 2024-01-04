@@ -3267,7 +3267,7 @@ function dbWrite(database,key,value) {
 }
 function dbRead(database,key) {
   const dbRef = database.ref();
-  get(dbRef.child(key)).then((snapshot) => {
+  dbRef.child(key).get().then((snapshot) => {
   if (snapshot.exists()) {
     console.log(snapshot.val());
     return snapshot.val()
