@@ -3103,7 +3103,7 @@ function onlineSaveSram(){
 function onlineLoadSram(){
   const dbRef = db.ref();
   let key = prompt("Input password:")
-  await dbRef.child(key).get().then((snapshot) => {
+  dbRef.child(key).get().then((snapshot) => {
   if (snapshot.exists()) {
     loadascii(snapshot.val())
   } else {
