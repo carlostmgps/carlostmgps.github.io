@@ -835,7 +835,7 @@ function writeMem(addr, data){
     return
   }
   if (addr==0xFF02){
-    if ((data & 0b10000000) == 1){
+    if ((data & 0b10000000) == 0b10000000){
       if((data & 0b00000001) == 1){
 	console.log("I am server,sending")
 	if(connect != ""){serialwrite();}
