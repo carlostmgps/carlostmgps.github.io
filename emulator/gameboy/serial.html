@@ -782,7 +782,7 @@ function becomeserver(db){
     firebase_connect = prompt("server name:")
     connect = "s"
     var dataref = db.ref(firebase_connect + "_s");
-    dararef.on('value', (snapshot) => {
+    dataref.on('value', (snapshot) => {
       const data = snapshot.val();
       serialreceive(data);
     });
@@ -794,7 +794,7 @@ function becomeclient(db){
     firebase_connect = prompt("server name:")
     connect = "s"
     var dataref = db.ref(firebase_connect + "_c");
-    dararef.on('value', (snapshot) => {
+    dataref.on('value', (snapshot) => {
       const data = snapshot.val();
       serialreceive(data);
     });
