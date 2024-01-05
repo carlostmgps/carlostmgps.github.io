@@ -586,8 +586,11 @@ Bootcode:
 
 
 
-
-
+var sin = 0
+var sck = 0
+var sout = 0
+var serial_bus = 0b00000000
+var serial_status = 0b00000000
 
 var MEM = new Uint8Array(0x10000); // Main address space
 var FirstROMPage, ROM = new Uint8Array(512); //populate later
@@ -766,7 +769,13 @@ function readMem(addr){
       return joypad_buttons & keys_buttons
     } else return 0xFF;
   }
-
+  //serial  SB (new)
+  if (addr==0xFF01) {
+    return serial_bus
+  }
+  if (addr==0xFF02){
+    return serial_status
+  }
   return MEM[addr];
 }
 
@@ -3075,7 +3084,7 @@ var openFile = function(event) {
     RAMenabled=false; MBCRamMode=0;
     divPrescaler=0, timerPrescaler=0, timerLength=1, timerEnable=false;
     LCD_enabled = false, LCD_lastmode=1, LCD_scan=0;
-    PC=0, SP=0,IME=false,cpu_halted=false;
+    PC=0, SP=0,IME=false,cpu_halted=false;serial_bus = 0b00000000;serial_status = 0b00000000;
 
     
   };
@@ -3163,8 +3172,10 @@ function saveState(){
     RAMbankoffset: RAMbankoffset,
     MBCRamMode: MBCRamMode,
     LCD_enabled: LCD_enabled,
-    LCD_lastmode: LCD_lastmode
-  })
+    LCD_lastmode: LCD_lastmode,
+    serial_bus: serial_bus,
+    serial_status: serial_status
+})
 }
 function loadState(){
   if (!localStorage.savestate) return
@@ -3186,6 +3197,8 @@ function loadState(){
   MBCRamMode= all.MBCRamMode;
   LCD_enabled= all.LCD_enabled;
   LCD_lastmode= all.LCD_lastmode;
+  serial_bus= all.serial_bus
+  serial_status= all.serial_status
 }
 
 
@@ -3232,7 +3245,7 @@ function loadbinarytorom(bin){
     RAMenabled=false; MBCRamMode=0;
     divPrescaler=0, timerPrescaler=0, timerLength=1, timerEnable=false;
     LCD_enabled = false, LCD_lastmode=1, LCD_scan=0;
-    PC=0, SP=0,IME=false,cpu_halted=false;
+    PC=0, SP=0,IME=false,cpu_halted=false;serial_bus = 0b00000000;serial_status = 0b00000000;
 
 }
 function select(title,selections){
