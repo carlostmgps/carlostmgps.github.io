@@ -786,6 +786,10 @@ function becomeserver(db){
       const data = snapshot.val();
       serialreceive(data);
     });
+    var myref = db.ref(firebase_connect + "_c");
+    myref.on('value', (snapshot) => {
+      MEM[0xFF02] &=~ 1<<7;
+    });
   }
 }
 function becomeclient(db){
@@ -797,6 +801,10 @@ function becomeclient(db){
     dataref.on('value', (snapshot) => {
       const data = snapshot.val();
       serialreceive(data);
+    });
+    var myref = db.ref(firebase_connect + "_s");
+    myref.on('value', (snapshot) => {
+      MEM[0xFF02] &=~ 1<<7;
     });
   }
 }
