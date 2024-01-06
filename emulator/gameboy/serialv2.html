@@ -182,6 +182,9 @@ iframe{display:block;border:0;margin:auto}
     <button onclick="saveState(); return false">时空储存</button>
     <button onclick="loadState(); return false">时空倒流</button>
     <button onclick="showDebug(!debugOn); return false">Debug</button>
+    
+    <button onclick="server(db);">server</button>
+    <button onclick="client(db);">client</button>
   </div>
 
   <br><br>
@@ -813,7 +816,7 @@ function client(db){
 }
 
 function send_message(data,db){
-  dbWrite(db,"server_" + listen,data);
+  dbWrite(db,"server_" + serial_mode,data);
 }
 function writeMem(addr, data){
   if (addr<=0x7fff) { 
