@@ -785,10 +785,12 @@ function becomeserver(db){
     dataref.on('value', (snapshot) => {
       const data = snapshot.val();
       serialreceive(data);
+      triggerInterrupt(0x58);
     });
     var myref = db.ref(firebase_connect + "_c");
     myref.on('value', (snapshot) => {
       MEM[0xFF02] &=~ 1<<7;
+      triggerInterrupt(0x58);
     });
   }
 }
@@ -801,10 +803,12 @@ function becomeclient(db){
     dataref.on('value', (snapshot) => {
       const data = snapshot.val();
       serialreceive(data);
+      triggerInterrupt(0x58);
     });
     var myref = db.ref(firebase_connect + "_s");
     myref.on('value', (snapshot) => {
       MEM[0xFF02] &=~ 1<<7;
+      triggerInterrupt(0x58);
     });
   }
 }
