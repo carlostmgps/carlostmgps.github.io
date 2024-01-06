@@ -840,7 +840,7 @@ function client_response(GOTDATA){
     MEM[0xFF01] = GOTDATA;
     dbWrite(db,"serveralert_" + myid,d.getTime());
     MEM[0xFF02] = MEM[0xFF02] & 0b00000001;
-    MEM[0xFF02] = 0x01;
+    MEM[0xFF02] = 0b00000000;
     triggerInterrupt(0x58);
     console.log("get message, responsed")
   }
@@ -848,7 +848,7 @@ function client_response(GOTDATA){
 function server_getresponse(data){
   if (myid != ""){
     MEM[0xFF01] = data;
-    MEM[0xFF02] = 0x01;
+    MEM[0xFF02] = 0b00000001;
     triggerInterrupt(0x58);
     console.log("got response from client")
   }
