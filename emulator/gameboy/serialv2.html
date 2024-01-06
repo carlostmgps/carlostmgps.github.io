@@ -774,7 +774,47 @@ function readMem16(addr){
   //just presuming that some peripherals will need to hook on 16 bits
   return [readMem(addr+1),readMem(addr)]
 }
+var serial_mode = ""
+var listen = ""
+function server(db){
+  serial_mode = "s"
+  listen = "s"
+  var Ref = db.ref("server_" + listen);
+  Ref.on('value', (snapshot) => {
+    const data = snapshot.val();
+    console.log("wrote");
+    MEM[0xFF02] = MEM[0xFF02] &=~ 1<<7;
+  });
+  var RefMy = db.ref("server_" + serial_mode);
+  RefMy.on('value', (snapshot) => {
+    const data = snapshot.val();
+    console.log("Get Message: " + data);
+    MEM[0xFF01] = data;
+    triggerInterrupt(0x58);
+  });
+}
 
+function client(db){
+  serial_mode = "c"
+  listen = "s"
+  var Ref = db.ref("server_" + listen);
+  Ref.on('value', (snapshot) => {
+    const data = snapshot.val();
+    console.log("wrote");
+    MEM[0xFF02] = MEM[0xFF02] &=~ 1<<7;
+  });
+  var RefMy = db.ref("server_" + serial_mode);
+  RefMy.on('value', (snapshot) => {
+    const data = snapshot.val();
+    console.log("Get Message: " + data);
+    MEM[0xFF01] = data;
+    triggerInterrupt(0x58);
+  });
+}
+
+function send_message(data,db){
+  dbWrite(db,"server_" + listen,data);
+}
 function writeMem(addr, data){
   if (addr<=0x7fff) { 
     doMBC(addr, data);
@@ -785,7 +825,18 @@ function writeMem(addr, data){
     cartRAM[ addr + RAMbankoffset ] = data;
     return
   }
-
+  if (addr==0xFF02) {
+    is_server = readBit(data,0)
+    need_send = readBit(data,7)
+    if (serial_mode != "") {
+      if (need_send == 1){
+	console.log("sending(" + MEM[0xFF01] + ") as " + is_server);
+	send_message(MEM[0xFF01],db);
+      }
+    }
+    MEM[0xFF02] = data & 0b10000001
+    return
+  }
   //DIV register: reset
   if (addr==0xFF04) {MEM[0xFF04]=0;return;}
   // Timer control
