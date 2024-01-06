@@ -778,7 +778,7 @@ var serial_mode = ""
 var listen = ""
 function server(db){
   serial_mode = "s"
-  listen = "s"
+  listen = "c"
   var Ref = db.ref("server_" + listen);
   Ref.on('value', (snapshot) => {
     const data = snapshot.val();
