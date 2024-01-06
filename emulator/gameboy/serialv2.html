@@ -2995,7 +2995,9 @@ function ascii(c){
   return ".................................!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~.€.‚ƒ„…†‡ˆ‰Š‹Œ.Ž..‘’“”•–—˜™š›œ.žŸ ¡¢£¤¥¦§¨©ª«¬.®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ".charAt(c)
   .replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
-
+function readBit(byte,bit){
+  return (byte & 1<<bit)>>bit
+}
 function f(a,l) {return ("0000"+a.toString(16).toUpperCase()).slice(-l||-2)}
 (debugData=function(){
 
