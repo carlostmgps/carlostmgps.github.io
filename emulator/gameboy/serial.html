@@ -785,7 +785,6 @@ function becomeserver(db){
     dataref.on('value', (snapshot) => {
       const data = snapshot.val();
       serialreceive(data);
-      triggerInterrupt(0x58);
     });
     var myref = db.ref(firebase_connect + "_c");
     myref.on('value', (snapshot) => {
@@ -803,7 +802,6 @@ function becomeclient(db){
     dataref.on('value', (snapshot) => {
       const data = snapshot.val();
       serialreceive(data);
-      triggerInterrupt(0x58);
     });
     var myref = db.ref(firebase_connect + "_s");
     myref.on('value', (snapshot) => {
