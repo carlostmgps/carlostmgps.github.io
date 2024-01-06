@@ -828,6 +828,7 @@ function server_write(data){
     dbWrite(db,"serverresponse_" + myid,"no");
     dbWrite(db,"server_" + myid,data);
     dbWrite(db,"serveralert_" + myid,d.getTime());
+    console.log("server writed")
   }
 }
 function client_response(GOTDATA){
@@ -839,6 +840,7 @@ function client_response(GOTDATA){
     MEM[0xFF02] = MEM[0xFF02] & 0b00000001;
     MEM[0xFF02] = 0x01;
     triggerInterrupt(0x58);
+    console.log("client responsed")
   }
 }
 function server_getresponse(data){
@@ -859,10 +861,10 @@ function writeMem(addr, data){
     return
   }
   if (addr == 0xFF02){
-    if(data = 0x81){
+    if(data == 0x81){
       server_write(MEM[0xFF01]);  //server write
     }
-    if(data = 0x80){
+    if(data == 0x80){
       console.log("client ready")
     }
     MEM[0xFF02] = data & 0b10000001;
