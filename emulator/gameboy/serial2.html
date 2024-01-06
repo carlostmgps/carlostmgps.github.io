@@ -827,6 +827,7 @@ function server_write(data){
   if (myid != ""){
     dbWrite(db,"serverresponse_" + myid,"no");
     dbWrite(db,"server_" + myid,data);
+    d = new Date();
     dbWrite(db,"serveralert_" + myid,d.getTime());
     console.log("server writed")
   }
@@ -835,6 +836,7 @@ function client_response(GOTDATA){
   if (myid != ""){
     dbWrite(db,"serverresponse_" + myid,"yes");
     dbWrite(db,"server_" + myid,MEM[0xFF01]);
+    d = new Date();
     MEM[0xFF01] = GOTDATA;
     dbWrite(db,"serveralert_" + myid,d.getTime());
     MEM[0xFF02] = MEM[0xFF02] & 0b00000001;
