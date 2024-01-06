@@ -777,8 +777,8 @@ function readMem16(addr){
 var serial_mode = ""
 var listen = ""
 function server(db){
-  serial_mode = "s"
-  listen = "c"
+  serial_mode = "c"
+  listen = "s"
   var Ref = db.ref("server_" + listen);
   Ref.on('value', (snapshot) => {
     const data = snapshot.val();
@@ -795,8 +795,8 @@ function server(db){
 }
 
 function client(db){
-  serial_mode = "c"
-  listen = "s"
+  serial_mode = "s"
+  listen = "c"
   var Ref = db.ref("server_" + listen);
   Ref.on('value', (snapshot) => {
     const data = snapshot.val();
