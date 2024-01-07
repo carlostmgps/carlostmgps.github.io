@@ -809,13 +809,13 @@ function client(){
   myid = "c";
   const interval = setInterval(function() {
    listendatac();
-  }, 10);
+  });
 }
 function server(){
   myid = "s";
   const interval = setInterval(function() {
    listendatas();
-  }, 10);
+  });
 }
 //作為主機的 Gameboy 將在 SB 中載入一個資料字節，然後將 SC 設定為 0x81（請求傳輸，使用內部時脈）。將透過兩種方式通知傳輸完成：SC的Bit 7將被清除（即SC將被設定為0x01），並且序列中斷處理程序將被呼叫（即CPU將跳到0x0058）。
 //The other gameboy will load up a data byte. if and when the master gameboy wants to conduct a transfer, it will happen (pulling whatever happens to be in SB at that time). The passive gameboy will have its serial interrupt handler called at the end of the transfer, and if it bothered to set SC's Bit 7, it will be cleared.
