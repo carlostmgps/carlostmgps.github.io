@@ -787,6 +787,10 @@ function writeMem(addr, data){
   }
   if (addr == 0xFF02) {
     MEM[0xFF02] = data;
+    MEM[0xFF02] = MEM[0xFF02] & 0b10000001
+    if((data & 0b10000000) == 0b10000000){
+      console.log("write:" + String(data))
+    }
     setTimeout(function() {
       MEM[0xFF02] = MEM[0xFF02] & 0b00000001
     }, 10);
