@@ -501,8 +501,8 @@ sound2[3].oscillator.start()
 sound2[4].oscillator.onaudioprocess = processLFSR15bit2;
 
 sound2.final = audioCtx2.createChannelMerger(2)
-sound2.SO1.connect(sound.final, 0, 1)
-sound2.SO2.connect(sound.final, 0, 0)
+sound2.SO1.connect(sound2.final, 0, 1)
+sound2.SO2.connect(sound2.final, 0, 0)
 
 sound2.final.connect(audioCtx2.destination)
 
