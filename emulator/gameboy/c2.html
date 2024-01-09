@@ -775,6 +775,102 @@ function readMem16(addr){
   return [readMem(addr+1),readMem(addr)]
 }
 
+var server_c = 0;
+var server_s = 0;
+var serverresponse_c = 0;
+var serverresponse_s = 0;
+
+
+function updatedatas(){
+  if (serverresponse_c == "yes"){
+    server_getresponse(server_c);
+  }else{
+    client_response(server_c);
+  }
+}
+
+function updatedatac(){
+  if (serverresponse_s == "yes"){
+    server_getresponse(server_s);
+  }else{
+    client_response(server_s);
+}
+
+
+
+
+
+
+client();
+
+
+
+	
+var d = new Date();
+var myid = "";
+
+function client(){
+  myid = "c";
+}
+function server(){
+  myid = "s";
+}
+
+//作為主機的 Gameboy 將在 SB 中載入一個資料字節，然後將 SC 設定為 0x81（請求傳輸，使用內部時脈）。將透過兩種方式通知傳輸完成：SC的Bit 7將被清除（即SC將被設定為0x01），並且序列中斷處理程序將被呼叫（即CPU將跳到0x0058）。
+//The other gameboy will load up a data byte. if and when the master gameboy wants to conduct a transfer, it will happen (pulling whatever happens to be in SB at that time). The passive gameboy will have its serial interrupt handler called at the end of the transfer, and if it bothered to set SC's Bit 7, it will be cleared.
+
+function server_write(data){
+  if (myid == "s"){
+    serverresponse_s = "no";
+    server_s = data;
+    top.s_write();
+    
+    console.log("server writed");
+  }
+  if (myid == "c"){
+    serverresponse_c = "no";
+    server_c = data;
+    top.c_write();
+    
+    console.log("server writed");
+  }
+}
+
+function client_response(GOTDATA){
+  if (myid == "s"){
+    serverresponse_s = "yes";
+    server_s = MEM[0xFF01];
+    top.s_write();
+    
+    MEM[0xFF01] = GOTDATA;
+    MEM[0xFF02] = MEM[0xFF02] & 0b00000001;
+    MEM[0xFF02] = 0b00000000;
+    
+    triggerInterrupt(0x58);
+    console.log("get message, responsed")
+  }
+  if (myid == "c"){
+    serverresponse_c = "yes";
+    server_c = MEM[0xFF01];
+    top.c_write();
+    
+    MEM[0xFF01] = GOTDATA;
+    MEM[0xFF02] = MEM[0xFF02] & 0b00000001;
+    MEM[0xFF02] = 0b00000000;
+    
+    triggerInterrupt(0x58);
+    console.log("get message, responsed")
+  }
+}
+function server_getresponse(data){
+  if (myid != ""){
+    MEM[0xFF01] = data;
+    MEM[0xFF02] = 0b00000001;
+    triggerInterrupt(0x58);
+    console.log("got response from client")
+  }
+}
+
 function writeMem(addr, data){
   if (addr<=0x7fff) { 
     doMBC(addr, data);
