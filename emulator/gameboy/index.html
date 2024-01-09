@@ -1024,23 +1024,31 @@ function writeMem(addr, data){
 
       for (var i=0;i<4;i++) {
         if (con&(1<<i)){
-	  if (!sound[i+1].gainNode.isConnected){
+	  try {
             sound[i+1].gainNode.connect(sound.SO1)
-	  }
+          }catch (error) {
+            console.log(error);
+          }
 	}
         if (dis&(1<<i)){
-	  if (sound[i+1].gainNode.isConnected){
+	  try {
             sound[i+1].gainNode.disconnect(sound.SO1)
-	  }
+          }catch (error) {
+            console.log(error);
+          }
         }
         if (con&(1<<(4+i))){
-	  if (!sound[i+1].gainNode.isConnected){
+	  try {
             sound[i+1].gainNode.connect(sound.SO2)
-	  }
+          }catch (error) {
+            console.log(error);
+          }
 	}
         if (dis&(1<<(4+i))){
-          if (sound[i+1].gainNode.isConnected){
-	    sound[i+1].gainNode.disconnect(sound.SO2)
+	  try {
+            sound[i+1].gainNode.disconnect(sound.SO2)
+          }catch (error) {
+            console.log(error);
           }
         }
       }
