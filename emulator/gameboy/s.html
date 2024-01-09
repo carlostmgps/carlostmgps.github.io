@@ -182,8 +182,6 @@ iframe{display:block;border:0;margin:auto}
     <button onclick="saveState(); return false">时空储存</button>
     <button onclick="loadState(); return false">时空倒流</button>
     <button onclick="showDebug(!debugOn); return false">Debug</button>
-    <button onclick="server();">server</button>
-    <button onclick="client();">client</button>
   </div>
 
   <br><br>
@@ -777,84 +775,94 @@ function readMem16(addr){
   return [readMem(addr+1),readMem(addr)]
 }
 
+
+
+
+var serveralert_c = 0;
+var serveralert_s = 0;
+var server_c = 0;
+var server_s = 0;
+var serverresponse_c = 0;
+var serverresponse_s = 0;
 var lastalert = 0;
-function listendatas(){
-  if (lastalert != localStorage.serveralert_c){
-    lastalert = localStorage.serveralert_c;
-    if (localStorage.serverresponse_c == "yes"){
-      server_getresponse(localStorage.server_c);
-    }else{
-      client_response(localStorage.server_c);
-    }
+
+function updatedatas(){
+  if (serverresponse_c == "yes"){
+    server_getresponse(server_c);
+  }else{
+    client_response(server_c);
   }
 }
-function listendatac(){
-  if (lastalert != localStorage.serveralert_s){
-    lastalert = localStorage.serveralert_s;
-    if (localStorage.serverresponse_s == "yes"){
-      server_getresponse(localStorage.server_s);
-    }else{
-      client_response(localStorage.server_s);
-    }
-  }
+
+function updatedatac(){
+  if (serverresponse_s == "yes"){
+    server_getresponse(server_s);
+  }else{
+    client_response(server_s);
 }
 
 
 
-  
+
+
+
+server()
+
+
+
+	
 var d = new Date();
 var myid = "";
 
 function client(){
   myid = "c";
-  const interval = setInterval(function() {
-   listendatac();
-  });
 }
 function server(){
   myid = "s";
-  const interval = setInterval(function() {
-   listendatas();
-  });
 }
+
 //作為主機的 Gameboy 將在 SB 中載入一個資料字節，然後將 SC 設定為 0x81（請求傳輸，使用內部時脈）。將透過兩種方式通知傳輸完成：SC的Bit 7將被清除（即SC將被設定為0x01），並且序列中斷處理程序將被呼叫（即CPU將跳到0x0058）。
 //The other gameboy will load up a data byte. if and when the master gameboy wants to conduct a transfer, it will happen (pulling whatever happens to be in SB at that time). The passive gameboy will have its serial interrupt handler called at the end of the transfer, and if it bothered to set SC's Bit 7, it will be cleared.
+
 function server_write(data){
   if (myid == "s"){
-    localStorage.serverresponse_s = "no";
-    localStorage.server_s = data;
-    d = new Date();
-    localStorage.serveralert_s = d.getTime();
+    serverresponse_s = "no";
+    server_s = data;
+    top.s_write();
+    
     console.log("server writed");
   }
   if (myid == "c"){
-    localStorage.serverresponse_c = "no";
-    localStorage.server_c = data;
-    d = new Date();
-    localStorage.serveralert_c = d.getTime();
+    serverresponse_c = "no";
+    server_c = data;
+    top.c_write();
+    
     console.log("server writed");
   }
 }
+
 function client_response(GOTDATA){
   if (myid == "s"){
-    localStorage.serverresponse_s = "yes";
-    localStorage.server_s = MEM[0xFF01];
-    d = new Date();
+    serverresponse_s = "yes";
+    server_s = MEM[0xFF01];
+    top.s_write();
+    
     MEM[0xFF01] = GOTDATA;
-    localStorage.serveralert_s = d.getTime();
     MEM[0xFF02] = MEM[0xFF02] & 0b00000001;
     MEM[0xFF02] = 0b00000000;
+    
     triggerInterrupt(0x58);
     console.log("get message, responsed")
   }
   if (myid == "c"){
-    localStorage.serverresponse_c = "yes";
-    localStorage.server_c = MEM[0xFF01];
-    d = new Date();
+    serverresponse_c = "yes";
+    server_c = MEM[0xFF01];
+    top.c_write();
+    
     MEM[0xFF01] = GOTDATA;
-    localStorage.serveralert_c = d.getTime();
     MEM[0xFF02] = MEM[0xFF02] & 0b00000001;
     MEM[0xFF02] = 0b00000000;
+    
     triggerInterrupt(0x58);
     console.log("get message, responsed")
   }
@@ -867,6 +875,12 @@ function server_getresponse(data){
     console.log("got response from client")
   }
 }
+
+
+
+
+
+	
 function writeMem(addr, data){
   if (addr<=0x7fff) { 
     doMBC(addr, data);
