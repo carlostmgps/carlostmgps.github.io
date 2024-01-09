@@ -4,11 +4,11 @@
 <meta name=Description content="Gameboy 模拟器中文版">
 </head>
 <frameset rows = "50%, 50%">
-  <frame name="s" src="https://carlostmgps.github.io/emulator/gameboy/s.html">
-  <frame name="c" src="https://carlostmgps.github.io/emulator/gameboy/c.html">
+  <iframe name="s" src="https://carlostmgps.github.io/emulator/gameboy/s.html">
+  <iframe name="c" src="https://carlostmgps.github.io/emulator/gameboy/c.html">
 </frameset>
 <script>
-  const frame = window.frames;
+  const frame = window.iframes;
   function c_write(){
     frame["s"].serverresponse_c = frame["c"].serverresponse_c;
     frame["s"].server_c = frame["c"].server_c;
