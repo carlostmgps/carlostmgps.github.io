@@ -5980,7 +5980,7 @@ function runto2(end){
   
   requestStop2 =false;
 
-  targ=end?end:parseInt(prompt('Address', f(targ,4)),16); 
+  targ=end?end:parseInt(prompt('Address', f(targ2,4)),16); 
 
   run2()
 }
@@ -5993,7 +5993,6 @@ var frameCountdown2 = frameClocks;
 var thisFrame2, lastFrame2 = performance.now();
 
 function run2(time){
-  alert("run2 started")
   thisFrame2 = time || performance.now()
   if (limitFrameRate2){
     let d = thisFrame2 - lastFrame2
@@ -6004,7 +6003,6 @@ function run2(time){
       return
     }
   }
-  alert("run2 while true")
   while (true){
     var cycles2 = cpu2();
     soundStepCountdown2 -= cycles2;
@@ -6018,10 +6016,10 @@ function run2(time){
       frameCountdown2 += frameClocks2;
       break;
     }
-    if (PC2 == targ) break;
+    if (PC2 == targ2) break;
   }
 
-  if (PC2 != targ && !requestStop2) {
+  if (PC2 != targ2 && !requestStop2) {
     if (limitFrameRate2){
       window.requestAnimationFrame(run2);
     }else{
