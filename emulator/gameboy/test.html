@@ -291,14 +291,14 @@ var lfsr7bit2 = new Float32Array(127), lfsr15bit2=new Float32Array(32767);
   do {
     bit  = ((lfsr2 >> 0) ^ (lfsr2 >> 1) ) & 1;
     lfsr2 =  (lfsr2 >> 1) | (bit << 6);
-    lfsr7bit2[st++]=(bit/4-0.125);
+    lfsr7bit2[st2++]=(bit/4-0.125);
   } while (lfsr2 != start_state2); // has a period of 127
 
   st2=0;
   do {
     bit  = ((lfsr2 >> 0) ^ (lfsr2 >> 1)) & 1;
     lfsr2 =  (lfsr2 >> 1) | (bit << 14);
-    lfsr15bit2[st++]=(bit/4-0.125);
+    lfsr15bit2[st2++]=(bit/4-0.125);
   } while (lfsr2 != start_state2); // period of 32767
 
 })();
