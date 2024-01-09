@@ -5972,7 +5972,9 @@ function cpu2(){
 var requestStop2 = true;
 var targ2=0x40 //v-blank
 function runto2(end){
+  alert(!requestStop2);
   if (!requestStop2) return
+  alert(ROM2.length)
   if (ROM2.length<1000) return //don't run if no rom loaded
 
   
