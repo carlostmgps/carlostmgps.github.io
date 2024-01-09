@@ -4084,7 +4084,7 @@ function writeMem2(addr, data){
       return;
     }
     // FF1E - NR34 - Channel 3 Frequency's higher data (R/W)
-    if (addr2 == 0xFF1E) {
+    if (addr == 0xFF1E) {
       sound2[3].freq(   65536/(2048-  (((data&0x7)<<8)+ MEM2[0xFF1D])  )  )
       //bit 7 is initialize
       if (data&(1<<7)) {
