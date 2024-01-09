@@ -16,11 +16,17 @@
 <script>
   const frame = window.frames;
   function c_write(){
+    setTimeout(c_write2, 4);
+  }
+  function s_write(){
+    setTimeout(s_write2, 4);
+  }
+  function c_write2(){
     frame["s"].serverresponse_c = frame["c"].serverresponse_c;
     frame["s"].server_c = frame["c"].server_c;
     frame["s"].updatedatas();
   }
-  function s_write(){
+  function s_write2(){
     frame["c"].serverresponse_s = frame["s"].serverresponse_s;
     frame["c"].server_s = frame["s"].server_s;
     frame["c"].updatedatac();
