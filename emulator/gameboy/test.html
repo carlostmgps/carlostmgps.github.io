@@ -5991,6 +5991,7 @@ var frameCountdown2 = frameClocks;
 var thisFrame2, lastFrame2 = performance.now();
 
 function run2(time){
+  alert("run2 started")
   thisFrame2 = time || performance.now()
   if (limitFrameRate2){
     let d = thisFrame2 - lastFrame2
@@ -6001,7 +6002,7 @@ function run2(time){
       return
     }
   }
-
+  alert("run2 while true")
   while (true){
     var cycles2 = cpu2();
     soundStepCountdown2 -= cycles2;
