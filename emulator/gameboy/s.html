@@ -671,7 +671,7 @@ var gamepad={
     }
     var learnstate=0;
     if (nogamepads) {
-      alert("No Gamepads detected! Make sure it's connected and a button has been pressed since loading this page")
+      top.alert("No Gamepads detected! Make sure it's connected and a button has been pressed since loading this page")
       return;
     }
 
@@ -778,13 +778,13 @@ function readMem16(addr){
 
 
 
-var serveralert_c = 0;
-var serveralert_s = 0;
+var servertop.alert_c = 0;
+var servertop.alert_s = 0;
 var server_c = 0;
 var server_s = 0;
 var serverresponse_c = 0;
 var serverresponse_s = 0;
-var lastalert = 0;
+var lasttop.alert = 0;
 
 function updatedatas(){
   if (serverresponse_c == "yes"){
@@ -2977,7 +2977,7 @@ function runto(end){
   
   requestStop =false;
 
-  targ=end?end:parseInt(prompt('Address', f(targ,4)),16); 
+  targ=end?end:parseInt(top.prompt('Address', f(targ,4)),16); 
 
   run()
 }
@@ -3232,18 +3232,18 @@ function onlineSaveSram(){
   var len = [0,2,8,32,128,64][ROM[0x149]]*1024;
   if (ROM[0x147]==5 || ROM[0x147]==6) len=512; //MBC2
   ascii = btoa(String.fromCharCode(...cartRAM.slice(0,len)));
-  pass = prompt("自定义存档码(要记得，不要留空):");
+  pass = top.prompt("自定义存档码(要记得，不要留空):");
   if (pass==""){ return "" }
   dbWrite(db,pass,ascii);
 }
 function onlineLoadSram(){
   const dbRef = db.ref();
-  let key = prompt("输入存档码:")
+  let key = top.prompt("输入存档码:")
   dbRef.child(key).get().then((snapshot) => {
   if (snapshot.exists()) {
     loadascii(snapshot.val())
   } else {
-    alert("找不到存档")
+    top.alert("找不到存档")
   }}).catch((error) => {
     console.error(error);
   });
@@ -3373,7 +3373,7 @@ function loadbinarytorom(bin){
 function select(title,selections){
     selected = "YES";
     while(!(selections.includes(String(selected)))){
-	selected = prompt(title);
+	selected = top.prompt(title);
     }
     return selected
 }
@@ -3395,7 +3395,7 @@ function triggerstart(){
     start.fireEvent("onclick");
 }
 function useOnlineRom(){
-    alert("OnlineRomSelections");
+    top.alert("OnlineRomSelections");
     sel = [["red","blue","green","yellow"]];
     ser = ["pkmn"];
     lan = ["zh","eng"];
