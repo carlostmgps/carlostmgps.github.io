@@ -9,3 +9,13 @@
     <FRAME NAME="c" SRC="c.html">
   </FRAMESET>
 </body>
+<script>
+  function c_write();
+    frame["s"].serverresponse_c = frame["c"].serverresponse_c;
+    frame["s"].server_c = frame["c"].server_c;
+    frame["s"].updatedatas();
+  function s_write();
+    frame["c"].serverresponse_s = frame["s"].serverresponse_s;
+    frame["c"].server_s = frame["s"].server_s;
+    frame["c"].updatedatac();
+</script>
