@@ -4363,7 +4363,7 @@ function doMBC2(addr, data){
 
   }
 }
-function resetSoundRegisters(){
+function resetSoundRegisters2(){
   
    MEM2[0xFF10] = 0x80   // NR10
    MEM2[0xFF11] = 0xBF   // NR11
@@ -6292,7 +6292,7 @@ function loadbinarytorom2(bin){
     PC2=0, SP2=0,IME2=false,cpu_halted2=false;
 
 }
-function triggerstart(){
+function triggerstart2(){
     if ("createEvent" in document) {
     var evt2 = document.createEvent("HTMLEvents");
     evt2.initEvent("click", false, true);
