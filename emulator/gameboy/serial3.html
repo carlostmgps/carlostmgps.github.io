@@ -1124,14 +1124,34 @@ function writeMem(addr, data){
       var dis = (MEM[0xff25]^data) & (~data);
 
       for (var i=0;i<4;i++) {
-        if (con&(1<<i))
-          sound[i+1].gainNode.connect(sound.SO1)
-        if (dis&(1<<i))
-          sound[i+1].gainNode.disconnect(sound.SO1)
-        if (con&(1<<(4+i)))
-          sound[i+1].gainNode.connect(sound.SO2)
-        if (dis&(1<<(4+i)))
-          sound[i+1].gainNode.disconnect(sound.SO2)
+        if (con&(1<<i)){
+	  try {
+            sound[i+1].gainNode.connect(sound.SO1)
+          }catch (error) {
+            console.log(error);
+          }
+	}
+        if (dis&(1<<i)){
+	  try {
+            sound[i+1].gainNode.disconnect(sound.SO1)
+          }catch (error) {
+            console.log(error);
+          }
+        }
+        if (con&(1<<(4+i))){
+	  try {
+            sound[i+1].gainNode.connect(sound.SO2)
+          }catch (error) {
+            console.log(error);
+          }
+	}
+        if (dis&(1<<(4+i))){
+	  try {
+            sound[i+1].gainNode.disconnect(sound.SO2)
+          }catch (error) {
+            console.log(error);
+          }
+        }
       }
 
       MEM[addr] = data; 
