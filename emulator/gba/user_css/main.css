@@ -157,7 +157,8 @@ li.hide {
 .menu ul li {
     padding: .3em 1em !important;
     border-style: solid;
-    border-color: white
+    border-color: white;
+    background-color: black;
 }
 
 .menu li{
