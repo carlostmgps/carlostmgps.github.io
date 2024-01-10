@@ -28,6 +28,8 @@ ul{
     margin: 0;
     border-style: solid;
     border-color: white;
+    background-color: black;
+    color: white;
 }
 
 #container {
