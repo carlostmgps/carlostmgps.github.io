@@ -230,9 +230,34 @@
     </body>
 </html>
 <script>
-async function readUrl(Url){
+readUrl("https://carlostmgps.github.io/emulator/gba/DMG_ROM.bin",BIOSinput);
+async function readUrl(Url,input){
     fileget = await UrlFile(Url,"load.gb");
-    insertInput(fileget);
-    trigger();
+    insertInput(input,fileget);
+    trigger(input);
 }
+
+function trigger(i){
+  if ("createEvent" in document) {
+    var evt = document.createEvent("HTMLEvents");
+    evt.initEvent("change", false, true);
+    i.dispatchEvent(evt);
+  }
+  else
+    i.fireEvent("onchange");
+}
+function insertInput(input,myFile) {
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(myFile);
+  input.files = dataTransfer.files;
+}
+async function UrlFile(url, name, defaultType = 'application/octet-stream') {
+  const response = await fetch(url)
+  const data = await response.blob()
+  localStorage.lastRom = File([data], name, {type: data.type || defaultType})
+  return new File([data], name, {
+    type: data.type || defaultType,
+  })
+}
+
 </script>
