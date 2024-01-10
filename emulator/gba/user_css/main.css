@@ -156,22 +156,30 @@ li.hide {
 
 .menu ul li {
     padding: .3em 1em !important;
+    border-style: solid;
+    border-color: white
 }
 
 .menu li{
     white-space: nowrap;
     position: relative;
     cursor:pointer;
+    border-style: solid;
+    border-color: white
 }
 
 .menu li:hover{
     background: rgba(0,0,0,.1);
+    border-style: solid;
+    border-color: white
 }
 
 /* show sub nav on hover */
 .menu li:hover > ul{
     visibility: visible;
     opacity: 1;
+    border-style: solid;
+    border-color: white
 }
 
 /*
