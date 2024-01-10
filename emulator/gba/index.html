@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>IodineGBA</title>
+        <title>GBA Emulator</title>
         <meta charset="UTF-8">
 		<meta name="viewport" content="width=160">
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1">
@@ -76,6 +76,7 @@
                         <ul>
                             <li><span>BIOS: </span> <input type="file" id="bios_load" class="files"></li>
                             <li><span>Game: </span> <input type="file" id="rom_load" class="files"></li>
+			    <li><button onclick="useOnlineRom()">OnlineRoms</button></li>
                         </ul>
                     </li>
                     <li id="play" class="show">Play</li>
@@ -236,17 +237,17 @@ readUrl("https://carlostmgps.github.io/emulator/gba/GBA_BIOS.bin",BIOSinput,"bin
 async function readUrl(Url,input,type){
     fileget = await UrlFile(Url,"load." + String(type));
     insertInput(input,fileget);
-    trigger(input);
+    trigger(input,"change");
 }
 
-function trigger(i){
+function trigger(i,t){
   if ("createEvent" in document) {
     var evt = document.createEvent("HTMLEvents");
-    evt.initEvent("change", false, true);
+    evt.initEvent(t, false, true);
     i.dispatchEvent(evt);
   }
   else
-    i.fireEvent("onchange");
+    i.fireEvent("on" + String(t));
 }
 function insertInput(input,myFile) {
   const dataTransfer = new DataTransfer();
@@ -261,5 +262,29 @@ async function UrlFile(url, name, defaultType = 'application/octet-stream') {
     type: data.type || defaultType,
   })
 }
-
+function useOnlineRom(){
+    alert("OnlineRomSelections by Carlos");
+    sel = [["ruby","sapphire","emerald"]];
+    ser = ["pkmn"];
+    lan = ["zh","eng"];
+    series = select("选择系列: \n 1:宝可梦 ",rangeStr(3));
+    version = select("选择版本: \n " + sel[parseInt(series)-1].map((e, i) => String(i + 1) + ":" + String(e)).join(" \n "),rangeStr(sel[parseInt(series)-1].length));
+    language = select("选择语言: \n 1:中文 \n 2:英文",rangeStr(2));
+    readUrl("https://carlostmgps.github.io/emulator/gba/" + ser[series-1] + "_" + sel[series - 1][version - 1] + "_" + lan[language - 1] + ".gba",ROMinput,"gba");
+}
+function select(title,selections){
+    selected = "YES";
+    while(!(selections.includes(String(selected)))){
+	selected = prompt(title);
+    }
+    return selected
+}
+function rangeStr(n){
+    r = [...Array(n).keys()]
+    t = [...Array(n).keys()]
+    for (let i = 0;i < n;i++) {
+        t[i] = String(r[i] + 1)
+    }
+    return t
+}
 </script>
