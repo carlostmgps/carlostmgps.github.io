@@ -231,9 +231,10 @@
 </html>
 <script>
 BIOSinput = document.getElementById("bios_load");
-readUrl("https://carlostmgps.github.io/emulator/gba/DMG_ROM.bin",BIOSinput);
-async function readUrl(Url,input){
-    fileget = await UrlFile(Url,"load.gb");
+ROMinput = document.getElementById("rom_load")
+readUrl("https://carlostmgps.github.io/emulator/gba/GBA_BIOS.bin",BIOSinput,"bin");
+async function readUrl(Url,input,type){
+    fileget = await UrlFile(Url,"load." + String(type));
     insertInput(input,fileget);
     trigger(input);
 }
