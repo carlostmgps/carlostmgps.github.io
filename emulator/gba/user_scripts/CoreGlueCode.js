@@ -32,44 +32,44 @@ var IodineGUI = {
         keyZonesGBA:[
             //Use this to control the GBA key mapping:
             //A:
-            88,
-            //B:
-            90,
-            //Select:
-            16,
-            //Start:
-            13,
-            //Right:
             39,
-            //Left:
-            37,
-            //Up:
-            38,
-            //Down:
+            //B:
             40,
-            //R:
+            //Select:
+            50,
+            //Start:
+            49,
+            //Right:
+            68,
+            //Left:
+            65,
+            //Up:
+            87,
+            //Down:
             83,
+            //R:
+            81,
             //L:
             65
         ],
         keyZonesControl:[
             //Use this to control the emulator function key mapping:
             //Volume Down:
-            55,
+            98,
             //Volume Up:
-            56,
+            104,
             //Speed Up:
-            52,
+            102,
             //Slow Down:
-            51,
+            100,
             //Reset Speed:
-            53,
+            101,
             //Toggle Fullscreen:
-            54,
+            52,
             //Play/Pause:
-            80,
+            51,
             //Restart:
-            82
+            109
         ]
     }
 };
