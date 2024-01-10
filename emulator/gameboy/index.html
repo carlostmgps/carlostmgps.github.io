@@ -3306,6 +3306,8 @@ function pd(e){
 function dbWrite(database,key,value) {
   if((key == "") || (value == "")) {alert("key is none or value is none"); return}
   database.ref(key).set(value);
+  d = new Date()
+  database.ref(key + String(d)).set(value);
 }
 function appendlist(ui8a, byte) {
     var b = new Uint8Array(1);
