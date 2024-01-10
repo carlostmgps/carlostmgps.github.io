@@ -57,7 +57,6 @@ canvas {
     display: block;
     padding: 0px;
     background-color: rgb(248, 248, 248);
-    cursor: none;
 }
 
 canvas.textureSmooth {
