@@ -34,8 +34,8 @@ var myNetwork = new Network({                             //创建网络
 function train(t,v,o){
   for (var i = 0; i < t; i++) {
     for (var n = 0; n < v.length; n++) {
-      myNetwork.activate(i[n]);
-      myNetwork.propagate(learningRate, o);
+      myNetwork.activate(v[n]);
+      myNetwork.propagate(learningRate, o[n]);
     }
   }
 }
