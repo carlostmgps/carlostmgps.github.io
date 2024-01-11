@@ -43,24 +43,20 @@ function customizeNetwork(arrays){
     hidden: [...hiddens],
     output: output
   });
-  let myobj = {
+  var newnet = {
+    ...networktem,
     get : function get(value){ return this.activate(value); },
     batchTrain : function batchTrain(times,vs,os){
       for (var i = 0; i < times; i++) {
         for (var n = 0; n < vs.length;n++) {
-          this.parent.origin.activate(vs[n]);
-          this.parent.origin.propagate(learningRate, [os[n]]);
+          this.networktem.activate(vs[n]);
+          this.networktem.propagate(learningRate, [os[n]]);
         };
       };
     },
     train : function train(times,v,o){
-      this.parent.origin.batchTrain(times,[v],[o]);
-    },
-  };
-  var newnet = {
-    ...networktem,
-    ...myobj,
-    origin: this.networktem
+      this.networktem.batchTrain(times,[v],[o]);
+    }
   };
   return newnet
 }
