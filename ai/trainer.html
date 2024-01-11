@@ -38,6 +38,8 @@ var inputLayer = new Layer(2);                            //输入（两个）
 var hiddenLayer = new Layer(3);                           //隐藏（三个）
 var outputLayer = new Layer(1);                           //输出（一个）
 var learningRate = .3;
+inputLayer.project(hiddenLayer);
+hiddenLayer.project(outputLayer);
 var myNetwork = new Network({                             //创建网络
   input: inputLayer,
   hidden: [hiddenLayer],
