@@ -35,7 +35,7 @@ function train(times,vs,os){
   for (var i = 0; i < times; i++) {
     for (var n = 0; n < vs.length;n++) {
       myNetwork.activate(vs[n]);
-      myNetwork.propagate(learningRate, o[n]);
+      myNetwork.propagate(learningRate, os[n]);
     };
   };
 }
