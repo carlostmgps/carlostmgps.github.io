@@ -50,12 +50,12 @@ function customizeNetwork(arrays){
       for (var i = 0; i < times; i++) {
         for (var n = 0; n < vs.length;n++) {
           this.networktem.activate(vs[n]);
-          this.networktem.propagate(learningRate, [os[n]]);
+          this.propagate(learningRate, [os[n]]);
         };
       };
     },
     train : function train(times,v,o){
-      this.networktem.batchTrain(times,[v],[o]);
+      this.batchTrain(times,[v],[o]);
     }
   };
   return newnet
