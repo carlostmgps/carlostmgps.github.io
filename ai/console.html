@@ -30,17 +30,25 @@ var myNetwork = new Network({                             //创建网络
  hidden: [hiddenLayer],
  output: outputLayer
 });
-
-function train(t,v,o){
-  for (var i = 0; i < t; i++) {
-    for (var n = 0; n < v.length; n++) {
-      myNetwork.activate(v[n]);
-      myNetwork.propagate(learningRate, o[n]);
-    }
+function get(value){ return myNetwork.activate(value); }
+function train(a,a2,b,b2,c,c2,d,d2){
+  for (var i = 0; i < 20000; i++) {                         //训练 20000 次
+    // 0,0 => 0
+    myNetwork.activate(a);                              //输入 0，0
+    myNetwork.propagate(learningRate, a2);                 //如果输出0，奖励
+    
+    // 0,1 => 1
+    myNetwork.activate(b);                              //输入 0，1
+    myNetwork.propagate(learningRate, b2);                 //如果输出1，奖励
+    
+    // 1,0 => 1
+    myNetwork.activate(c);                              //输入 1，0
+    myNetwork.propagate(learningRate, c2);                 //如果输出1，奖励
+    
+    // 1,1 => 0
+    myNetwork.activate(d);                              //输入 1，1
+    myNetwork.propagate(learningRate, d2);                 //如果输出0，奖励
   }
-}
-function get(v){
-  return myNetwork.activate(v);
 }
 </script>
 
