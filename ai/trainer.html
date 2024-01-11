@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="description" content="My first AI testing" />
+  <meta charset="utf-8">
+  <title>AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Carlos">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/synaptic/1.1.4/synaptic.js"></script>
+</head>
+
+<body>
+<input id="layer_num"></input>
+<button onclick="inputLayer = new Layer(document.getElementById("layer_num").value); reload; alert("输入层改为：" + String(document.getElementById("layer_num").value)) "></button>
+<button onclick="hiddenLayer = new Layer(document.getElementById("layer_num").value); reload; alert("隐藏层改为：" + String(document.getElementById("layer_num").value)) "></button>
+<button onclick="outputLayer = new Layer(document.getElementById("layer_num").value); reload; alert("输出层改为：" + String(document.getElementById("layer_num").value)) "></button>
+<input id="times" type="number"></input>
+<input id="data"></input>
+<input id="correct"></input>
+<button onclick="trainbt()">train</button>
+function trainbt(){
+  crt = document.getElementById("correct").value.split(" ");
+  val = document.getElementById("data").value.split(" ");
+  times = document.getElementById("times").value;
+  train(times,val,crt);
+}
+function trybt(){
+  alert(myNetwork.activate(document.getElementById("data").value.split(" ")));
+}
+console.log = alert;
+console.error = alert;
+  
+<script>
+
+
+const { Layer, Network } = window.synaptic;
+
+var inputLayer = new Layer(2);                            //输入（两个）
+var hiddenLayer = new Layer(3);                           //隐藏（三个）
+var outputLayer = new Layer(1);                           //输出（一个）
+var learningRate = .3;
+var myNetwork = new Network({                             //创建网络
+  input: inputLayer,
+  hidden: [hiddenLayer],
+  output: outputLayer
+});
+
+
+function reload(){
+  inputLayer.project(hiddenLayer);                          //输入 -》 隐藏
+  hiddenLayer.project(outputLayer);                         //隐藏 -》 输出
+  myNetwork = new Network({                             //创建网络
+    input: inputLayer,
+    hidden: [hiddenLayer],
+    output: outputLayer
+  });
+}
+function train(times,value,correct){
+  for (var i = 0; i < times; i++) {
+    myNetwork.activate(value);
+    myNetwork.propagate(learningRate, correct);
+  }
+}
+</script>
+
+</body>
+</html>
