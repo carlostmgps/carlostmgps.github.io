@@ -44,17 +44,17 @@ function customizeNetwork(arrays){
     output: output
   });
   let myobj = {
-    get : function get(value){ return myNetwork.activate(value); },
+    get : function get(value){ return this.activate(value); },
     batchTrain : function batchTrain(times,vs,os){
       for (var i = 0; i < times; i++) {
         for (var n = 0; n < vs.length;n++) {
-          myNetwork.activate(vs[n]);
-          myNetwork.propagate(learningRate, [os[n]]);
+          this.activate(vs[n]);
+          this.propagate(learningRate, [os[n]]);
         };
       };
     },
     train : function train(times,v,o){
-      batchTrain(times,[v],[o]);
+      this.batchTrain(times,[v],[o]);
     },
   };
   var newnet = {
