@@ -43,8 +43,7 @@ function customizeNetwork(arrays){
     hidden: [...hiddens],
     output: output
   });
-  var newnet = {
-    ...networktem,
+  var mynet = {
     get : function get(value){ return this.activate(value); },
     batchTrain : function batchTrain(times,vs,os){
       for (var i = 0; i < times; i++) {
@@ -58,6 +57,9 @@ function customizeNetwork(arrays){
       this.batchTrain(times,[v],[o]);
     }
   };
+  
+  var newnet = Object.assign(networktem, mynet);
+  
   return newnet
 }
 function get(value){ return myNetwork.activate(value); }
