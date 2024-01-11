@@ -49,7 +49,7 @@ function customizeNetwork(arrays){
     batchTrain : function batchTrain(times,vs,os){
       for (var i = 0; i < times; i++) {
         for (var n = 0; n < vs.length;n++) {
-          this.networktem.activate(vs[n]);
+          this.activate(vs[n]);
           this.propagate(learningRate, [os[n]]);
         };
       };
