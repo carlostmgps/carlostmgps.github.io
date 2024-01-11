@@ -17,26 +17,23 @@
 const { Layer, Network } = window.synaptic;
 var learningRate = .3;
 function customizeNetwork(arrays){
-  if (arrays.length < 2){
-    console.error("customizeNetwork array is shorter than two")
+  if (arrays.length < 3){
+    console.error("customizeNetwork array is shorter than three")
     return None
   }
   input = new Layer(arrays[0]);
   output = new Layer(arrays[arrays.length - 1]);
   hiddens = [];
-  for (var n = 1; n < arrays.length - 1 ; n++) {
+  for (var n = 1; n < arrays.length - 2 ; n++) {
     hiddens = hiddens.concat([
       new Layer(arrays[n])
     ]);
   }
-  if (arrays.length == 2) {
-    input.project(output);
-  }else{
-    input.project(hiddens[0]);
-    for (var n2 = 0; n2 < hiddens.length - 1; n2++){
-      hiddens[n2].project(hiddens[n2+1]);
-    }
-    output.project(hiddens[hiddens.length-1]);
+  input.project(hiddens[0]);
+  for (var n2 = 0; n2 < hiddens.length - 2; n2++){
+    hiddens[n2].project(hiddens[n2+1]);
+  }
+  hiddens[hiddens.length-1].project(output);
   }
   networktem = new  Network({
     input: input,
