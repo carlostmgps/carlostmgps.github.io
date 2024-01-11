@@ -38,11 +38,30 @@ function customizeNetwork(arrays){
     }
     output.project(hiddens[hiddens.length-1]);
   }
-  return new  Network({
+  networktem = new  Network({
     input: input,
     hidden: [...hiddens],
     output: output
   });
+  let myobj = {
+    get : function get(value){ return myNetwork.activate(value); },
+    batchTrain : function batchTrain(times,vs,os){
+      for (var i = 0; i < times; i++) {
+        for (var n = 0; n < vs.length;n++) {
+          myNetwork.activate(vs[n]);
+          myNetwork.propagate(learningRate, [os[n]]);
+        };
+      };
+    },
+    train : function train(times,v,o){
+      batchTrain(times,[v],[o]);
+    },
+  };
+  var newnet = {
+    ...networktem,
+    ...myobj
+  };
+  return newnet
 }
 function get(value){ return myNetwork.activate(value); }
 function batchTrain(times,vs,os){
