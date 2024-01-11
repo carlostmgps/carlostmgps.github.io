@@ -23,17 +23,14 @@ correct:<input id="correct"></input>
 
 <script>
 function trainbt(){
-  crt = document.getElementById("correct").value.split(" ");
-  val = document.getElementById("data").value.split(" ");
-  times = document.getElementById("times").value;
+  crt = listmap(document.getElementById("correct").value.split(" "));
+  val = listmap(document.getElementById("data").value.split(" "));
+  times = Integer.valueOf(document.getElementById("times").value);
   train(times,val,crt);
 }
 function trybt(){
-  alert(myNetwork.activate(document.getElementById("data").value.split(" ")));
+  alert(myNetwork.activate(listmap(document.getElementById("data").value.split(" "))));
 }
-console.log = alert;
-console.error = alert;
-  
 
 const { Layer, Network } = window.synaptic;
 
@@ -46,6 +43,7 @@ var myNetwork = new Network({                             //创建网络
   hidden: [hiddenLayer],
   output: outputLayer
 });
+function listmap (a){ return a.map(function (x) { return parseInt(x, 10); }) }
 
 
 function reload(){
