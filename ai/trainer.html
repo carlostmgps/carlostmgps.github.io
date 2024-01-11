@@ -25,7 +25,7 @@ correct:<input id="correct"></input>
 function trainbt(){
   crt = listmap(document.getElementById("correct").value.split(" "));
   val = listmap(document.getElementById("data").value.split(" "));
-  times = Integer.valueOf(document.getElementById("times").value);
+  times = parseInt(document.getElementById("times").value,10);
   train(times,val,crt);
 }
 function trybt(){
