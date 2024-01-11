@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="description" content="My first AI testing" />
+  <meta charset="utf-8">
+  <title>AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Carlos">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/synaptic/1.1.4/synaptic.js"></script>
+</head>
+
+<body>
+<script>
+
+
+const { Layer, Network } = window.synaptic;
+
+var inputLayer = new Layer(2);                            //输入（两个）
+var hiddenLayer = new Layer(3);                           //隐藏（三个）
+var outputLayer = new Layer(1);                           //输出（一个）
+var learningRate = .3;
+
+inputLayer.project(hiddenLayer);                          //输入 -》 隐藏
+hiddenLayer.project(outputLayer);                         //隐藏 -》 输出
+
+
+var myNetwork = new Network({                             //创建网络
+ input: inputLayer,
+ hidden: [hiddenLayer],
+ output: outputLayer
+});
+
+function train(t,v,o){
+  for (var i = 0; i < t; i++) {
+    myNetwork.activate(v);
+    myNetwork.propagate(learningRate, o);
+  }
+}
+function get(v){
+  return myNetwork.activate(v);
+}
+</script>
+
+</body>
+</html>
