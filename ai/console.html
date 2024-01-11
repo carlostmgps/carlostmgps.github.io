@@ -25,7 +25,9 @@ function customizeNetwork(arrays){
   output = new Layer(arrays[arrays.length - 1]);
   hiddens = [];
   for (var n = 1; n < arrays.length - 2 ; n++) {
-    hiddens.push(new Layer(arrays[n]));
+    hiddens = hiddens.concat([
+      new Layer(arrays[n])
+    ]);
   }
   if (arrays.length == 2) {
     input.project(output);
