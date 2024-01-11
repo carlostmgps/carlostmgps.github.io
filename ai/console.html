@@ -48,18 +48,19 @@ function customizeNetwork(arrays){
     batchTrain : function batchTrain(times,vs,os){
       for (var i = 0; i < times; i++) {
         for (var n = 0; n < vs.length;n++) {
-          this.activate(vs[n]);
-          this.propagate(learningRate, [os[n]]);
+          this.parent.origin.activate(vs[n]);
+          this.parent.origin.propagate(learningRate, [os[n]]);
         };
       };
     },
     train : function train(times,v,o){
-      this.batchTrain(times,[v],[o]);
+      this.parent.origin.batchTrain(times,[v],[o]);
     },
   };
   var newnet = {
     ...networktem,
-    ...myobj
+    ...myobj,
+    origin: this.networktem
   };
   return newnet
 }
