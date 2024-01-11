@@ -16,10 +16,10 @@
 <script>
   const frame = window.frames;
   function c_write(){
-    setTimeout(c_write2, 4);
+    setTimeout(c_write2, 1);
   }
   function s_write(){
-    setTimeout(s_write2, 4);
+    setTimeout(s_write2, 1);
   }
   function c_write2(){
     frame["s"].serverresponse_c = frame["c"].serverresponse_c;
