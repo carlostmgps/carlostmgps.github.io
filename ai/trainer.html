@@ -11,14 +11,15 @@
 </head>
 
 <body>
-<input id="layer_num"></input>
-<button onclick="inputLayer = new Layer(document.getElementById("layer_num").value); reload; alert("输入层改为：" + String(document.getElementById("layer_num").value)) "></button>
-<button onclick="hiddenLayer = new Layer(document.getElementById("layer_num").value); reload; alert("隐藏层改为：" + String(document.getElementById("layer_num").value)) "></button>
-<button onclick="outputLayer = new Layer(document.getElementById("layer_num").value); reload; alert("输出层改为：" + String(document.getElementById("layer_num").value)) "></button>
-<input id="times" type="number"></input>
-<input id="data"></input>
-<input id="correct"></input>
+层分子数<input id="layer_num"></input>
+<button onclick="inputLayer = new Layer(document.getElementById("layer_num").value); reload; alert("输入层改为：" + String(document.getElementById("layer_num").value)) ">输入层</button>
+<button onclick="hiddenLayer = new Layer(document.getElementById("layer_num").value); reload; alert("隐藏层改为：" + String(document.getElementById("layer_num").value)) ">隐藏层</button>
+<button onclick="outputLayer = new Layer(document.getElementById("layer_num").value); reload; alert("输出层改为：" + String(document.getElementById("layer_num").value)) ">输出层</button>
+times:<input id="times" type="number"></input>
+data:<input id="data"></input>
+correct:<input id="correct"></input>
 <button onclick="trainbt()">train</button>
+<button onclick="trybt()">try</button>
 function trainbt(){
   crt = document.getElementById("correct").value.split(" ");
   val = document.getElementById("data").value.split(" ");
