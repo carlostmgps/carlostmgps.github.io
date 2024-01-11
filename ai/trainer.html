@@ -20,6 +20,8 @@ data:<input id="data"></input>
 correct:<input id="correct"></input>
 <button onclick="trainbt()">train</button>
 <button onclick="trybt()">try</button>
+
+<script>
 function trainbt(){
   crt = document.getElementById("correct").value.split(" ");
   val = document.getElementById("data").value.split(" ");
@@ -32,8 +34,6 @@ function trybt(){
 console.log = alert;
 console.error = alert;
   
-<script>
-
 
 const { Layer, Network } = window.synaptic;
 
