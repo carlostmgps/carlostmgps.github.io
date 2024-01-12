@@ -34,7 +34,7 @@ function customizeNetwork(arrays){
     hiddens[n2].project(hiddens[n2+1]);
   }
   hiddens[hiddens.length-1].project(output);
-  }
+  
   networktem = new  Network({
     input: input,
     hidden: [...hiddens],
