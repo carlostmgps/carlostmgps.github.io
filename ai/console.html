@@ -52,7 +52,7 @@ function customizeNetwork(arrays){
       for (var i = 0; i < times; i++) {
         for (var n = 0; n < vs.length;n++) {
           this.activate(vs[n]);
-          this.propagate(learningRate, [os[n]]);
+          this.propagate(0.3, [os[n]]);
         };
       };
     },
