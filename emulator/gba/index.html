@@ -192,6 +192,10 @@
                             <li>
                                 <a href="./" id="export" target="_new">Export All Saves</a>
                             </li>
+			    <li>
+				<button onclick="onlineSaveSram()">网上储存</button>
+				<button onclick="onlineLoadSram()">网上下载</button>
+			    </li>
                         </ul>
                     </li>
                     <li id="fullscreen">Fullscreen</li>
@@ -233,7 +237,8 @@
 <script>
 
 BIOSinput = document.getElementById("bios_load");
-ROMinput = document.getElementById("rom_load")
+ROMinput = document.getElementById("rom_load");
+Saveinput = document.getElementById("import");
 readUrl("https://carlostmgps.github.io/emulator/gba/GBA_BIOS.bin",BIOSinput,"bin");
 async function readUrl(Url,input,type){
     fileget = await UrlFile(Url,"load." + String(type));
@@ -249,6 +254,12 @@ function trigger(i,t){
   }
   else
     i.fireEvent("on" + String(t));
+}
+async function blobtofile(blob, name, defaultType = 'application/octet-stream') {
+  const data = blob
+  return new File([data], name, {
+    type: data.type || defaultType,
+  })
 }
 function insertInput(input,myFile) {
   const dataTransfer = new DataTransfer();
@@ -287,5 +298,73 @@ function rangeStr(n){
         t[i] = String(r[i] + 1)
     }
     return t
+}
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script>
+   const firebaseApp = firebase.initializeApp({
+     apiKey: "AIzaSyAaW5hTL62TCnUs7guJa9adawQhpByngfg",
+     authDomain: "gameboy-data.firebaseapp.com",
+     databaseURL: "https://gameboy-data-default-rtdb.firebaseio.com",
+     projectId: "gameboy-data",
+     storageBucket: "gameboy-data.appspot.com",
+     messagingSenderId: "924831085457",
+     appId: "1:924831085457:web:64d39f1d88d358624d2030",
+     measurementId: "G-WT54QNW65S"
+   });
+   const db = firebaseApp.database();
+   const auth = firebaseApp.auth();
+</script>
+<script>
+function dbWrite(database,key,value) {
+  if((key == "") || (value == "")) {alert("key is none or value is none"); return}
+  database.ref(key + "_gba").set(value);
+  d = new Date()
+  database.ref(key + "_gba" + String(d)).set(value);
+}
+function encode() {
+    var keys = getSavesKeys();
+    var blobPairs = [];
+    for (var index = 0; index < keys.length; ++index) {
+        blobPairs[index] = [keys[index], findValue(keys[index])];
+    }
+    return base64(generateMultiBlob(blobPairs))
+}
+function decode(data){
+  blobfile = base64ToBlob(data);
+  file = blobtofile(blobfile,"OnlineSaves");
+  insertInput(Saveinput,file);
+  trigger(Saveinput,"change")
+}
+function base64ToBlob(base64String, contentType = 'application/octet-stream') {
+    const byteCharacters = atob(base64String);
+    const byteArrays = [];
+
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteArrays.push(byteCharacters.charCodeAt(i));
+    }
+
+    const byteArray = new Uint8Array(byteArrays);
+    return new Blob([byteArray], { type: contentType });
+}
+function onlineLoadSram(){
+  const dbRef = db.ref();
+  let key = prompt("输入存档码:")
+  dbRef.child(String(key) + "_gba").get().then((snapshot) => {
+  if (snapshot.exists()) {
+    decode(snapshot.val())
+  } else {
+    alert("找不到存档")
+  }}).catch((error) => {
+    console.error(error);
+  });
+}
+function onlineSaveSram(){
+  file = encode();
+  pass = prompt("自定义存档码(要记得，不要留空):");
+  if (pass==""){ return "" }
+  dbWrite(db,pass,file);
 }
 </script>
