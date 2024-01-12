@@ -54,7 +54,7 @@ function unzipBlob(zipBlob, callback) {
   reader.readAsArrayBuffer(zipBlob);
 }
 
-function urlzip(zipUrl){
+aynsc function urlzip(zipUrl){
 loadZipAsBlob(zipUrl, (loadError, zipBlob) => {
   if (loadError) {
     console.error('Error loading zip file:', loadError);
