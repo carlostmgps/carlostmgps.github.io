@@ -270,7 +270,7 @@ function useOnlineRom(){
     lan = ["zh","eng"];
     series = select("选择系列: \n 1:宝可梦 ",rangeStr(3));
     version = select("选择版本: \n " + sel[parseInt(series)-1].map((e, i) => String(i + 1) + ":" + String(e)).join(" \n "),rangeStr(sel[parseInt(series)-1].length));
-    if (sel[series - 1][version - 1] == "rogelike") { readUrl("https://drive.google.com/uc?export=download&id=1z1MMdl3oSUvCaf-ooyvWlBsinDhLTuFV" ,ROMinput,"gba"); alert("宝可梦，对战模式，启动～！XD"); return "" }
+    if (sel[series - 1][version - 1] == "rogelike") { alert("鉴于游戏内容过大，无法使用OnlineRomSelections套件取用，请下载档案并使用您下载的档案游玩"); if (prompt("如需下载，请输入：dl") != "dl") { return"" }; window.open("https://drive.google.com/uc?export=download&id=1z1MMdl3oSUvCaf-ooyvWlBsinDhLTuFV", '_blank'); return "" }
     language = select("选择语言: \n 1:中文 \n 2:英文",rangeStr(2));
     readUrl("https://carlostmgps.github.io/emulator/gba/" + ser[series-1] + "_" + sel[series - 1][version - 1] + "_" + lan[language - 1] + ".gba",ROMinput,"gba");
 }
