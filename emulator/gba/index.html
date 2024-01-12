@@ -66,8 +66,6 @@
         <script src="user_scripts/XAudioJS/resampler.js"></script>
         <script src="user_scripts/XAudioJS/XAudioServer.js"></script>
         <link rel="stylesheet" href="user_css/main.css?defer">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
-	<script src="zipextract.js">
     </head>
     <body>
         <div id="container">
@@ -232,7 +230,10 @@
         </div>
     </body>
 </html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+<script src="zipextract.js">
 <script>
+
 BIOSinput = document.getElementById("bios_load");
 ROMinput = document.getElementById("rom_load")
 readUrl("https://carlostmgps.github.io/emulator/gba/GBA_BIOS.bin",BIOSinput,"bin");
