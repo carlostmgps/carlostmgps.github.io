@@ -335,7 +335,7 @@ function encode() {
 }
 function decode(data){
   blobfile = base64ToBlob(data);
-  file = blobtofile(blobfile,"OnlineSaves");
+  file = await blobtofile(blobfile,"OnlineSaves");
   insertInput(Saveinput,file);
   trigger(Saveinput,"change")
 }
