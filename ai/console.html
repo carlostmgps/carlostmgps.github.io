@@ -17,20 +17,26 @@
 const { Layer, Network } = window.synaptic;
 var learningRate = .3;
 function customizeNetwork(arrays){
+  console.log("CuztomizingNetwork");
   if (arrays.length < 3){
     console.error("customizeNetwork array is shorter than three")
     return None
   }
+  console.log("input:" + String(arrays[0]));
   input = new Layer(arrays[0]);
+  console.log("output:" + String(arrays[arrays.length-1]));
   output = new Layer(arrays[arrays.length - 1]);
   hiddens = [];
   for (var n = 1; n < arrays.length - 2 ; n++) {
+    console.log("hidden add:" + String(arrays[n]));
     hiddens = hiddens.concat([
       new Layer(arrays[n])
     ]);
+    console.log("now hidden is len in:" + String(hidden.length))
   }
   input.project(hiddens[0]);
   for (var n2 = 0; n2 < hiddens.length - 2; n2++){
+    console.log("projecting " + String(n2) + "to " + String(n2+1))
     hiddens[n2].project(hiddens[n2+1]);
   }
   hiddens[hiddens.length-1].project(output);
