@@ -1,91 +1,84 @@
-function loadZipAsBlob(url) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.responseType = 'blob';
+function loadZipAsBlob(url, callback) {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url);
+  xhr.responseType = 'blob';
 
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        resolve(xhr.response);
-      } else {
-        reject(new Error(`Failed to load ${url}: ${xhr.status} ${xhr.statusText}`));
-      }
-    };
+  xhr.onload = () => {
+    if (xhr.status === 200) {
+      callback(null, xhr.response);
+    } else {
+      callback(new Error(`Failed to load ${url}: ${xhr.status} ${xhr.statusText}`));
+    }
+  };
 
-    xhr.onerror = () => {
-      reject(new Error(`Network error while loading ${url}`));
-    };
+  xhr.onerror = () => {
+    callback(new Error(`Network error while loading ${url}`));
+  };
 
-    xhr.send();
-  });
+  xhr.send();
 }
 
-function unzipBlob(zipBlob) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const zipData = reader.result;
-      const zip = new JSZip();
-      zip.loadAsync(zipData)
-        .then(zip => {
-          const extractedFiles = [];
-          zip.forEach((relativePath, zipEntry) => {
-            if (!zipEntry.dir) {
-              extractedFiles.push(
-                zipEntry.async('blob')
-                  .then(blob => {
-                    return {
-                      name: zipEntry.name,
-                      blob: blob
-                    };
-                  })
-              );
-            }
-          });
-
-          Promise.all(extractedFiles)
-            .then(files => {
-              resolve(files);
-            })
-            .catch(error => {
-              reject(new Error('Failed to extract files from zip: ' + error.message));
-            });
-        })
-        .catch(error => {
-          reject(new Error('Failed to load zip: ' + error.message));
+function unzipBlob(zipBlob, callback) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const zipData = reader.result;
+    const zip = new JSZip();
+    zip.loadAsync(zipData)
+      .then(zip => {
+        const extractedFiles = [];
+        zip.forEach((relativePath, zipEntry) => {
+          if (!zipEntry.dir) {
+            zipEntry.async('blob')
+              .then(blob => {
+                extractedFiles.push({
+                  name: zipEntry.name,
+                  blob: blob
+                });
+                if (extractedFiles.length === zip.files.length) {
+                  callback(null, extractedFiles);
+                }
+              })
+              .catch(error => {
+                callback(new Error('Failed to extract files from zip: ' + error.message));
+              });
+          }
         });
-    };
-    reader.onerror = () => {
-      reject(new Error('Error reading zip file.'));
-    };
-    reader.readAsArrayBuffer(zipBlob);
-  });
+      })
+      .catch(error => {
+        callback(new Error('Failed to load zip: ' + error.message));
+      });
+  };
+  reader.onerror = () => {
+    callback(new Error('Error reading zip file.'));
+  };
+  reader.readAsArrayBuffer(zipBlob);
 }
-function urlzipblob(zipUrl){
-  loadZipAsBlob(zipUrl)
-    .then(zipBlob => {
-      console.log('Zip file loaded as a Blob:', zipBlob);
-      unzipBlob(zipBlob)
-        .then(files => {
-          console.log('Extracted files:', files);
-          const storePromises = files.map(file => {
-            const newBlob = new Blob([file.blob], { type: 'application/octet-stream' });
-            console.log('Stored file:', file.name);
-          });
-          Promise.all(storePromises)
-            .then((data) => {
-              return data
-              console.log('All files stored successfully.');
-            })
-            .catch(error => {
-              console.error('Error storing files:', error);
-            });
-        })
-        .catch(error => {
-          console.error('Error extracting zip file:', error);
-        });
-    })
-    .catch(error => {
-      console.error('Error loading zip file:', error);
+
+function urlzip(zipUrl){
+loadZipAsBlob(zipUrl, (loadError, zipBlob) => {
+  if (loadError) {
+    console.error('Error loading zip file:', loadError);
+    return;
+  }
+  console.log('Zip file loaded as a Blob:', zipBlob);
+
+  unzipBlob(zipBlob, (unzipError, files) => {
+    if (unzipError) {
+      console.error('Error extracting zip file:', unzipError);
+      return;
+    }
+    console.log('Extracted files:', files);
+    var arr = []
+    // Store the extracted files as Blobs
+    files.forEach(file => {
+      const newBlob = new Blob([file.blob], { type: 'application/octet-stream' });
+      arr = arr.concat([
+        newBlob
+      ]);
+      console.log('Stored file:', file.name);
     });
+    console.log('All files stored successfully.');
+    return arr
+  });
+});
 }
