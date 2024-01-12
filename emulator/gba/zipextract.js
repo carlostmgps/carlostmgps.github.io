@@ -73,7 +73,8 @@ function urlzipblob(zipUrl){
             console.log('Stored file:', file.name);
           });
           Promise.all(storePromises)
-            .then(() => {
+            .then((data) => {
+              return data
               console.log('All files stored successfully.');
             })
             .catch(error => {
