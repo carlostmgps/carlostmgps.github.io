@@ -333,7 +333,7 @@ function encode() {
     }
     return base64(generateMultiBlob(blobPairs))
 }
-function decode(data){
+async function decode(data){
   blobfile = base64ToBlob(data);
   file = await blobtofile(blobfile,"OnlineSaves");
   insertInput(Saveinput,file);
@@ -350,12 +350,12 @@ function base64ToBlob(base64String, contentType = 'application/octet-stream') {
     const byteArray = new Uint8Array(byteArrays);
     return new Blob([byteArray], { type: contentType });
 }
-function onlineLoadSram(){
+async function onlineLoadSram(){
   const dbRef = db.ref();
   let key = prompt("输入存档码:")
   dbRef.child(String(key) + "_gba").get().then((snapshot) => {
   if (snapshot.exists()) {
-    decode(snapshot.val())
+    await decode(snapshot.val())
   } else {
     alert("找不到存档")
   }}).catch((error) => {
