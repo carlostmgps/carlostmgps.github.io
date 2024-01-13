@@ -5,19 +5,24 @@ const color = document.querySelector('.color')
 const resetBtn = document.querySelector('.btn')
 
 let draw = false
+var data = new Array(64);
 
 function populate(size) {
+  if (data.length != (size * size)){
+    data = new Array(size * size)
+  }
   container.style.setProperty('--size', size)
   for (let i = 0; i < size * size; i++) {
     const div = document.createElement('div')
     div.classList.add('pixel')
-
     div.addEventListener('mouseover', function(){
         if(!draw) return
         div.style.backgroundColor = color.value
+        data[i] = color.value
     })
     div.addEventListener('mousedown', function(){
         div.style.backgroundColor = color.value
+        data[i] = color.value
     })
 
     container.appendChild(div)
