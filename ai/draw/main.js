@@ -61,10 +61,10 @@ resetBtn.addEventListener('click', reset)
 
 
 
-function imp(){
+function exp(){
   download(ainetwork.toJSON());
 }
-function exp(){
+function imp(){
   data = prompt("Paste Network.txt here:");
   ainetwork = Network.fromJSON(data)
 }
