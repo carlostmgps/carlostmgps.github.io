@@ -7,6 +7,7 @@ const datap = document.querySelector('.data')
 let draw = false
 var data = new Array(64);
 
+
 function populate(size) {
   if (data.length != (size * size)){
     data = new Array(size * size)
