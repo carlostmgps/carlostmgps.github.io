@@ -35,7 +35,7 @@ function customizeNetwork(arrays){
     console.log("now hidden is len in:" + String(hiddens.length))
   }
   input.project(hiddens[0]);
-  for (var n2 = 0; n2 < hiddens.length - 2; n2++){
+  for (var n2 = 0; n2 < hiddens.length-1; n2++){
     console.log("projecting " + String(n2) + "to " + String(n2+1))
     hiddens[n2].project(hiddens[n2+1]);
   }
