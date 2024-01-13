@@ -18,11 +18,11 @@ function populate(size) {
     div.addEventListener('mouseover', function(){
         if(!draw) return
         div.style.backgroundColor = color.value
-        data[i] = color.value
+        data[i] = (color.value == "0xffffff")
     })
     div.addEventListener('mousedown', function(){
         div.style.backgroundColor = color.value
-        data[i] = color.value
+        data[i] = (color.value == "0xffffff")
     })
 
     container.appendChild(div)
