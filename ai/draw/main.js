@@ -5,7 +5,7 @@ const color = document.querySelector('.color')
 const resetBtn = document.querySelector('.btn')
 const datap = document.querySelector('.data')
 let draw = false
-var data = new Array(64);
+var data = new Array(16);
 function test(){
   alert("See in console");
   console.log(ainetwork.activate(data));
@@ -43,14 +43,14 @@ window.addEventListener("mouseup", function(){
 })
 
 function reset(){
-    data = new Array(64);
+    data = new Array(16);
     container.innerHTML = ''
     populate(size)
 }
 setInterval(
   updatedata
 ,1)
-var ainetwork = customizeNetwork([64,320,10]);
+var ainetwork = customizeNetwork([16,32,10]);
 function train(ans){
   ainetwork.train(100,data,[ans]);
 }
