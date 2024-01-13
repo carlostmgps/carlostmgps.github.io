@@ -43,9 +43,9 @@ function reset(){
     container.innerHTML = ''
     populate(size)
 }
-setInterval({
-  reset();
-},1)
+setInterval(
+  reset
+,1)
 function updatedata(){
     datap.innerHTML = String(data);
 }
