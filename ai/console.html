@@ -30,7 +30,7 @@ function customizeNetwork(arrays){
   for (var n = 0; n < arrays.length - 2 ; n++) {
     console.log("hidden add:" + String(arrays[n+1]));
     hiddens = hiddens.concat([
-      new Layer(arrays[n])
+      new Layer(arrays[n+1])
     ]);
     console.log("now hidden is len in:" + String(hiddens.length))
   }
