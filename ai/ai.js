@@ -1,19 +1,3 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <meta name="description" content="My first AI testing" />
-  <meta charset="utf-8">
-  <title>AI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="author" content="Carlos">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/synaptic/1.1.4/synaptic.js"></script>
-</head>
-
-<body>
-<script>
-
-
 const { Layer, Network } = window.synaptic;
 var learningRate = .3;
 function customizeNetwork(arrays){
@@ -57,11 +41,8 @@ var mynet = {
         this.propagate(0.3, [os[n]]);
       };
     };
+  },
+  train : function train(v,o){
+    batchTrain(1,[v],[o]);
   }
 };
-
-
-</script>
-
-</body>
-</html>
