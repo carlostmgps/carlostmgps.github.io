@@ -309,6 +309,7 @@ function rangeStr(n){
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
 <script>
    const firebaseApp = firebase.initializeApp({
      apiKey: "AIzaSyAaW5hTL62TCnUs7guJa9adawQhpByngfg",
@@ -321,6 +322,7 @@ function rangeStr(n){
      measurementId: "G-WT54QNW65S"
    });
    const db = firebaseApp.database();
+   const store = firebaseApp.storage();
    const auth = firebaseApp.auth();
 </script>
 <script>
@@ -366,6 +368,22 @@ function onlineLoadSram(){
   }}).catch((error) => {
     console.error(error);
   });
+}
+function uploadtostore(store,file){
+  ref = store.ref()
+  gbaref = ref.child("gbarom")
+  gbaref.put(file).then((snapshot) => {
+    console.log("uploaded")
+  });
+}
+function downloadfile(store,file){
+  ref = store.ref()
+  gbaref = ref.child("gbarom")
+  gbaref = gbaref.child(file)
+  gbaref.getBolb().then((get) => {
+    console.log(get);
+    return get
+  })
 }
 function onlineSaveSram(){
   file = encode();
