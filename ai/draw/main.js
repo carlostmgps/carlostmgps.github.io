@@ -47,6 +47,10 @@ function reset(){
 setInterval(
   updatedata
 ,1)
+var ainetwork = customizeNetwork([64,320,10]);
+function train(ans){
+  ainetwork.train(100,data,[ans]);
+}
 function updatedata(){
     datap.innerHTML = String(data);
 }
