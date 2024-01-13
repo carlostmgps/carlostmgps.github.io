@@ -13,7 +13,9 @@ body{
     align-items: center;
     flex-direction: column;
 }
-
+.data {
+    color: white;
+}
 .navbar, .container{
     background-color: rgb(28, 28, 29);
     width: 800px;
