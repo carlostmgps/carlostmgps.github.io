@@ -56,6 +56,32 @@ function updatedata(){
 }
 resetBtn.addEventListener('click', reset)
 
+
+
+function imp(){
+  download(ainetwork.toJSON());
+}
+function exp(){
+  data = prompt("Paste Network.txt here:");
+  ainetwork = Network.fromJSON(data)
+}
+
+function download(data) {
+  const file = new File([data], 'Network.txt', {
+  type: 'text/plain',
+  })
+  const link = document.createElement('a')
+  const url = URL.createObjectURL(file)
+
+  link.href = url
+  link.download = file.name
+  document.body.appendChild(link)
+  link.click()
+
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(url)
+}
+
 sizeEl.addEventListener('keyup', function(){
     size = sizeEl.value
     reset()
