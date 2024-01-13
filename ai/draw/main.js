@@ -37,6 +37,7 @@ window.addEventListener("mouseup", function(){
 })
 
 function reset(){
+    data = new Array(64);
     container.innerHTML = ''
     populate(size)
 }
