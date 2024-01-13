@@ -21,8 +21,8 @@ function customizeNetwork(){
   input = new Layer(2);
   output = new Layer(1);
   hiddens = new Layer(3);
-  input.project(hiddens[0]);
-  hiddens[0].project(output);
+  input.project(hiddens);
+  hiddens.project(output);
   console.log(hiddens)
   networktem = new  Network({
     input: input,
