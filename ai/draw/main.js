@@ -6,7 +6,10 @@ const resetBtn = document.querySelector('.btn')
 const datap = document.querySelector('.data')
 let draw = false
 var data = new Array(64);
-
+function test(){
+  alert("See in console");
+  console.log(ainetwork.activate(data));
+}
 
 function populate(size) {
   if (data.length != (size * size)){
