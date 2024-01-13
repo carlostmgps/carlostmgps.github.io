@@ -13,16 +13,18 @@ function populate(size) {
   }
   container.style.setProperty('--size', size)
   for (let i = 0; i < size * size; i++) {
+    data[i] = 0
     const div = document.createElement('div')
     div.classList.add('pixel')
     div.addEventListener('mouseover', function(){
+        data[i] = 0
         if(!draw) return
         div.style.backgroundColor = color.value
-        data[i] = (color.value == "0xffffff")
+        data[i] = 1
     })
     div.addEventListener('mousedown', function(){
         div.style.backgroundColor = color.value
-        data[i] = (color.value == "0xffffff")
+        data[i] = 1
     })
 
     container.appendChild(div)
