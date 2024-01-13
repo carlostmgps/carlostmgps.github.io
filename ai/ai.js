@@ -43,6 +43,6 @@ var mynet = {
     };
   },
   train : function train(v,o){
-    batchTrain(1,[v],[o]);
+    this.batchTrain(1,[v],[o]);
   }
 };
