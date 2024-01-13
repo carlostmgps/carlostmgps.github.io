@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="description" content="My first AI testing" />
+  <meta charset="utf-8">
+  <title>AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Carlos">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/synaptic/1.1.4/synaptic.js"></script>
+</head>
+
+<body>
+<script>
+
+
+const { Layer, Network } = window.synaptic;
+var learningRate = .3;
+function customizeNetwork(){
+  console.log("CuztomizingNetwork");
+  input = new Layer(2);
+  output = new Layer(1);
+  hiddens = [];
+  hiddens = hiddens.concat([
+      new Layer(3)
+  ]);
+  input.project(hiddens[0]);
+  hiddens[0].project(output);
+  console.log(hiddens)
+  networktem = new  Network({
+    input: input,
+    hidden: [...hiddens],
+    output: output
+  });
+  var mynet = {
+    get : function get(value){ return this.activate(value); },
+    batchTrain : function batchTrain(times,vs,os){
+      for (var i = 0; i < times; i++) {
+        for (var n = 0; n < vs.length;n++) {
+          this.activate(vs[n]);
+          this.propagate(0.3, [os[n]]);
+        };
+      };
+    },
+    train : function train(times,v,o){
+      this.batchTrain(times,[v],[o]);
+    }
+  };
+  
+  var newnet = Object.assign(networktem, mynet);
+  
+  return newnet
+}
+function get(value){ return myNetwork.activate(value); }
+function batchTrain(times,vs,os){
+  for (var i = 0; i < times; i++) {
+    for (var n = 0; n < vs.length;n++) {
+      myNetwork.activate(vs[n]);
+      myNetwork.propagate(learningRate, [os[n]]);
+    };
+  };
+}
+function train(times,v,o){
+  batchTrain(times,[v],[o]);
+}
+</script>
+
+</body>
+</html>
