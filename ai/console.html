@@ -43,23 +43,7 @@ function customizeNetwork(arrays){
     output: output
   });
   
-  var newnet = networktem
-  
-  return newnet
-}
-function newCustomizeNetwork(arrays){
-  input = new Layer(arrays[0]);
-  output = new Layer(arrays[2]);
-  hiddens = [new Layer(arrays[1])];
-  input.project(hiddens[0]);
-  hiddens[0].project(output);
-  networktem = new  Network({
-    input: input,
-    hidden: [...hiddens],
-    output: output
-  });
-  
-  var newnet = networktem
+  var newnet = Object.assign(networktem, mynet);
   
   return newnet
 }
@@ -73,11 +57,9 @@ var mynet = {
         this.propagate(0.3, [os[n]]);
       };
     };
-  },
-  train : function train(times,v,o){
-    this.batchTrain(times,[v],[o]);
   }
 };
+
 
 </script>
 
