@@ -22,17 +22,13 @@ function customizeNetwork(arrays){
     console.error("customizeNetwork array is shorter than three")
     return None
   }
-  console.log("input:" + String(arrays[0]));
   input = new Layer(arrays[0]);
-  console.log("output:" + String(arrays[arrays.length-1]));
   output = new Layer(arrays[arrays.length - 1]);
   hiddens = [];
   for (var n = 0; n < arrays.length - 2 ; n++) {
-    console.log("hidden add:" + String(arrays[n+1]));
-    hiddens = hiddens.concat([
+    hiddens = [...hiddens,
       new Layer(arrays[n+1])
-    ]);
-    console.log("now hidden is len in:" + String(hiddens.length))
+    ];
   }
   input.project(hiddens[0]);
   for (var n2 = 0; n2 < hiddens.length-1; n2++){
@@ -46,25 +42,42 @@ function customizeNetwork(arrays){
     hidden: [...hiddens],
     output: output
   });
-  var mynet = {
-    get : function get(value){ return this.activate(value); },
-    batchTrain : function batchTrain(times,vs,os){
-      for (var i = 0; i < times; i++) {
-        for (var n = 0; n < vs.length;n++) {
-          this.activate(vs[n]);
-          this.propagate(0.3, [os[n]]);
-        };
-      };
-    },
-    train : function train(times,v,o){
-      this.batchTrain(times,[v],[o]);
-    }
-  };
   
   var newnet = networktem
   
   return newnet
 }
+function newCustomizeNetwork(arrays){
+  input = new Layer(arrays[0]);
+  output = new Layer(arrays[2]);
+  hiddens = [new Layer(arrays[1])];
+  input.project(hiddens[0]);
+  hiddens[0].project(output);
+  networktem = new  Network({
+    input: input,
+    hidden: [...hiddens],
+    output: output
+  });
+  
+  var newnet = networktem
+  
+  return newnet
+}
+
+var mynet = {
+  get : function get(value){ return this.activate(value); },
+  batchTrain : function batchTrain(times,vs,os){
+    for (var i = 0; i < times; i++) {
+      for (var n = 0; n < vs.length;n++) {
+        this.activate(vs[n]);
+        this.propagate(0.3, [os[n]]);
+      };
+    };
+  },
+  train : function train(times,v,o){
+    this.batchTrain(times,[v],[o]);
+  }
+};
 
 </script>
 
