@@ -3,7 +3,7 @@ const sizeEl = document.querySelector('.size')
 let size = sizeEl.value
 const color = document.querySelector('.color')
 const resetBtn = document.querySelector('.btn')
-
+const datap = document.querySelector('.data')
 let draw = false
 var data = new Array(64);
 
@@ -43,7 +43,9 @@ function reset(){
     container.innerHTML = ''
     populate(size)
 }
-
+function updatedata(){
+    datap.innerHTML = String(data);
+}
 resetBtn.addEventListener('click', reset)
 
 sizeEl.addEventListener('keyup', function(){
