@@ -42,7 +42,7 @@ var mynet = {
       };
     };
   },
-  train : function train(v,o){
-    this.batchTrain(1,[v],[o]);
+  train : function train(time,v,o){
+    this.batchTrain(time,[v],[o]);
   }
 };
