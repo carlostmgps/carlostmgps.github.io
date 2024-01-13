@@ -65,18 +65,7 @@ function customizeNetwork(arrays){
   
   return newnet
 }
-function get(value){ return myNetwork.activate(value); }
-function batchTrain(times,vs,os){
-  for (var i = 0; i < times; i++) {
-    for (var n = 0; n < vs.length;n++) {
-      myNetwork.activate(vs[n]);
-      myNetwork.propagate(learningRate, [os[n]]);
-    };
-  };
-}
-function train(times,v,o){
-  batchTrain(times,[v],[o]);
-}
+
 </script>
 
 </body>
