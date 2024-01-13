@@ -21,9 +21,9 @@ function customizeNetwork(){
   input = new Layer(2);
   output = new Layer(1);
   hiddens = [];
-  hiddens = hiddens.concat([
-      new Layer(3)
-  ]);
+  hiddens = [...hiddens
+      ,new Layer(3)
+  ];
   input.project(hiddens[0]);
   hiddens[0].project(output);
   console.log(hiddens)
