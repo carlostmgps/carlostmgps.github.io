@@ -45,7 +45,7 @@ function reset(){
     populate(size)
 }
 setInterval(
-  reset
+  updatedata
 ,1)
 function updatedata(){
     datap.innerHTML = String(data);
