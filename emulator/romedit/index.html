@@ -3,12 +3,19 @@
   <title>OnlineRomEditor</title>
 </head>
 <body>
-  <input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'>
+  <input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'><input type="number" id="pc">
   <div id=dbg>
     <pre id=out></pre>
   </div>
 </body>
 <script>
+var inputpc = document.getElementById("pc");
+inputpc.addEventListener('change',
+    function () {
+      PC = inputpc.value
+    }
+);
+
 var openFile = function(event) {
   var input = event.target;
   var reader = new FileReader();
@@ -21,7 +28,8 @@ var openFile = function(event) {
   };
   reader.readAsArrayBuffer(input.files[0]);
 };
-debugData();
+setInterval(debugData,0);
+var PC = 0;
 var debugData=function(){
   var debugOffset = PC&0xFF00;
   var debug = "";
@@ -45,6 +53,6 @@ var debugData=function(){
     debug+="\n"
   }
   document.getElementById('out').innerHTML=debug;
-})();
+};
 </script>
 </html>
