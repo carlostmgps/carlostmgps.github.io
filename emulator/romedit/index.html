@@ -44,9 +44,9 @@ function getData(adr){
 
 var PC = 0;
 var debugData=function(){
-  var debugOffset = (PC&0xFF00) - 0x0200;
+  var debugOffset = (PC&0xFF00) - 0x0150;
   var debug = "";
-  for (var j=0;j<50;j++) {
+  for (var j=0;j<60;j++) {
     
     debug+= "$"+f(debugOffset + j*16,4)+"   "
     for (var i=0;i<16;i++) {
