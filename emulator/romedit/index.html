@@ -22,7 +22,7 @@ inputpc.addEventListener('change',
       PC = parseInt(inputpc.value,10)
     }
 );
-var ROM = []
+var ROM = new Uint8Array();
 var openFile = function(event) {
   var input = event.target;
   var reader = new FileReader();
