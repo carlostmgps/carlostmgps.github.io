@@ -51,7 +51,9 @@ var debugData=function(){
     debug+= "$"+f(debugOffset + j*16,4)+"   "
     for (var i=0;i<16;i++) {
       var q=i+j*16 + debugOffset;
-      debug+="<span title='$"+ f(q,4) +"'"
+      if (String(f(q,4)).includes("-")) { debug+="<span title='$"+ "Undefined" +"'" } else {
+        debug+="<span title='$"+ f(q,4) +"'"
+      }
       debug+= PC==q ? " style='color:red'>":">"
       console.log("debugging")
       console.log(q);
