@@ -35,24 +35,29 @@ var openFile = function(event) {
   };
   reader.readAsArrayBuffer(input.files[0]);
 };
-setInterval(debugData,1000);
+
+function getData(adr){
+  if (adr > ROM.length-1) { return 0x00 }
+  return ROM[adr]
+}
+
 var PC = 0;
 var debugData=function(){
-  var debugOffset = PC&0xFF00;
+  var debugOffset = (PC&0xFF00) - 0x0020;
   var debug = "";
-  for (var j=0;j<16;j++) {
+  for (var j=0;j<80;j++) {
   
     debug+= "$"+f(debugOffset + j*16,4)+"   "
     for (var i=0;i<16;i++) {
       var q=i+j*16 + debugOffset;
       debug+="<span title='$"+ f(q,4) +"'"
       debug+= PC==q ? " style='color:red'>":">"
-      debug+=f(ROM[q])+"</span>"
+      debug+=f(getData(q))+"</span>"
       debug+=(i==7?"|":" ");
     }
     debug+="|  "
     for (var i=0;i<16;i++) {
-      var c=ROM[i+j*16 + debugOffset]
+      var c=getData(i+j*16 + debugOffset)
       debug+= ascii(c);
     }
     
@@ -60,6 +65,8 @@ var debugData=function(){
     debug+="\n"
   }
   document.getElementById('out').innerHTML=debug;
+  
 };
+setInterval(debugData,1000);
 </script>
 </html>
