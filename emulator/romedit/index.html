@@ -14,7 +14,7 @@ var bootCode = "31 FE FF AF 21 FF 9F 32 CB 7C 20 FB 21 26 FF 0E 11 3E 80 32 E2 0
 var inputpc = document.getElementById("pc");
 inputpc.addEventListener('change',
     function () {
-      PC = inputpc.value
+      PC = parseInt(inputpc.value,10)
     }
 );
 
