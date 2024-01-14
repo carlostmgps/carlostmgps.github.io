@@ -35,7 +35,7 @@ var openFile = function(event) {
   };
   reader.readAsArrayBuffer(input.files[0]);
 };
-setInterval(debugData,0);
+setInterval(debugData,1000);
 var PC = 0;
 var debugData=function(){
   var debugOffset = PC&0xFF00;
