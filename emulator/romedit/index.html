@@ -38,6 +38,7 @@ var openFile = function(event) {
 
 function getData(adr){
   if (adr > ROM.length-1) { return 0 }
+  if (adr < 0) { return 0 }
   return ROM[adr]
 }
 
