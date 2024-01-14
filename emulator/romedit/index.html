@@ -55,9 +55,6 @@ var debugData=function(){
         debug+="<span title='$"+ f(q,4) +"'"
       }
       debug+= PC==q ? " style='color:red'>":">"
-      console.log("debugging")
-      console.log(q);
-      console.log(getData(q));
       debug+=f(getData(q))+"</span>"
       debug+=(i==7?"|":" ");
     }
