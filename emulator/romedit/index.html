@@ -1,0 +1,50 @@
+<html>
+<head>
+  <title>OnlineRomEditor</title>
+</head>
+<body>
+  <input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'>
+  <div id=dbg>
+    <pre id=out></pre>
+  </div>
+</body>
+<script>
+var openFile = function(event) {
+  var input = event.target;
+  var reader = new FileReader();
+  reader.onload = function(){
+    ROM = new Uint8Array(reader.result);
+    FirstROMPage = ROM.slice(0,256)
+
+    //Overwrite first page with bootcode
+    for (var i=0;i<256;i++) ROM[i]=bootCode[i];
+  };
+  reader.readAsArrayBuffer(input.files[0]);
+};
+debugData();
+var debugData=function(){
+  var debugOffset = PC&0xFF00;
+  var debug = "";
+  for (var j=0;j<16;j++) {
+  
+    debug+= "$"+f(debugOffset + j*16,4)+"   "
+    for (var i=0;i<16;i++) {
+      var q=i+j*16 + debugOffset;
+      debug+="<span title='$"+ f(q,4) +"'"
+      debug+= PC==q ? " style='color:red'>":">"
+      debug+=f(ROM[q])+"</span>"
+      debug+=(i==7?"|":" ");
+    }
+    debug+="|  "
+    for (var i=0;i<16;i++) {
+      var c=ROM[i+j*16 + debugOffset]
+      debug+= ascii(c);
+    }
+    
+    
+    debug+="\n"
+  }
+  document.getElementById('out').innerHTML=debug;
+})();
+</script>
+</html>
