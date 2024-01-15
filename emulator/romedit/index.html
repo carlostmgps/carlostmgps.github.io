@@ -36,7 +36,7 @@ function dl(name, byte) {
 function downloadrom(){
   if (ROM.length > 0) {
     buf = toBuffer(ROM)
-    dl("createdrom.gb")
+    dl("createdrom.gb",buf)
   }else{
     alert("Error:ROM is empty!")
   }
