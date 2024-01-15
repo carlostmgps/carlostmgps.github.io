@@ -20,6 +20,13 @@ var inputpc = document.getElementById("pc");
 inputpc.addEventListener('input',
     function () {
       PC = parseInt(inputpc.value,10)
+      if (PC < 0){
+        PC = 0
+      }
+      if (PC > ROM.length -1){
+        PC = ROM.length - 1
+      }
+      inputpc.value = PC
     }
 );
 function toBuffer(uint8){
@@ -77,6 +84,8 @@ var debugData=function(){
         debug += " style='color:red'>"
       }else if(q<0x100 && q<(-1)){
         debug += " style='color:purple'>"
+      }else if(q>ROM.length-1){
+        debug += " style='color:white'>"
       }else{
         debug += ">"
       }
