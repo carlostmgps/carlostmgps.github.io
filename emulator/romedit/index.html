@@ -75,12 +75,11 @@ var debugData=function(){
       }
       if(PC==q){
         debug += " style='color:red'>"
-      }else if(q<0xFF){
+      }else if(q<0x100 && q<(-1)){
         debug += " style='color:purple'>"
       }else{
         debug += ">"
       }
-      debug+= PC==q ? " style='color:red'>":">"
       debug+=f(getData(q))+"</span>"
       debug+=(i==7?"|":" ");
     }
