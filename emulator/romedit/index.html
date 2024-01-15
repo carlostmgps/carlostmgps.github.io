@@ -73,6 +73,13 @@ var debugData=function(){
       if (String(f(q,4)).includes("-")) { debug+="<span title='$"+ "Undefined" +"'" } else {
         debug+="<span title='$"+ f(q,4) +"'"
       }
+      if(PC==q){
+        debug += " style='color:red'>"
+      }else if(q<0xFF){
+        debug += " style='color:purple'>"
+      }else{
+        debug += ">"
+      }
       debug+= PC==q ? " style='color:red'>":">"
       debug+=f(getData(q))+"</span>"
       debug+=(i==7?"|":" ");
