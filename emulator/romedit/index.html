@@ -3,7 +3,7 @@
   <title>OnlineRomEditor</title>
 </head>
 <body>
-  <input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'><input type="number" id="pc">
+  <input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'> \n PC:<input type="number" id="pc"> \n <button onclick="downloadrom()">DownloadModifiedRom</button>
   <div id=dbg>
     <pre id=out></pre>
   </div>
@@ -22,14 +22,21 @@ inputpc.addEventListener('change',
       PC = parseInt(inputpc.value,10)
     }
 );
+function downloadrom(){
+  if (ROM.length > 0) {
+    
+  }else{
+    alert("Error:ROM is empty!")
+  }
+}
 var ROM = new Uint8Array();
 var openFile = function(event) {
   var input = event.target;
   var reader = new FileReader();
   reader.onload = function(){
+    console.log(reader.result)
     ROM = new Uint8Array(reader.result);
-    FirstROMPage = ROM.slice(0,256)
-
+    console.log(ROM)
     //Overwrite first page with bootcode
     for (var i=0;i<256;i++) ROM[i]=bootCode[i];
   };
