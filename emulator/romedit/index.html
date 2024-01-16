@@ -11,7 +11,7 @@
     <option value="asm">Assembly Mode</option>
     <option value="dec">Dec Code</option>
   </select>
-  
+  Column Per Row:<input type="number" id="rds" value="16">
   <div id=dbg>
     <pre id=out></pre>
   </div>
@@ -28,6 +28,7 @@ var bootCode = "31 FE FF AF 21 FF 9F 32 CB 7C 20 FB 21 26 FF 0E 11 3E 80 32 E2 0
 function f(a,l) {return ("0000"+a.toString(16).toUpperCase()).slice(-l||-2)}
 var inputpc = document.getElementById("pc");
 var inputmode = document.getElementById("mode");
+var inputrds = document.getElementById("rds");
 var mode = "hexcode"
 inputpc.addEventListener('input',
     function () {
@@ -39,6 +40,11 @@ inputpc.addEventListener('input',
         PC = ROM.length - 1
       }
       inputpc.value = PC
+    }
+);
+inputrds.addEventListener('input',
+    function () {
+      rds = parseInt(inputrds.value,10)
     }
 );
 inputmode.addEventListener('input',
@@ -84,15 +90,15 @@ function getData(adr){
   if (adr < 0) { return 0 }
   return ROM[adr]
 }
-
+var rds = 16;
 var PC = 0;
 var debugData=function(){
   var debugOffset = (PC&0xFF00) - 0x0150;
   var debug = "";
   for (var j=0;j<60;j++) {
     
-    debug+= "$"+f(debugOffset + j*16,4)+"   "
-    for (var i=0;i<16;i++) {
+    debug+= "$"+f(debugOffset + j*rds,4)+"   "
+    for (var i=0;i<rds;i++) {
       if (mode == "hexcode"){
         var q=i+j*16 + debugOffset;
         debug+="<span title='$"+ f(q,4) +"'"
@@ -109,7 +115,7 @@ var debugData=function(){
         
         debug+=(i==7?"|":" ");
       }else if(mode == "graphics"){
-        var q=i+j*16 + debugOffset;
+        var q=i+j*rds + debugOffset;
         for (var n = 4; n > 0 ; n--){
           debug+="<span title='$"+ f(q,4) +"'"
           q = getData(q)
@@ -131,7 +137,7 @@ var debugData=function(){
         
         debug+=(i==7?"|":" ");
       }else if (mode == "graphiconly"){
-        var q=i+j*16 + debugOffset;
+        var q=i+j*rds + debugOffset;
         for (var n = 4; n > 0 ; n--){
           debug+="<span title='$"+ f(q,4) +"'"
           q = getData(q)
@@ -155,8 +161,8 @@ var debugData=function(){
       }
     }
     debug+="|  "
-    for (var i=0;i<16;i++) {
-      var c=getData(i+j*16 + debugOffset)
+    for (var i=0;i<rds;i++) {
+      var c=getData(i+j*rds + debugOffset)
       debug+= ascii(c);
     }
     
