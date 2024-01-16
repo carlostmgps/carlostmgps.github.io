@@ -100,7 +100,7 @@ var debugData=function(){
     debug+= "$"+f(debugOffset + j*rds,4)+"   "
     if (mode == "hexcode"){
       for (var i=0;i<rds;i++) {
-        var q=i+j*16 + debugOffset;
+        var q=i+j*rds + debugOffset;
         debug+="<span title='$"+ f(q,4) +"'"
         if(PC==q){
           debug += " style='color:red'>"
@@ -116,38 +116,27 @@ var debugData=function(){
         debug+=" ";
       }
     }else if(mode == "graphics"){
-      for (var i=0;i<rds*2;i++) {
-        var q=i+j*rds*2 + debugOffset;
-        if (i < rds){
-          list1 = []
-          for (var n = 8; n > 0 ; n-=1){
-            q2 = getData(q)
-            mask = (nthBit(q2,n+1) * 0b10) + nthBit(q2,n)
-            list1 = [...list1 ,mask]
+      
+      for (var n = 0; n < rds*2 ; n+=2){
+        var q=n+j*rds*2 + debugOffset
+        for (var i = 8; i > 0 ; i--){
+          a = nthBit(getData(q),i)
+          b = nthBit(getData(q+1),i)
+          data = a*2 + b
+          debug+="<span title='$"+ f(q,4) +"'"
+          if(data==0b11){
+            debug += " style='color:black'>"
+          }else if(data==0b10){
+            debug += " style='color:DarkGray'>"
+          }else if(data==0b01){
+            debug += " style='color:DimGray'>"
+          }else if(data==0b00){
+            debug += " style='color:white'>"
           }
-        }else{
-          list2 = []
-          for (var n = 8; n > 0 ; n-=1){
-            q2 = getData(q+rds)
-            mask = nthBit(q2,n)
-            list2 = [...list2 ,mask]
-          }
+          debug += ('0' + dec2bin(data)).slice(-2) +"</span>"
+          debug+=" ";
         }
-      }
-      for (var i = 7;i>-1;i--){
-        data = list1[i]*2 + list2[i]
-        debug+="<span title='$"+ f(q,4) +"'"
-        if(data==0b11){
-          debug += " style='color:black'>"
-        }else if(data==0b10){
-          debug += " style='color:DarkGray'>"
-        }else if(data==0b01){
-          debug += " style='color:DimGray'>"
-        }else if(data==0b00){
-          debug += " style='color:white'>"
-        }
-        debug += ('0' + dec2bin(data)).slice(-2) +"</span>"
-        debug+=" ";
+        
       }
     }
     debug+="|  "
