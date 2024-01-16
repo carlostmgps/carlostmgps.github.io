@@ -10,6 +10,7 @@
     <option value="graphiconly">GraphicsOnly Mode</option>
     <option value="asm">Assembly Mode</option>
     <option value="dec">Dec Code</option>
+    <option value="bw">BW Mode</option>
   </select>
   Column Per Row:<input type="number" id="rds" value="16">
   <div id=dbg>
@@ -142,7 +143,7 @@ var debugData=function(){
           debug+="<span title='$"+ f(q,4) +"'"
           q = getData(q)
           n2 = 2 * n
-          mask = (nthBit(q,n + 2) * 0b10) + nthBit(q,n + 1)
+          mask = (nthBit(q,n2 + 2) * 0b10) + nthBit(q,n2 + 1)
           value = mask
           if(value == 0){
             debug += " style='color:white'>"
@@ -158,6 +159,19 @@ var debugData=function(){
         
         
         debug+=(i==7?"|":" ");
+      }else if (mode == "bw"){
+        var q=i+j*rds + debugOffset;
+        for (var n = 8; n > 0 ; n--){
+          debug+="<span title='$"+ f(q,4) +"'"
+          q = getData(q)
+          mask = nthBit(q,n + 1)
+          value = mask
+          if(value == 0){
+            debug += " style='color:white'>"
+          }else if(value == 1){
+            debug += " style='color:black'>"
+          debug+= "■" +"</span>"
+        }
       }
     }
     debug+="|  "
