@@ -130,9 +130,8 @@ var debugData=function(){
         
         
         debug+=(i==7?"|":" ");
-      }
-    }else if (mode == "graphiconly"){
-      var q=i+j*16 + debugOffset;
+      }else if (mode == "graphiconly"){
+        var q=i+j*16 + debugOffset;
         for (var n = 4; n > 0 ; n--){
           debug+="<span title='$"+ f(q,4) +"'"
           q = getData(q)
