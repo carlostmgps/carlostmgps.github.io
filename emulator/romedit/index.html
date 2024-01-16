@@ -109,10 +109,11 @@ var debugData=function(){
         debug+=(i==7?"|":" ");
       }else if(mode == "graphics"){
         var q=i+j*16 + debugOffset;
-        for (var n = 0; n < 4 ; n++){
+        for (var n = 4; n > 1 ; n--){
           debug+="<span title='$"+ f(q,4) +"'"
           q = getData(q)
-          mask = q & (0b11 << (n*2))
+          n2 = 2 * n
+          mask = (nthBit(q,n + 2) * 0b10) + nthBit(q,n + 1)
           value = mask >> (n*2)
           if(value == 0){
             debug += " style='color:white'>"
@@ -142,6 +143,11 @@ var debugData=function(){
   document.getElementById('out').innerHTML=debug;
   
 };
+function nthBit(n, k)
+{
+    return((n & (1 << (k - 1))) >> (k - 1));
+}
+
 function dec2bin(dec) {
   return (dec >>> 0).toString(2);
 }
