@@ -121,7 +121,7 @@ var debugData=function(){
           debug+="<span title='$"+ f(q,4) +"'"
           q = getData(q)
           n2 = 2 * n
-          mask = (nthBit(q,n + 2) * 0b10) + nthBit(q,n + 1)
+          mask = (nthBit(q,n2 + 1) * 0b10) + nthBit(q,n2)
           value = mask
           if(value == 0){
             debug += " style='color:white'>"
@@ -143,7 +143,7 @@ var debugData=function(){
           debug+="<span title='$"+ f(q,4) +"'"
           q = getData(q)
           n2 = 2 * n
-          mask = (nthBit(q,n2 + 2) * 0b10) + nthBit(q,n2 + 1)
+          mask = (nthBit(q,n2 + 1) * 0b10) + nthBit(q,n2)
           value = mask
           if(value == 0){
             debug += " style='color:white'>"
@@ -164,7 +164,7 @@ var debugData=function(){
         for (var n = 8; n > 0 ; n--){
           debug+="<span title='$"+ f(q,4) +"'"
           q = getData(q)
-          mask = nthBit(q,n + 1)
+          mask = nthBit(q,n)
           value = mask
           if(value == 0){
             debug += " style='color:white'>"
