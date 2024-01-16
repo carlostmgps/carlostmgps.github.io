@@ -117,11 +117,10 @@ var debugData=function(){
         debug+=(i==7?"|":" ");
       }else if(mode == "graphics"){
         var q=i+j*rds + debugOffset;
-        for (var n = 4; n > 0 ; n--){
+        for (var n = 7; n > 0 ; n-=2){
           debug+="<span title='$"+ f(q,4) +"'"
           q = getData(q)
-          n2 = 2 * n
-          mask = (nthBit(q,n2 + 1) * 0b10) + nthBit(q,n2)
+          mask = (nthBit(q,n+1) * 0b10) + nthBit(q,n)
           value = mask
           if(value == 0){
             debug += " style='color:white'>"
@@ -139,11 +138,10 @@ var debugData=function(){
         debug+=(i==7?"|":" ");
       }else if (mode == "graphiconly"){
         var q=i+j*rds + debugOffset;
-        for (var n = 4; n > 0 ; n--){
+        for (var n = 7; n > 0 ; n-=2){
           debug+="<span title='$"+ f(q,4) +"'"
           q = getData(q)
-          n2 = 2 * n
-          mask = (nthBit(q,n2 + 1) * 0b10) + nthBit(q,n2)
+          mask = (nthBit(q,n + 1) * 0b10) + nthBit(q,n)
           value = mask
           if(value == 0){
             debug += " style='color:white'>"
