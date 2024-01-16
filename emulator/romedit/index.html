@@ -117,12 +117,10 @@ var debugData=function(){
         debug+=(i==7?"|":" ");
       }else if(mode == "graphics"){
         var q=i+j*rds + debugOffset;
-        console.log(q)
         for (var n = 7; n > 0 ; n-=2){
           debug+="<span title='$"+ f(q,4) +"'"
-          q = getData(q)
-          console.log(q)
-          mask = (nthBit(q,n+1) * 0b10) + nthBit(q,n)
+          q2 = getData(q)
+          mask = (nthBit(q2,n+1) * 0b10) + nthBit(q2,n)
           value = mask
           if(value == 0){
             debug += " style='color:white'>"
@@ -142,8 +140,8 @@ var debugData=function(){
         var q=i+j*rds + debugOffset;
         for (var n = 7; n > 0 ; n-=2){
           debug+="<span title='$"+ f(q,4) +"'"
-          q = getData(q)
-          mask = (nthBit(q,n + 1) * 0b10) + nthBit(q,n)
+          q2 = getData(q)
+          mask = (nthBit(q2,n + 1) * 0b10) + nthBit(q2,n)
           value = mask
           if(value == 0){
             debug += " style='color:white'>"
@@ -163,8 +161,8 @@ var debugData=function(){
         var q=i+j*rds + debugOffset;
         for (var n = 8; n > 0 ; n--){
           debug+="<span title='$"+ f(q,4) +"'"
-          q = getData(q)
-          mask = nthBit(q,n)
+          q2 = getData(q)
+          mask = nthBit(q2,n)
           value = mask
           if(value == 0){
             debug += " style='color:white'>"
