@@ -131,6 +131,29 @@ var debugData=function(){
         
         debug+=(i==7?"|":" ");
       }
+    }else if (mode == "graphiconly"){
+      var q=i+j*16 + debugOffset;
+        for (var n = 4; n > 0 ; n--){
+          debug+="<span title='$"+ f(q,4) +"'"
+          q = getData(q)
+          n2 = 2 * n
+          mask = (nthBit(q,n + 2) * 0b10) + nthBit(q,n + 1)
+          value = mask
+          if(value == 0){
+            debug += " style='color:white'>"
+          }else if(value == 1){
+            debug += " style='color:DarkGray'>"
+          }else if(value == 2){
+            debug += " style='color:DimGray'>"
+          }else{
+            debug += " style='color:black'>"
+          }
+          debug+= ■ +"</span>"
+        }
+        
+        
+        debug+=(i==7?"|":" ");
+      }
     }
     debug+="|  "
     for (var i=0;i<16;i++) {
