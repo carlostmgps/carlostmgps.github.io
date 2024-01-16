@@ -138,6 +138,29 @@ var debugData=function(){
         }
         debug+=" ";
       }
+    }else if(mode == "graphiconly"){
+      
+      for (var n = 0; n < rds*2 ; n+=2){
+        var q=n+j*rds*2 + debugOffset
+        for (var i = 8; i > 0 ; i--){
+          a = nthBit(getData(q),i)
+          b = nthBit(getData(q+1),i)
+          data = a*2 + b
+          debug+="<span title='$"+ f(q,4) +"'"
+          if(data==0b11){
+            debug += " style='color:black'>"
+          }else if(data==0b10){
+            debug += " style='color:DarkGray'>"
+          }else if(data==0b01){
+            debug += " style='color:DimGray'>"
+          }else if(data==0b00){
+            debug += " style='color:white'>"
+          }
+          debug += "■</span>"
+          
+        }
+        debug+=" ";
+      }
     }
     debug+="|  "
     for (var i=0;i<rds;i++) {
