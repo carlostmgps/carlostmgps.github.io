@@ -19,7 +19,6 @@
 </body>
 <script>
 
-
 function ascii(c){
   return ".................................!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~.€.‚ƒ„…†‡ˆ‰Š‹Œ.Ž..‘’“”•–—˜™š›œ.žŸ ¡¢£¤¥¦§¨©ª«¬.®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ".charAt(c)
   .replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -137,6 +136,7 @@ var debugData=function(){
       }
       for (var i = 7;i>-1;i--){
         data = list1[i]*2 + list2[i]
+        debug+="<span title='$"+ f(q,4) +"'"
         if(data==0b11){
           debug += " style='color:black'>"
         }else if(data==0b10){
