@@ -94,7 +94,7 @@ function getData(adr){
 var rds = 16;
 var PC = 0;
 var debugData=function(){
-  var debugOffset = (PC&0xFF00) - 0x0150;
+  var debugOffset = (PC&0xFF00);
   var debug = "";
   for (var j=0;j<60;j++) {
     
