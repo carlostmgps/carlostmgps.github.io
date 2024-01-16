@@ -3,12 +3,21 @@
   <title>OnlineGBRomEditor</title>
 </head>
 <body>
-  <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'> <br> PC:<input type="number" id="pc"> <br> <button onclick="downloadrom()">DownloadModifiedRom</button>
+  <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'> <br> PC:<input type="number" id="pc"> <br> <button onclick="downloadrom()">DownloadModifiedRom</button><br>
+  <select id="mode">
+    <option value="hexcode">Hex Code</option>
+    <option value="graphics">Graphics Mode</option>
+    <option value="asm">Assembly Mode</option>
+    <option value="dec">Dec Code</option>
+  </select>
+  
   <div id=dbg>
     <pre id=out></pre>
   </div>
 </body>
 <script>
+
+
 function ascii(c){
   return ".................................!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~.€.‚ƒ„…†‡ˆ‰Š‹Œ.Ž..‘’“”•–—˜™š›œ.žŸ ¡¢£¤¥¦§¨©ª«¬.®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ".charAt(c)
   .replace(/</g, '&lt;').replace(/>/g, '&gt;')
