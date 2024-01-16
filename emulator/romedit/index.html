@@ -109,7 +109,7 @@ var debugData=function(){
         debug+=(i==7?"|":" ");
       }else if(mode == "graphics"){
         var q=i+j*16 + debugOffset;
-        for (var n = 4; n > 1 ; n--){
+        for (var n = 4; n > 0 ; n--){
           debug+="<span title='$"+ f(q,4) +"'"
           q = getData(q)
           n2 = 2 * n
