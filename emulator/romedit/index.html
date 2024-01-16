@@ -114,7 +114,7 @@ var debugData=function(){
           q = getData(q)
           n2 = 2 * n
           mask = (nthBit(q,n + 2) * 0b10) + nthBit(q,n + 1)
-          value = mask >> (n*2)
+          value = mask
           if(value == 0){
             debug += " style='color:white'>"
           }else if(value == 1){
