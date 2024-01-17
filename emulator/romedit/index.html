@@ -98,8 +98,9 @@ var debugData=function(){
   console.log(debugOffset)
   var debug = "";
   for (var j=0;j<60;j++) {
-    
+    if (mode.includes("graphic")){ rds = rds * 2 };
     debug+= "$"+f(debugOffset + j*rds,4)+"   "
+    if (mode.includes("graphic")){ rds = rds / 2 };
     if (mode == "hexcode"){
       for (var i=0;i<rds;i++) {
         var q=i+j*rds + debugOffset;
