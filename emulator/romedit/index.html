@@ -93,7 +93,8 @@ function getData(adr){
 var rds = 16;
 var PC = 0;
 var debugData=function(){
-  var debugOffset = (PC&0xFF00);
+  var debugOffset = (Math.floor(PC / rds));
+  if (mode.contains("graphic")){ var debugOffset = Math.floor(PC/(rds*2)) };
   var debug = "";
   for (var j=0;j<60;j++) {
     
