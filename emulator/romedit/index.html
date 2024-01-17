@@ -163,6 +163,23 @@ var debugData=function(){
         }
         debug+=" ";
       }
+    }else if(mode == "bw"){
+      for (var n = 0; n < rds ; n+=1){
+        var q=n+j*rds + debugOffset
+        for (var i = 8; i > 0 ; i--){
+          a = nthBit(getData(q),i)
+          data = a
+          debug+="<span title='$"+ f(q,4) +"'"
+          if(data==0b01){
+            debug += " style='color:black'>"
+          }else if(data==0b00){
+            debug += " style='color:white'>"
+          }
+          debug += "■</span>"
+          
+        }
+        debug+=" ";
+      }
     }
     debug+="|  "
     for (var i=0;i<rds;i++) {
