@@ -4,11 +4,20 @@
 </head>
 <body>
   <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'> <br>
-  <textarea id=dbg style="width: 100%; height: 90vh;">
+  <input type="number" id="start" value="0" onchange="startin(this.value)"> <br>
+  <input type="number" id="finish" value="255" onchange="finishin(this.value)"> <br>
+  <textarea id=dbg style="width: 100%; height: 90vh; resize: none;">
   </textarea>
 </body>
 <script>
-
+var start = 0;
+var finish = 255;
+function startin(value){
+  start = parseInt(value,10)
+}
+function finishin(value){
+  finish = parseInt(value,10)
+}
 function ascii(c){
   return ".................................!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~.€.‚ƒ„…†‡ˆ‰Š‹Œ.Ž..‘’“”•–—˜™š›œ.žŸ ¡¢£¤¥¦§¨©ª«¬.®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ".charAt(c)
   .replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -330,7 +339,7 @@ op[0xff] = "RST 38H"
   
 function decompile(data){
   html = ""
-  for (var n = 0; n < data.length ; n++){
+  for (var n = start; n < finish ; n++){
     code = op[data[n]]
     if(code.includes("a16")){ code = code.replace("a16",hex(data[n+1] *16 + data[n+2])); n+=2; }
     if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
