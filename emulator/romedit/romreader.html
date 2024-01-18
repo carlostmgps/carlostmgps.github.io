@@ -345,7 +345,9 @@ function decompile(data){
     code = op[data[n]]
     html += hex(n);
     html +=" | "
-    if(code.includes("a16")){ code = code.replace("a16",hex(data[n+2] *256 + data[n+1])); n+=2; }
+    if(code.includes("a16") && code.includes("DL")){ code = code.replace("a16","DATA_" + hex(data[n+2] *256 + data[n+1])); html = adddbmark(html,idx,data); n+=2; }
+    if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(data[n+2] *256 + data[n+1])); html = addgloballocation(html, data[n+1] , "FUNC_" + hex(data[n+1]) + ":"); n+=2; }
+    if(code.includes("a16") && !code.includes("DL") && !code.includes("CALL")){ code = code.replace("a16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
     if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + data[n+1]))); html = addlocallocation(html, data[n+1] , n); n+=1; }
     if(code.includes("d16")){ code = code.replace("d16",hex(data[n+2] *256 + data[n+1])); n+=2; }
@@ -353,6 +355,18 @@ function decompile(data){
     html += "\n"
   }
   return html
+}
+function replaceRange(s, start, end, substitute) {
+    return s.substring(0, start) + substitute + s.substring(end);
+}
+function adddbmark(html,idx,data){
+  original = "\n" + hex(idx) + " | ";
+  firstidx = html.indexOf(original);
+  if (firstidx == -1){ return html }
+  lastidx = html.indexOf("\n", 5);
+  if (lastidx == -1){ return html }
+  if (html.includes(".db_" + hex(idx) + " \n       | " + hex(data[idx]))) { return html }
+  return replaceRange(html,start,end,".db_" + hex(idx) + " \n       | " + hex(data[idx]))
 }
 function formatneg(num){
   var final = num;
