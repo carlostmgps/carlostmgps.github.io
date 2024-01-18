@@ -4,8 +4,8 @@
 </head>
 <body>
   <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'> <br>
-  <input type="number" id="start" value="0" onchange="startin(this.value)"> <br>
-  <input type="number" id="finish" value="255" onchange="finishin(this.value)"> <br>
+  StartIdx:<input type="number" id="start" value="0" onchange="startin(this.value)"> <br>
+  FinishIdx:<input type="number" id="finish" value="255" onchange="finishin(this.value)"> <br>
   <textarea id=dbg style="width: 100%; height: 90vh; resize: none;">
   </textarea>
 </body>
@@ -13,10 +13,12 @@
 var start = 0;
 var finish = 255;
 function startin(value){
-  start = parseInt(value,10)
+  start = parseInt(value,10);
+  debugData();
 }
 function finishin(value){
-  finish = parseInt(value,10)
+  finish = parseInt(value,10);
+  debugData();
 }
 function ascii(c){
   return ".................................!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~.€.‚ƒ„…†‡ˆ‰Š‹Œ.Ž..‘’“”•–—˜™š›œ.žŸ ¡¢£¤¥¦§¨©ª«¬.®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ".charAt(c)
