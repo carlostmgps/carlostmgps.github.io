@@ -636,7 +636,7 @@ function decompile(data){
     if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
     if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + data[n+1]))); html = addlocallocation(html, data[n+1] , n); n+=1; }
     if(code.includes("d16")){ code = code.replace("d16",hex(data[n+2] *256 + data[n+1])); n+=2; }
-    if(code == "!PREFIXCB!") { code = op[data[n]] }
+    if(code == "!PREFIXCB!") { code = cb[data[n]] }
     html += code
     html += "\n"
   }
