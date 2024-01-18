@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>OnlineGBRomEditor v0.1</title>
+  <title>OnlineGBRomEditor v0.2</title>
 </head>
 <body>
   <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'>
@@ -342,7 +342,7 @@ function hex(data) {
   return "0x" + (data).toString(16)
 }
 var debugData=function(){
-  debug = decompile(rom)
+  debug = decompile(ROM)
   document.getElementById('debug').innerHTML=debug;
 };
 
