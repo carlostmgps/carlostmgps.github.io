@@ -331,9 +331,9 @@ function decompile(data){
   html = ""
   for (var n = 0; n < data.length ; n++){
     code = op[data[n]]
-    if(code.contains("a16")){ code = code.replace("a16",hex(data[n+1] *16 + data[n+2])); n+=2; }
-    if(code.contains("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
-    if(code.contains("r8")){ code = code.replace("r8",hex(data[n+1])); n+=1; }
+    if(code.includes("a16")){ code = code.replace("a16",hex(data[n+1] *16 + data[n+2])); n+=2; }
+    if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
+    if(code.includes("r8")){ code = code.replace("r8",hex(data[n+1])); n+=1; }
     html += code
     html += "\n"
   }
