@@ -344,6 +344,7 @@ function decompile(data){
     if(code.includes("a16")){ code = code.replace("a16",hex(data[n+1] *16 + data[n+2])); n+=2; }
     if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
     if(code.includes("r8")){ code = code.replace("r8",hex(data[n+1])); n+=1; }
+    if(code.includes("d16")){ code = code.replace("d16",hex(data[n+1] *16 + data[n+2])); n+=2; }
     html += code
     html += "\n"
   }
