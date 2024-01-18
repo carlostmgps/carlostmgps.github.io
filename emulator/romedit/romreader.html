@@ -1,0 +1,367 @@
+<html>
+<head>
+  <title>OnlineGBRomEditor v0.1</title>
+</head>
+<body>
+  <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'>
+  <textarea id=dbg>
+  </textarea>
+</body>
+<script>
+
+function ascii(c){
+  return ".................................!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~.€.‚ƒ„…†‡ˆ‰Š‹Œ.Ž..‘’“”•–—˜™š›œ.žŸ ¡¢£¤¥¦§¨©ª«¬.®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ".charAt(c)
+  .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+var bootCode = "31 FE FF AF 21 FF 9F 32 CB 7C 20 FB 21 26 FF 0E 11 3E 80 32 E2 0C 3E F3 E2 32 3E 77 77 3E FC E0 47 11 04 01 21 10 80 1A CD 95 00 CD 96 00 13 7B FE 34 20 F3 11 D8 00 06 08 1A 13 22 23 05 20 F9 3E 19 EA 10 99 21 2F 99 0E 0C 3D 28 08 32 0D 20 F9 2E 0F 18 F3 67 3E 64 57 E0 42 3E 91 E0 40 04 1E 02 0E 0C F0 44 FE 90 20 FA 0D 20 F7 1D 20 F2 0E 13 24 7C 1E 83 FE 62 28 06 1E C1 FE 64 20 06 7B E2 0C 3E 87 E2 F0 42 90 E0 42 15 20 D2 05 20 4F 16 20 18 CB 4F 06 04 C5 CB 11 17 C1 CB 11 17 05 20 F5 22 23 22 23 C9 CE ED 66 66 CC 0D 00 0B 03 73 00 83 00 0C 00 0D 00 08 11 1F 88 89 00 0E DC CC 6E E6 DD DD D9 99 BB BB 67 63 6E 0E EC CC DD DC 99 9F BB B9 33 3E 3C 42 B9 A5 B9 A5 42 3C 21 04 01 11 A8 00 1A 13 BE 20 FE 23 7D FE 34 20 F5 06 19 78 86 23 05 20 FB 86 20 FE 3E 01 E0 50".split(" ").map(x => parseInt(x,16))
+function f(a,l) {return ("0000"+a.toString(16).toUpperCase()).slice(-l||-2)}
+function toBuffer(uint8){
+  return uint8.buffer
+}
+function dl(name, byte) {
+    var blob = new Blob([byte], {type: "application/octet-stream"});
+    var link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    var fileName = name;
+    link.download = fileName;
+    link.click();
+};
+function downloadrom(){
+  if (ROM.length > 0) {
+    buf = toBuffer(ROM)
+    dl("createdrom.gb",buf)
+  }else{
+    alert("Error:ROM is empty!")
+  }
+}
+var ROM = new Uint8Array();
+
+var openFile = function(event) {
+  var input = event.target;
+  var reader = new FileReader();
+  reader.onload = function(){
+    console.log(reader.result)
+    ROM = new Uint8Array(reader.result);
+    console.log(ROM)
+    //Overwrite first page with bootcode
+    for (var i=0;i<256;i++) ROM[i]=bootCode[i];
+  };
+  reader.readAsArrayBuffer(input.files[0]);
+};
+
+var op = Array(256)
+
+op[0x00] = "NOP"
+op[0x01] = "LD BC,d16"
+op[0x02] = "LD (BC),A"
+op[0x03] = "INC BC"
+op[0x04] = "INC B"
+op[0x05] = "DEC B"
+op[0x06] = "LD B,d8"
+op[0x07] = "RLCA"
+op[0x08] = "LD (a16),SP"
+op[0x09] = "ADD HL,BC"
+op[0x0a] = "LD A,(BC)"
+op[0x0b] = "DEC BC"
+op[0x0c] = "INC C"
+op[0x0d] = "DEC C"
+op[0x0e] = "LD C,d8"
+op[0x0f] = "RRCA"
+  
+op[0x10] = "STOP"
+op[0x11] = "LD DE,d16"
+op[0x12] = "LD (DE),A"
+op[0x13] = "INC DE"
+op[0x14] = "INC D"
+op[0x15] = "DEC D"
+op[0x16] = "LD D,d8"
+op[0x17] = "RLA"
+op[0x18] = "JR r8"
+op[0x19] = "ADD HL,DE"
+op[0x1a] = "LD A,(DE)"
+op[0x1b] = "DEC DE"
+op[0x1c] = "INC E"
+op[0x1d] = "DEC E"
+op[0x1e] = "LD E,d8"
+op[0x1f] = "RRA"
+  
+op[0x20] = "JR NZ,r8"
+op[0x21] = "LD HL,d16"
+op[0x22] = "LD (HL+),A"
+op[0x23] = "INC HL"
+op[0x24] = "INC H"
+op[0x25] = "DEC H"
+op[0x26] = "LD H,d8"
+op[0x27] = "DAA"
+op[0x28] = "JR Z,r8"
+op[0x29] = "ADD HL,HL"
+op[0x2a] = "LD A,(HL+)"
+op[0x2b] = "DEC HL"
+op[0x2c] = "INC L"
+op[0x2d] = "DEC L"
+op[0x2e] = "LD L,d8"
+op[0x2f] = "CPL"
+  
+op[0x30] = "JR NC,r8"
+op[0x31] = "LD SP,d16"
+op[0x32] = "LD (HL-),A"
+op[0x33] = "INC SP"
+op[0x34] = "INC (HL)"
+op[0x35] = "DEC (HL)"
+op[0x36] = "LD (HL),d8"
+op[0x37] = "SCF"
+op[0x38] = "JR C,r8"
+op[0x39] = "ADD HL,SP"
+op[0x3a] = "LD A,(HL-)"
+op[0x3b] = "DEC SP"
+op[0x3c] = "INC A"
+op[0x3d] = "DEC A"
+op[0x3e] = "LD A,d8"
+op[0x3f] = "CCF"
+
+op[0x40] = "LD B,B"
+op[0x41] = "LD B,C"
+op[0x42] = "LD B,D"
+op[0x43] = "LD B,E"
+op[0x44] = "LD B,H"
+op[0x45] = "LD B,L"
+op[0x46] = "LD B,(HL)"
+op[0x47] = "LD B,A"
+op[0x48] = "LD C,B"
+op[0x49] = "LD C,C"
+op[0x4a] = "LD C,D"
+op[0x4b] = "LD C,E"
+op[0x4c] = "LD C,H"
+op[0x4d] = "LD C,L"
+op[0x4e] = "LD C,(HL)"
+op[0x4f] = "LD C,A"
+  
+op[0x50] = "LD D,B"
+op[0x51] = "LD D,C"
+op[0x52] = "LD D,D"
+op[0x53] = "LD D,E"
+op[0x54] = "LD D,H"
+op[0x55] = "LD D,L"
+op[0x56] = "LD D,(HL)"
+op[0x57] = "LD D,A"
+op[0x58] = "LD E,B"
+op[0x59] = "LD E,C"
+op[0x5a] = "LD E,D"
+op[0x5b] = "LD E,E"
+op[0x5c] = "LD E,H"
+op[0x5d] = "LD E,L"
+op[0x5e] = "LD E,(HL)"
+op[0x5f] = "LD E,A"
+
+op[0x60] = "LD H,B"
+op[0x61] = "LD H,C"
+op[0x62] = "LD H,D"
+op[0x63] = "LD H,E"
+op[0x64] = "LD H,H"
+op[0x65] = "LD H,L"
+op[0x66] = "LD H,(DL)"
+op[0x67] = "LD H,A"
+op[0x68] = "LD L,B"
+op[0x69] = "LD L,C"
+op[0x6a] = "LD L,D"
+op[0x6b] = "LD L,E"
+op[0x6c] = "LD L,H"
+op[0x6d] = "LD L,L"
+op[0x6e] = "LD L,(DL)"
+op[0x6f] = "LD L,A"
+
+op[0x70] = "LD (HL),B"
+op[0x71] = "LD (HL),C"
+op[0x72] = "LD (HL),D"
+op[0x73] = "LD (HL),E"
+op[0x74] = "LD (HL),H"
+op[0x75] = "LD (HL),L"
+op[0x76] = "HALT"
+op[0x77] = "LD (HL),A"
+op[0x78] = "LD A,B"
+op[0x79] = "LD A,C"
+op[0x7a] = "LD A,D"
+op[0x7b] = "LD A,E"
+op[0x7c] = "LD A,H"
+op[0x7d] = "LD A,L"
+op[0x7e] = "LD A,(HL)"
+op[0x7f] = "LD A,A"
+
+op[0x80] = "ADD A,B"
+op[0x81] = "ADD A,C"
+op[0x82] = "ADD A,D"
+op[0x83] = "ADD A,E"
+op[0x84] = "ADD A,H"
+op[0x85] = "ADD A,L"
+op[0x86] = "ADD A,(HL)"
+op[0x87] = "ADD A,A"
+op[0x88] = "ADC A,B"
+op[0x89] = "ADC A,C"
+op[0x8a] = "ADC A,D"
+op[0x8b] = "ADC A,E"
+op[0x8c] = "ADC A,H"
+op[0x8d] = "ADC A,L"
+op[0x8e] = "ADC A,(HL)"
+op[0x8f] = "ADC A,A"
+
+op[0x90] = "SUB B"
+op[0x91] = "SUB C"
+op[0x92] = "SUB D"
+op[0x93] = "SUB E"
+op[0x94] = "SUB H"
+op[0x95] = "SUB L"
+op[0x96] = "SUB (HL)"
+op[0x97] = "SUB A"
+op[0x98] = "SBC A,B"
+op[0x99] = "SBC A,C"
+op[0x9a] = "SBC A,D"
+op[0x9b] = "SBC A,E"
+op[0x9c] = "SBC A,H"
+op[0x9d] = "SBC A,L"
+op[0x9e] = "SBC A,(HL)"
+op[0x9f] = "SBC A,A"
+
+op[0xa0] = "AND B"
+op[0xa1] = "AND C"
+op[0xa2] = "AND D"
+op[0xa3] = "AND E"
+op[0xa4] = "AND H"
+op[0xa5] = "AND L"
+op[0xa6] = "AND (HL)"
+op[0xa7] = "AND A"
+op[0xa8] = "XOR B"
+op[0xa9] = "XOR C"
+op[0xaa] = "XOR D"
+op[0xab] = "XOR E"
+op[0xac] = "XOR H"
+op[0xad] = "XOR L"
+op[0xae] = "XOR (HL)"
+op[0xaf] = "XOR A"
+
+op[0xb0] = "OR B"
+op[0xb1] = "OR C"
+op[0xb2] = "OR D"
+op[0xb3] = "OR E"
+op[0xb4] = "OR H"
+op[0xb5] = "OR L"
+op[0xb6] = "OR (HL)"
+op[0xb7] = "OR A"
+op[0xb8] = "CP B"
+op[0xb9] = "CP C"
+op[0xba] = "CP D"
+op[0xbb] = "CP E"
+op[0xbc] = "CP H"
+op[0xbd] = "CP L"
+op[0xbe] = "CP (HL)"
+op[0xbf] = "CP A"
+
+op[0xc0] = "RET NZ"
+op[0xc1] = "POP BC"
+op[0xc2] = "JP NZ,a16"
+op[0xc3] = "JP a16"
+op[0xc4] = "CALL NZ,a16"
+op[0xc5] = "PUSH BC"
+op[0xc6] = "ADD A,d8"
+op[0xc7] = "RST 00H"
+op[0xc8] = "RET Z"
+op[0xc9] = "RET"
+op[0xca] = "JP Z,a16"
+op[0xcb] = "!PREFIXCB!"
+op[0xcc] = "CALL Z,a16"
+op[0xcd] = "CALL a16"
+op[0xce] = "ADC A,d8"
+op[0xcf] = "RST 08H"
+
+op[0xd0] = "RET NC"
+op[0xd1] = "POP DE"
+op[0xd2] = "JP NC,a16"
+op[0xd3] = ""
+op[0xd4] = "CALL NC,a16"
+op[0xd5] = "PUSH DE"
+op[0xd6] = "SUB d8"
+op[0xd7] = "RST 10H"
+op[0xd8] = "RET C"
+op[0xd9] = "RETI"
+op[0xda] = "JP C,a16"
+op[0xdb] = ""
+op[0xdc] = "CALL C,a16"
+op[0xdd] = ""
+op[0xde] = "SBC A,d8"
+op[0xdf] = "RST 18H"
+
+
+op[0xe0] = "LDH (a8),A"
+op[0xe1] = "POP HL"
+op[0xe2] = "LD (C),A"
+op[0xe3] = ""
+op[0xe4] = ""
+op[0xe5] = "PUSH HL"
+op[0xe6] = "AND d8"
+op[0xe7] = "RST 20H"
+op[0xe8] = "ADD SP,r8"
+op[0xe9] = "JP (HL)"
+op[0xea] = "LD (a16),A"
+op[0xeb] = ""
+op[0xec] = ""
+op[0xed] = ""
+op[0xee] = "XOR d8"
+op[0xef] = "RST 28H"
+
+op[0xf0] = "LDH A,(a8)"
+op[0xf1] = "POP AF"
+op[0xf2] = "LD A,(C)"
+op[0xf3] = "DI"
+op[0xf4] = ""
+op[0xf5] = "PUSH AF"
+op[0xf6] = "OR d8"
+op[0xf7] = "RST 30H"
+op[0xf8] = "LD HL,SP+r8"
+op[0xf9] = "LD SP,HL"
+op[0xfa] = "LD A,(a16)"
+op[0xfb] = "EI"
+op[0xfc] = ""
+op[0xfd] = ""
+op[0xfe] = "CP d8"
+op[0xff] = "RST 38H"
+
+
+  
+function decompile(data){
+  html = ""
+  for (var n = 0; n < data.length ; n++){
+    code = op[data[n]]
+    if(code.contains("a16")){ code = code.replace("a16",hex(data[n+1] *16 + data[n+2])); n+=2; }
+    if(code.contains("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
+    if(code.contains("r8")){ code = code.replace("r8",hex(data[n+1])); n+=1; }
+    html += code
+    html += "\n"
+  }
+}
+function hex(data) {
+  return "0x" + (data).toString(16)
+}
+var debugData=function(){
+  debug = decompile(rom)
+  document.getElementById('debug').innerHTML=debug;
+};
+
+function nthBit(n, k)
+{
+    return((n & (1 << (k - 1))) >> (k - 1));
+}
+
+
+function dec2bin(dec) {
+  return (dec >>> 0).toString(2);
+}
+
+setInterval(debugData,1000)
+
+
+
+
+
+  
+</script>
+</html>
