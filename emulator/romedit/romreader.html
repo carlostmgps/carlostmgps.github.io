@@ -341,14 +341,27 @@ function decompile(data){
   html = ""
   for (var n = start; n < finish ; n++){
     code = op[data[n]]
+    html += hex(n);
+    html +=" | "
     if(code.includes("a16")){ code = code.replace("a16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
-    if(code.includes("r8")){ code = code.replace("r8",hex(data[n+1])); n+=1; }
+    if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(data[n+1])); html = addlocallocation(html, data[n+1] , n ,"ADDR_" + hex(data[n+1]) ); n+=1; }
     if(code.includes("d16")){ code = code.replace("d16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     html += code
     html += "\n"
   }
   return html
+}
+function addlocallocation(html , localidx , nowidx , marker){
+  if ((localidx + nowidx) > 256){
+    localidx = localidx - 254
+  }
+  globalidx = nowidx + localidx
+  return addgloballocation(html , globalidx , marker)
+}
+function addgloballocation(html , globalidx , marker){
+  original = "\n" + hex(globalidx) + " | "
+  return html.replace(original , "\n" + marker + "\n" + hex(globalidx) + " | ")
 }
 function hex(data) {
   return "0x" + (data).toString(16)
