@@ -371,6 +371,7 @@ function addlocallocation(html , localidx , nowidx){
 }
 function addgloballocation(html , globalidx , marker){
   original = "\n" + hex(globalidx) + " | "
+  if (html.includes(marker)) { return html }
   return html.replace(original , "\n" + marker + "\n" + hex(globalidx) + " | ")
 }
 function hex(data) {
