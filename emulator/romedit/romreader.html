@@ -343,11 +343,11 @@ function decompile(data){
   html = ""
   for (var n = start; n < finish ; n++){
     code = op[data[n]]
-    html += zeroPad(hex(n));
+    html += hex(zeroPad(n));
     html +=" | "
     if(code.includes("a16")){ code = code.replace("a16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
-    if(code.includes("r8")){ code = code.replace("r8","ADDR_" + formatneg(hex(data[n+1]))); html = addlocallocation(html, data[n+1] , n); n+=1; }
+    if(code.includes("r8")){ code = code.replace("r8","ADDR_" + formatneg(hex(data[n+1]) + n)); html = addlocallocation(html, data[n+1] , n); n+=1; }
     if(code.includes("d16")){ code = code.replace("d16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     html += code
     html += "\n"
@@ -366,12 +366,12 @@ function addlocallocation(html , localidx , nowidx){
     localidx -= 254
   }
   globalidx = nowidx + localidx
-  var marker = "ADDR_" + zeroPad(hex(globalidx)) + ":"
+  var marker = "ADDR_" + hex(zeroPad(globalidx)) + ":"
   return addgloballocation(html , globalidx , marker)
 }
 function addgloballocation(html , globalidx , marker){
   original = "\n" + zeroPad(hex(globalidx)) + " | "
-  return html.replace(original , "\n" + marker + "\n" + zeroPad(hex(globalidx)) + " | ")
+  return html.replace(original , "\n" + marker + "\n" + hex(zeroPad(globalidx)) + " | ")
 }
 function hex(data) {
   return "0x" + (data).toString(16)
