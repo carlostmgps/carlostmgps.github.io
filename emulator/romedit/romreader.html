@@ -343,7 +343,7 @@ function decompile(data){
   html = ""
   for (var n = start; n < finish ; n++){
     code = op[data[n]]
-    html += hex(zeroPad(n));
+    html += hex(n);
     html +=" | "
     if(code.includes("a16")){ code = code.replace("a16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
@@ -366,15 +366,15 @@ function addlocallocation(html , localidx , nowidx){
     localidx -= 254
   }
   globalidx = nowidx + localidx
-  var marker = "ADDR_" + hex(zeroPad(globalidx)) + ":"
+  var marker = "ADDR_" + hex(globalidx) + ":"
   return addgloballocation(html , globalidx , marker)
 }
 function addgloballocation(html , globalidx , marker){
-  original = "\n" + zeroPad(hex(globalidx)) + " | "
-  return html.replace(original , "\n" + marker + "\n" + hex(zeroPad(globalidx)) + " | ")
+  original = "\n" + hex(globalidx) + " | "
+  return html.replace(original , "\n" + marker + "\n" + hex(globalidx) + " | ")
 }
 function hex(data) {
-  return "0x" + (data).toString(16)
+  return "0x" + zeroPad((data).toString(16))
 }
 var debugData=function(){
   debug = decompile(ROM)
