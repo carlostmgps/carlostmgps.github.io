@@ -630,7 +630,7 @@ function decompile(data){
     html += hex(n);
     html +=" | "
     if(code.includes("a16") && code.includes("DL")){ code = code.replace("a16","DATA_" + hex(data[n+2] *256 + data[n+1])); html = adddbmark(html,idx,data); n+=2; }
-    if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(data[n+2] *256 + data[n+1])); html = addgloballocation(html, data[n+1] , "FUNC_" + hex(data[n+2] *256 + data[n+1]) + ":"); n+=2; }
+    if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(data[n+2] *256 + data[n+1])); html = addgloballocation(html, data[n+2]*256 + data[n+1] , "FUNC_" + hex(data[n+2] *256 + data[n+1]) + ":"); n+=2; }
     if(code.includes("a16") && !code.includes("DL") && !code.includes("CALL")){ code = code.replace("a16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     if(code.includes("a8")){ code = code.replace("a8","0xFF00+" + hex(data[n+1])); n+=1; }
     if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
