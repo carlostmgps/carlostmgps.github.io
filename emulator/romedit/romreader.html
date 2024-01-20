@@ -668,7 +668,7 @@ function addlocallocation(html , localidx , nowidx){
   globalidx = nowidx + localidx
   
   var marker = "ADDR_" + hex(globalidx) + ":"
-  console.log("doing local mark for :" + localidx + ",marker is:" + marker)
+  console.log("doing local mark for :" + nowidx + ",marker is:" + marker)
   return addgloballocation(html , globalidx , marker)
 }
 function addgloballocation(html , globalidx , marker){
