@@ -671,6 +671,7 @@ function adddbmark(html){
     if (html.includes(".db_" + hex(idx) + " \n       | " + hex(data[idx]))) { continue; }
     html = replaceRange(html,start,end,".db_" + hex(idx) + " \n       | " + hex(data[idx]))
   }
+  return html
 }
 function formatneg(num){
   var final = num;
@@ -690,7 +691,7 @@ function addlocallocation(html , localidx , nowidx){
 }
 function lateaddgloballocation(html , globalidx , marker){
   original = "\n" + hex(globalidx) + " | "
-  if (html.includes(marker)) { return html }
+  if (html.includes(marker)) { continue; }
   globalori = [...globalori,original]
   globalfin = [...globalfin,"\n\n" + marker + "\n" + hex(globalidx) + " | "]
 }
@@ -698,9 +699,10 @@ function addgloballocation(html){
   for (var n3 = 0; n3 < globalori.length;n3++){
     original = globalori[n3];
     fin = globalfin[n3];
-    if (html.includes(fin)) { return html }
+    if (html.includes(fin)) { continue; }
     html = html.replace(original , fin)
   }
+  return html
 }
 
 function hex(data) {
