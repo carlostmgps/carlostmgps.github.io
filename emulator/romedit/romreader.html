@@ -689,7 +689,7 @@ function lateaddgloballocation(html , globalidx , marker){
   globalfin = [...globalfin,"\n\n" + marker + "\n" + hex(globalidx) + " | "]
 }
 function addgloballocation(html){
-  for (var n3 = 0; n3 , globalori.length,n3++){
+  for (var n3 = 0; n3 < globalori.length;n3++){
     original = globalori[n3];
     fin = globalfin[n3];
     if (html.includes(fin)) { return html }
