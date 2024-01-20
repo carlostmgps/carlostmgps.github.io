@@ -642,6 +642,10 @@ function decompile(data){
   }
   html = adddbmark(html);
   html = addgloballocation(html);
+  dbidx = []
+  dbdata = []
+  globalori = []
+  globalfin = []
   return html
 }
 function replaceRange(s, start, end, substitute) {
@@ -649,6 +653,8 @@ function replaceRange(s, start, end, substitute) {
 }
 var dbidx = []
 var dbdata = []
+var globalori = []
+var globalfin = []
 function lateadddbmark(idx,data){
   dbidx = [...dbidx,idx]
   dbdata = [...dbdata,data]
