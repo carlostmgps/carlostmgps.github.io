@@ -623,7 +623,6 @@ function zeroPad(num) {
 function decompile(data){
   html = ""
   for (var n = start; n < finish ; n++){
-  console.log(String(n) + " : " + data[n])
     code = op[data[n]]
     if(code == ""){
 	continue;
@@ -667,7 +666,9 @@ function addlocallocation(html , localidx , nowidx){
     localidx -= 254
   }
   globalidx = nowidx + localidx
+  
   var marker = "ADDR_" + hex(globalidx) + ":"
+  console.log("doing local mark for :" + localidx + ",marker is:" + marker)
   return addgloballocation(html , globalidx , marker)
 }
 function addgloballocation(html , globalidx , marker){
