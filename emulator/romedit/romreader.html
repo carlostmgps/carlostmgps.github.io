@@ -629,30 +629,42 @@ function decompile(data){
     }
     html += hex(n);
     html +=" | "
-    if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(data[n+2] *256 + data[n+1])); html = adddbmark(html,data[n+2] *256 + data[n+1],data); n+=2; }
-    if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(data[n+2] *256 + data[n+1])); html = addgloballocation(html, data[n+2] * 256 + data[n+1] , "FUNC_" + hex(data[n+2] *256 + data[n+1]) + ":"); n+=2; }
+    if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(data[n+2] *256 + data[n+1])); lateadddbmark(data[n+2] *256 + data[n+1],data); n+=2; }
+    if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(data[n+2] *256 + data[n+1])); addgloballocation(html, data[n+2] * 256 + data[n+1] , "FUNC_" + hex(data[n+2] *256 + data[n+1]) + ":"); n+=2; }
     if(code.includes("a16") && !code.includes("LD") && !code.includes("CALL")){ code = code.replace("a16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     if(code.includes("a8")){ code = code.replace("a8","0xFF00+" + hex(data[n+1])); n+=1; }
     if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
-    if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + data[n+1]))); html = addlocallocation(html, data[n+1] , n); n+=1; }
+    if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + data[n+1]))); addlocallocation(html, data[n+1] , n); n+=1; }
     if(code.includes("d16")){ code = code.replace("d16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     if(code == "!PREFIXCB!") { code = cb[data[n+1]]; n+=1 }
     html += code
     html += "\n"
   }
+  html = adddbmark(html);
+  html = addgloballocation(html);
   return html
 }
 function replaceRange(s, start, end, substitute) {
     return s.substring(0, start) + substitute + s.substring(end);
 }
-function adddbmark(html,idx,data){
-  original = "\n" + hex(idx) + " | ";
-  firstidx = html.indexOf(original);
-  if (firstidx == -1){ return html }
-  lastidx = html.indexOf("\n", 5);
-  if (lastidx == -1){ return html }
-  if (html.includes(".db_" + hex(idx) + " \n       | " + hex(data[idx]))) { return html }
-  return replaceRange(html,start,end,".db_" + hex(idx) + " \n       | " + hex(data[idx]))
+var dbidx = []
+var dbdata = []
+function lateadddbmark(idx,data){
+  dbidx = [...dbidx,idx]
+  dbdata = [...dbdata,data]
+}
+function adddbmark(html){
+  for(var n2 = 0; n2 < dbidx.length; n2++){
+    idx = dbidx[n2]
+    data = dbdata[n2]
+    original = "\n" + hex(idx) + " | ";
+    firstidx = html.indexOf(original);
+    if (firstidx == -1){ continue; }
+    lastidx = html.indexOf("\n", 5);
+    if (lastidx == -1){ continue; }
+    if (html.includes(".db_" + hex(idx) + " \n       | " + hex(data[idx]))) { continue; }
+    html = replaceRange(html,start,end,".db_" + hex(idx) + " \n       | " + hex(data[idx]))
+  }
 }
 function formatneg(num){
   var final = num;
@@ -668,18 +680,23 @@ function addlocallocation(html , localidx , nowidx){
   globalidx = nowidx + localidx
   
   var marker = "ADDR_" + hex(globalidx) + ":"
-  console.log("doing local mark for :" + nowidx + ",marker is:" + marker)
-  return addgloballocation(html , globalidx , marker)
+  lateaddgloballocation(html , globalidx , marker)
 }
-function addgloballocation(html , globalidx , marker){
+function lateaddgloballocation(html , globalidx , marker){
   original = "\n" + hex(globalidx) + " | "
   if (html.includes(marker)) { return html }
-  if(!html.includes(original)){
-      console.log(html)
-      console.log(original)
-  }
-  return html.replace(original , "\n\n" + marker + "\n" + hex(globalidx) + " | ")
+  globalori = [...globalori,original]
+  globalfin = [...globalfin,"\n\n" + marker + "\n" + hex(globalidx) + " | "]
 }
+function addgloballocation(html){
+  for (var n3 = 0; n3 , globalori.length,n3++){
+    original = globalori[n3];
+    fin = globalfin[n3];
+    if (html.includes(fin)) { return html }
+    html = html.replace(original , fin)
+  }
+}
+
 function hex(data) {
   return "0x" + zeroPad((data).toString(16))
 }
