@@ -623,8 +623,11 @@ function zeroPad(num) {
 function decompile(data){
   html = ""
   for (var n = start; n < finish ; n++){
-    console.log("decompiling")
+  console.log(n + " : " + data[n])
     code = op[data[n]]
+    if(var n = start; n < finish;n++){
+	continue;
+    }
     html += hex(n);
     html +=" | "
     if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(data[n+2] *256 + data[n+1])); html = adddbmark(html,idx,data); n+=2; }
@@ -689,7 +692,7 @@ function nthBit(n, k)
 function dec2bin(dec) {
   return (dec >>> 0).toString(2);
 }
-start = document.getElementById("fileinput")
+var rominput = document.getElementById("fileinput")
 
 function select(title,selections){
     selected = "YES";
@@ -716,17 +719,17 @@ async function UrlFile(url, name, defaultType = 'application/octet-stream') {
 function insertInput(myFile) {
   const dataTransfer = new DataTransfer();
   dataTransfer.items.add(myFile);
-  start.files = dataTransfer.files;
+  rominput.files = dataTransfer.files;
 }
 
 function trigger(){
   if ("createEvent" in document) {
     var evt = document.createEvent("HTMLEvents");
     evt.initEvent("change", false, true);
-    start.dispatchEvent(evt);
+    rominput.dispatchEvent(evt);
   }
   else
-    start.fireEvent("onchange");
+    rominput.fireEvent("onchange");
 }
 function useOnlineRom(){
     alert("OnlineRomSelections");
