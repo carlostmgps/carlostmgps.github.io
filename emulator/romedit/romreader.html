@@ -624,9 +624,6 @@ function decompile(data){
   html = ""
   for (var n = start; n < finish ; n++){
     code = op[data[n]]
-    if (code == ""){
-      continue;
-    }
     html += hex(n);
     html +=" | "
     if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(data[n+2] *256 + data[n+1])); html = adddbmark(html,idx,data); n+=2; }
