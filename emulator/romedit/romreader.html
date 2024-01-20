@@ -623,6 +623,7 @@ function zeroPad(num) {
 function decompile(data){
   html = ""
   for (var n = start; n < finish ; n++){
+    console.log("decompiling")
     code = op[data[n]]
     html += hex(n);
     html +=" | "
