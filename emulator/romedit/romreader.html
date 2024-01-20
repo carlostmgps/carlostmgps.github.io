@@ -635,7 +635,8 @@ function decompile(data){
     if(code.includes("a16") && !code.includes("LD") && !code.includes("CALL")){ code = code.replace("a16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     if(code.includes("a8")){ code = code.replace("a8","0xFF00+" + hex(data[n+1])); n+=1; }
     if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
-    if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + 2 + data[n+1]))); addlocallocation(html, 2 + data[n+1], n); n+=1; }
+    if(data[n+1] - 254 < 0){ var offset = 2; }else{ var offset = 0;}
+    if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + offset + data[n+1]))); addlocallocation(html, offset + data[n+1], n); n+=1; }
     if(code.includes("d16")){ code = code.replace("d16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     if(code == "!PREFIXCB!") { code = cb[data[n+1]]; n+=1 }
     html += code
