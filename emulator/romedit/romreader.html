@@ -674,7 +674,10 @@ function addlocallocation(html , localidx , nowidx){
 function addgloballocation(html , globalidx , marker){
   original = "\n" + hex(globalidx) + " | "
   if (html.includes(marker)) { return html }
-  console.log(html.includes(original))
+  if(!html.includes(original)){
+      console.log(html)
+      console.log(original)
+  }
   return html.replace(original , "\n\n" + marker + "\n" + hex(globalidx) + " | ")
 }
 function hex(data) {
