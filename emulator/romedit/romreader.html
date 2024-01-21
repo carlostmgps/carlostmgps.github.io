@@ -4,8 +4,8 @@
 </head>
 <body>
   <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'> <br>
-  StartIdx:<input type="number" id="start" value="0" onchange="startin(this.value)"> <br>
-  FinishIdx:<input type="number" id="finish" value="255" onchange="finishin(this.value)"> <br>
+  <input type="number" style="display: none;" id="start" value="0" onchange="startin(this.value)"> <br>
+  <input type="number" style="display: none;" id="finish" value="255" onchange="finishin(this.value)"> <br>
   <textarea id=dbg style="width: 100%; height: 90vh; resize: none;">
   </textarea>
 </body>
