@@ -5,13 +5,13 @@
 <body>
   <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'> <br>
   <input type="number" style="display: none;" id="start" value="0" onchange="startin(this.value)"> <br>
-  <input type="number" style="display: none;" id="finish" value="255" onchange="finishin(this.value)"> <br>
+  <input type="number" style="display: none;" id="finish" value="65536" onchange="finishin(this.value)"> <br>
   <textarea id=dbg style="width: 100%; height: 90vh; resize: none;">
   </textarea>
 </body>
 <script>
 var start = 0;
-var finish = 255;
+var finish = 65536;
 function startin(value){
   start = parseInt(value,10);
   debugData();
@@ -651,8 +651,8 @@ function decompile(){
     if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
     if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(readMem(n+2) *256 + readMem(n+1))); lateaddgloballocation(html, readMem(n+2) * 256 + readMem(n+1) , "FUNC_" + hex(readMem(n+2) *256 + readMem(n+1)) + ":"); n+=2; }
     if(code.includes("a16") && !code.includes("LD") && !code.includes("CALL")){ code = code.replace("a16",hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
-    if(code.includes("a8")){ code = code.replace("a8","0xFF00+" + hex(readMem(n+1)); n+=1; }
-    if(code.includes("d8")){ code = code.replace("d8",hex(readMem(n+1)); n+=1; }
+    if(code.includes("a8")){ code = code.replace("a8","0xFF00+" + hex(readMem(n+1))); n+=1; }
+    if(code.includes("d8")){ code = code.replace("d8",hex(readMem(n+1))); n+=1; }
     
     if((readMem(n+1) & 0x80) == 0){ offset = 2; }
     if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + offset + readMem(n+1)))); addlocallocation(html, offset + readMem(n+1), n); n+=1; }
