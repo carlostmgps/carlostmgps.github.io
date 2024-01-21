@@ -623,6 +623,7 @@ function zeroPad(num) {
 function decompile(data){
   html = ""
   var offset = 0
+  var ret = [];
   for (var n = start; n < finish ; n++){
     code = op[data[n]]
     codeidx = data[n]
@@ -643,9 +644,13 @@ function decompile(data){
     if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + offset + data[n+1]))); addlocallocation(html, offset + data[n+1], n); n+=1; }
     if(code.includes("d16")){ code = code.replace("d16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     if(code == "!PREFIXCB!") { code = cb[data[n+1]]; n+=1 }
+    if(code == "RET"){
+      ret = [...ret,n]
+    }
     html += code
     html += "\n"
   }
+  html = extradb(data,ret);
   html = adddbmark(html);
   html = addgloballocation(html);
   dbidx = []
@@ -657,6 +662,18 @@ function decompile(data){
 function readddbmark(data){
   lateadddbmark(0,data)
 }
+function extradb(data,ret){
+  for(var j = 0;j < ret.length;j++){
+    start = ret[j]
+    n = start
+    while(!globallist.includes(n)){
+      n++;
+    }
+    for(var m = start; m < n ; m++){
+      lateadddbmark(m,data)
+    }
+  }
+}
 function replaceRange(s, start, end, substitute) {
     return s.substring(0, start) + substitute + s.substring(end);
 }
@@ -664,6 +681,7 @@ var dbidx = []
 var dbdata = []
 var globalori = []
 var globalfin = []
+var globallist = []
 function lateadddbmark(idx,data){
   dbidx = [...dbidx,idx]
   dbdata = [...dbdata,data]
@@ -680,6 +698,8 @@ function adddbmark(html){
     if (html.includes(".db_" + hex(idx) + " \n       | " + hex(data[idx]))) { continue; }
     html = replaceRange(html,start,end,".db_" + hex(idx) + " \n       | " + hex(data[idx]))
   }
+  dbidx = []
+  dbdata = []
   return html
 }
 function formatneg(num){
@@ -701,6 +721,7 @@ function addlocallocation(html , localidx , nowidx){
 function lateaddgloballocation(html , globalidx , marker){
   original = "\n" + hex(globalidx) + " | "
   globalori = [...globalori,original]
+  globallist = [...globallist,globalidx]
   globalfin = [...globalfin,"\n\n" + marker + "\n" + hex(globalidx) + " | "]
 }
 function addgloballocation(html){
@@ -710,6 +731,9 @@ function addgloballocation(html){
     if (html.includes(fin)) { continue; }
     html = html.replace(original , fin)
   }
+  globalori = []
+  globalfin = []
+  globallist = []
   return html
 }
 
