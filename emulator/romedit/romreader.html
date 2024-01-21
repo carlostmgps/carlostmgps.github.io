@@ -649,19 +649,21 @@ function decompile(data){
     html += code
     html += "\n"
   }
-  extradb(data,ret);
+  alert("doing extra db")
+  alert("ret:" + ret)
+  alert("globallist:" + globallist)
+  extradb(data,ret,globallist);
   html = adddbmark(html);
   html = addgloballocation(html);
   dbidx = []
   dbdata = []
   globalori = []
   globalfin = []
+  globallist = []
   return html
 }
-function readddbmark(data){
-  lateadddbmark(0,data)
-}
-function extradb(data,ret){
+
+function extradb(data,ret,globallist){
   for(var j = 0;j < ret.length;j++){
     start = ret[j]
     n = start
