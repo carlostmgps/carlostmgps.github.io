@@ -652,7 +652,6 @@ function decompile(data){
   alert("extradb finished")
   try{
     html = adddbmark(html);
-    alert("added db mark,now html:" + html)
   }catch(e){
     alert(e)
     console.log(e)
@@ -693,15 +692,14 @@ function lateadddbmark(idx,data){
 }
 function adddbmark(html){
   for(var n2 = 0; n2 < dbidx.length; n2++){
-    alert("adding the" + n2 + " db mark")
     idx = dbidx[n2]
     data = dbdata[n2]
     original = "\n" + hex(idx) + " | ";
     firstidx = html.indexOf(original);
     if (firstidx == -1){ continue; }
-    lastidx = html.indexOf("\n", firstidx);
+    lastidx = html.indexOf("\n", firstidx+6);
     if (lastidx == -1){ continue; }
-    if (html.includes(".db_" + hex(idx) + " \n       | " + hex(data[idx]))) { continue; }
+    if (html.includes("\n.db_" + hex(idx) + " \n       | " + hex(data[idx]))) { continue; }
     html = replaceRange(html,firstidx,lastidx,".db_" + hex(idx) + " \n       | " + hex(data[idx]))
   }
   dbidx = []
