@@ -52,7 +52,6 @@ var openFile = function(event) {
   var input = event.target;
   var reader = new FileReader();
   reader.onload = function(){
-    console.log(reader.result)
     ROM = new Uint8Array(reader.result);
     
     //Overwrite first page with bootcode
@@ -650,8 +649,13 @@ function decompile(data){
     html += "\n"
   }
   extradb(data,ret,globallist);
-  html = adddbmark(html);
-  alert("added db mark,now html:" + html)
+  alert("extradb finished")
+  try{
+    html = adddbmark(html);
+    alert("added db mark,now html:" + html)
+  }catch(e){
+    console.log(e)
+  }
   html = addgloballocation(html);
   alert("added global,html:" + html)
   dbidx = []
@@ -669,6 +673,7 @@ function extradb(data,ret,globallist){
     while(!globallist.includes(n)){
       n++;
     }
+    console.log("dbmark from" + m + "to" + n)
     for(var m = start; m < n ; m++){
       lateadddbmark(m,data)
     }
