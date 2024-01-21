@@ -638,7 +638,7 @@ cb[0xff] = "SET 7,A"
 function zeroPad(num) {
   return num.toString().padStart(4, "0");
 }
-function decompile(data){
+function decompile(){
   html = ""
   var offset = 0
   var ret = [];
@@ -658,7 +658,7 @@ function decompile(data){
     if(code.includes("d8")){ code = code.replace("d8",hex(readMem(n+1)); n+=1; }
     
     if((readMem(n+1) & 0x80) == 0){ offset = 2; }
-    if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + offset + data[n+1]))); addlocallocation(html, offset + data[n+1], n); n+=1; }
+    if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + offset + readMem(n+1)))); addlocallocation(html, offset + readMem(n+1), n); n+=1; }
     if(code.includes("d16")){ code = code.replace("d16",hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
     if(code == "!PREFIXCB!") { code = cb[readMem(n+1)]; n+=1 }
     if(code == "RET"){
@@ -667,7 +667,7 @@ function decompile(data){
     html += code
     html += "\n"
   }
-  extradb(data,ret,globallist);
+  extradb(ret,globallist);
   
   try{
     html = adddbmark(html);
@@ -677,14 +677,13 @@ function decompile(data){
   }
   html = addgloballocation(html);
   dbidx = []
-  dbdata = []
   globalori = []
   globalfin = []
   globallist = []
   return html
 }
 
-function extradb(data,ret,globallist){
+function extradb(ret,globallist){
   for(var j = 0;j < ret.length;j++){
     start = ret[j]
     n = start + 1
@@ -693,7 +692,7 @@ function extradb(data,ret,globallist){
     }
     console.log("dbmark from" + start + "to" + n)
     for(var m = start + 1; m < n ; m++){
-      lateadddbmark(m,data)
+      lateadddbmark(m)
     }
   }
 }
@@ -701,29 +700,26 @@ function replaceRange(s, start, end, substitute) {
     return s.substring(0, start) + substitute + s.substring(end);
 }
 var dbidx = []
-var dbdata = []
+
 var globalori = []
 var globalfin = []
 var globallist = []
-function lateadddbmark(idx,data){
+function lateadddbmark(idx){
   dbidx = [...dbidx,idx]
-  dbdata = [...dbdata,data]
 }
 function adddbmark(html){
   for(var n2 = 0; n2 < dbidx.length; n2++){
     idx = dbidx[n2]
-    data = dbdata[n2]
     original = "\n" + hex(idx) + " | ";
     firstidx = html.indexOf(original);
     if (firstidx == -1){ continue; }
     lastidx = html.indexOf("\n", firstidx+6);
     if (lastidx == -1){ continue; }
-    var sub = "\n.db_" + hex(idx) + " | " + hex(data[idx])
+    var sub = "\n.db_" + hex(idx) + " | " + hex(readMem(idx))
     if (html.includes(sub)) { continue; }
     html = replaceRange(html,firstidx,lastidx,sub)
   }
   dbidx = []
-  dbdata = []
   return html
 }
 function formatneg(num){
