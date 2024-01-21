@@ -54,7 +54,7 @@ var openFile = function(event) {
   reader.onload = function(){
     console.log(reader.result)
     ROM = new Uint8Array(reader.result);
-    console.log(ROM)
+    
     //Overwrite first page with bootcode
     for (var i=0;i<256;i++) ROM[i]=bootCode[i];
     debugData()
