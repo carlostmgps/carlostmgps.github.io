@@ -657,7 +657,6 @@ function decompile(data){
     console.log(e)
   }
   html = addgloballocation(html);
-  alert("added global,html:" + html)
   dbidx = []
   dbdata = []
   globalori = []
@@ -673,7 +672,7 @@ function extradb(data,ret,globallist){
     while(!globallist.includes(n)){
       n++;
     }
-    console.log("dbmark from" + m + "to" + n)
+    console.log("dbmark from" + start + "to" + n)
     for(var m = start; m < n ; m++){
       lateadddbmark(m,data)
     }
@@ -701,7 +700,7 @@ function adddbmark(html){
     lastidx = html.indexOf("\n", 5);
     if (lastidx == -1){ continue; }
     if (html.includes(".db_" + hex(idx) + " \n       | " + hex(data[idx]))) { continue; }
-    html = replaceRange(html,start,end,".db_" + hex(idx) + " \n       | " + hex(data[idx]))
+    html = replaceRange(html,firstidx,lastidx,".db_" + hex(idx) + " \n       | " + hex(data[idx]))
   }
   dbidx = []
   dbdata = []
