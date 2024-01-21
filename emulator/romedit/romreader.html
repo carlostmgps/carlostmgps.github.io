@@ -649,11 +649,7 @@ function decompile(data){
     html += code
     html += "\n"
   }
-  alert("doing extra db")
-  alert("ret:" + ret)
-  alert("globallist:" + globallist)
   extradb(data,ret,globallist);
-  alert("extradb finished")
   html = adddbmark(html);
   alert("added db mark,now html:" + html)
   html = addgloballocation(html);
@@ -673,7 +669,6 @@ function extradb(data,ret,globallist){
     while(!globallist.includes(n)){
       n++;
     }
-    alert("adding db mark from" + start + "to" + n)
     for(var m = start; m < n ; m++){
       lateadddbmark(m,data)
     }
