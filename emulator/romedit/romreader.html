@@ -699,8 +699,9 @@ function adddbmark(html){
     if (firstidx == -1){ continue; }
     lastidx = html.indexOf("\n", firstidx+6);
     if (lastidx == -1){ continue; }
-    if (html.includes("\n.db_" + hex(idx) + " | " + hex(data[idx]))) { continue; }
-    html = replaceRange(html,firstidx,lastidx,".db_" + hex(idx) + " \n       | " + hex(data[idx]))
+    var sub = "\n.db_" + hex(idx) + " | " + hex(data[idx])
+    if (html.includes(sub)) { continue; }
+    html = replaceRange(html,firstidx,lastidx,sub)
   }
   dbidx = []
   dbdata = []
