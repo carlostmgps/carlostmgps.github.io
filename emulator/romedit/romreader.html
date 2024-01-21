@@ -668,12 +668,12 @@ function decompile(data){
 function extradb(data,ret,globallist){
   for(var j = 0;j < ret.length;j++){
     start = ret[j]
-    n = start
+    n = start + 1
     while(!globallist.includes(n)){
       n++;
     }
     console.log("dbmark from" + start + "to" + n)
-    for(var m = start; m < n ; m++){
+    for(var m = start + 1; m < n ; m++){
       lateadddbmark(m,data)
     }
   }
