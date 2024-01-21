@@ -51,16 +51,12 @@ var MEM = new Uint8Array(0x10000); // Main address space
 var ROMbank =0
 var ROMbankoffset = (ROMbank-1)*0x4000;
 
-var cartRAM = new Uint8Array(0x8000); // some carts have up to 128K of ram?
+
 var RAMbank =0; 
 var RAMbankoffset = RAMbank*0x2000 - 0xA000;
 function readMem(addr){
   if (addr <= 0x3fff) return ROM[ addr ];
   if (addr <= 0x7fff) return ROM[ addr + ROMbankoffset ];
-
-  // Cartridge RAM
-  if (addr >= 0xA000 && addr <=0xBFFF) return cartRAM[ addr + RAMbankoffset ];
-
   return 0;
 }
 function changerombank(bank){
@@ -647,24 +643,24 @@ function decompile(data){
   var offset = 0
   var ret = [];
   for (var n = start; n < finish ; n++){
-    code = op[data[n]]
-    codeidx = data[n]
+    code = op[readMem(n)]
+    codeidx = readMem(n)
     if(code == ""){
 	continue;
     }
     html += hex(n);
     html +=" | "
     offset = 0
-    if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(data[n+2] *256 + data[n+1])); n+=2; }
-    if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(data[n+2] *256 + data[n+1])); lateaddgloballocation(html, data[n+2] * 256 + data[n+1] , "FUNC_" + hex(data[n+2] *256 + data[n+1]) + ":"); n+=2; }
-    if(code.includes("a16") && !code.includes("LD") && !code.includes("CALL")){ code = code.replace("a16",hex(data[n+2] *256 + data[n+1])); n+=2; }
-    if(code.includes("a8")){ code = code.replace("a8","0xFF00+" + hex(data[n+1])); n+=1; }
-    if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
+    if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
+    if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(readMem(n+2) *256 + readMem(n+1))); lateaddgloballocation(html, readMem(n+2) * 256 + readMem(n+1) , "FUNC_" + hex(readMem(n+2) *256 + readMem(n+1)) + ":"); n+=2; }
+    if(code.includes("a16") && !code.includes("LD") && !code.includes("CALL")){ code = code.replace("a16",hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
+    if(code.includes("a8")){ code = code.replace("a8","0xFF00+" + hex(readMem(n+1)); n+=1; }
+    if(code.includes("d8")){ code = code.replace("d8",hex(readMem(n+1)); n+=1; }
     
-    if((data[n+1] & 0x80) == 0){ offset = 2; }
+    if((readMem(n+1) & 0x80) == 0){ offset = 2; }
     if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + offset + data[n+1]))); addlocallocation(html, offset + data[n+1], n); n+=1; }
-    if(code.includes("d16")){ code = code.replace("d16",hex(data[n+2] *256 + data[n+1])); n+=2; }
-    if(code == "!PREFIXCB!") { code = cb[data[n+1]]; n+=1 }
+    if(code.includes("d16")){ code = code.replace("d16",hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
+    if(code == "!PREFIXCB!") { code = cb[readMem(n+1)]; n+=1 }
     if(code == "RET"){
       ret = [...ret,n]
     }
