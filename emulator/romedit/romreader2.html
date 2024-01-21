@@ -5,13 +5,13 @@
 <body>
   <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'> <br>
   <input type="number" style="display: none;" id="start" value="0" onchange="startin(this.value)"> <br>
-  <input type="number" style="display: none;" id="finish" value="65536" onchange="finishin(this.value)"> <br>
+  <input type="number" style="display: none;" id="finish" value="255" onchange="finishin(this.value)"> <br>
   <textarea id=dbg style="width: 100%; height: 90vh; resize: none;">
   </textarea>
 </body>
 <script>
 var start = 0;
-var finish = 65536;
+var finish = 255;
 function startin(value){
   start = parseInt(value,10);
   debugData();
@@ -52,8 +52,6 @@ var ROMbank =0
 var ROMbankoffset = (ROMbank-1)*0x4000;
 
 
-var RAMbank =0; 
-var RAMbankoffset = RAMbank*0x2000 - 0xA000;
 function readMem(addr){
   if (addr <= 0x3fff) return ROM[ addr ];
   if (addr <= 0x7fff) return ROM[ addr + ROMbankoffset ];
@@ -78,7 +76,7 @@ var openFile = function(event) {
     try{
       debugData()
     }catch(e){
-      alert(e)
+      alert(e);
     }
   };
   reader.readAsArrayBuffer(input.files[0]);
