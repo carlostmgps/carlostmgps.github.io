@@ -75,7 +75,11 @@ var openFile = function(event) {
     
     //Overwrite first page with bootcode
     for (var i=0;i<256;i++) ROM[i]=bootCode[i];
-    debugData()
+    try{
+      debugData()
+    }catch(e){
+      alert(e)
+    }
   };
   reader.readAsArrayBuffer(input.files[0]);
 };
