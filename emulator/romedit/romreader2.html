@@ -47,7 +47,6 @@ function downloadrom(){
   }
 }
 var ROM = new Uint8Array();
-var MEM = new Uint8Array(0x10000); // Main address space
 var ROMbank = 1;
 var ROMbankoffset = (ROMbank-1)*0x4000;
 
@@ -60,10 +59,6 @@ function readMem(addr){
 function changerombank(bank){
   ROMbank = bank
   ROMbankoffset = (ROMbank-1)*0x4000;
-}
-function changerambank(bank){
-  RAMbank = bank
-  RAMbankoffset = RAMbank*0x2000 - 0xA000;
 }
 var openFile = function(event) {
   var input = event.target;
