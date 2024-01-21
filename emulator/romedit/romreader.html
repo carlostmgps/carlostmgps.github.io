@@ -632,7 +632,7 @@ function decompile(data){
     html += hex(n);
     html +=" | "
     offset = 0
-    if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(data[n+2] *256 + data[n+1])); lateadddbmark(data[n+2] *256 + data[n+1],data); n+=2; }
+    if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(data[n+2] *256 + data[n+1])); n+=2; }
     if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(data[n+2] *256 + data[n+1])); lateaddgloballocation(html, data[n+2] * 256 + data[n+1] , "FUNC_" + hex(data[n+2] *256 + data[n+1]) + ":"); n+=2; }
     if(code.includes("a16") && !code.includes("LD") && !code.includes("CALL")){ code = code.replace("a16",hex(data[n+2] *256 + data[n+1])); n+=2; }
     if(code.includes("a8")){ code = code.replace("a8","0xFF00+" + hex(data[n+1])); n+=1; }
