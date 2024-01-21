@@ -638,7 +638,7 @@ function decompile(data){
     if(code.includes("a8")){ code = code.replace("a8","0xFF00+" + hex(data[n+1])); n+=1; }
     if(code.includes("d8")){ code = code.replace("d8",hex(data[n+1])); n+=1; }
     
-    if(data[n+1] & 0x80 == 0){ offset = 2; }
+    if((data[n+1] & 0x80) == 0){ offset = 2; }
     if(n == 0x8f){alert("0x8f local:"); alert(data[n+1]); alert(data[n+1] & 0x80); alert(offset);}
     if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + offset + data[n+1]))); addlocallocation(html, offset + data[n+1], n); n+=1; }
     if(code.includes("d16")){ code = code.replace("d16",hex(data[n+2] *256 + data[n+1])); n+=2; }
