@@ -128,6 +128,7 @@ function readMem(addr){
 function changerombank(bank){
   ROMbank = bank
   ROMbankoffset = (ROMbank-1)*0x4000;
+  debugdata()
 }
 var openFile = function(event) {
   var input = event.target;
