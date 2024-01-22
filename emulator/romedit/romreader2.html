@@ -16,120 +16,65 @@ function doMBC(addr, data){
 
   // Cartridge Type = ROM[0x147]
 
-  case 0: // ROM ONLY
+  case 0:
+    return "ROM ONLY"
     // do any type 0 carts have switchable ram?
-  break;
+  case 0x01:
+    return "MBC1"
+  case 0x02:
+    return "MBC1+RAM"
+  case 0x03:
+    return "MBC1+RAM+BATTERY"
+  case 0x05:
+    return "MBC2"
+  case 0x06:
+    return "MBC2+BATTERY"
+  case 0x08:
+    return "ROM+RAM"
+  case 0x09:
+    return "ROM+RAM+BATTERY"
+  case 0x0B:
+    return "MMM01"
+  case 0x0C:
+    return "MMM01+RAM"
+  case 0x0D:
+    return "MMM01+RAM+BATTERY"
+  case 0x0F:
+    return "MBC3+TIMER+BATTERY"
+  case 0x10:
+    return "MBC3+TIMER+RAM+BATTERY"
+  case 0x11:
+    return "MBC3"
+  case 0x12:
+    return "MBC3+RAM"
+  case 0x13:
+    return "MBC3+RAM+BATTERY"
+  case 0x19:
+    return "MBC5"
+  case 0x1A:
+    return "MBC5+RAM"
+  case 0x1B:
+    return "MBC5+RAM+BATTERY"
+  case 0x1C:
+    return "MBC5+RUMBLE"
+  case 0x1D:
+    return "MBC5+RUMBLE+RAM"
+  case 0x1E:
+    return "MBC5+RUMBLE+RAM+BATTERY"
+  case 0x20:
+    return "MBC6"
+  case 0x22:
+    return "MBC7+SENSOR+RUMBLE+RAM+BATTERY"
+  case 0xFC:
+    return "POCKET CAMERA"
+  case 0xFD:
+    return "BANDAI TAMA5"
+  case 0xFE:
+    return "HuC3"
+  case 0xFF:
+    return "HuC1+RAM+BATTERY"
 
-  case 0x01: //  MBC1
-  case 0x02: //  MBC1+RAM
-  case 0x03: //  MBC1+RAM+BATTERY
-    if (addr <= 0x1FFF) {
-      RAMenabled = ((data & 0x0F) == 0xA) 
-    } else if (addr <= 0x3FFF){
-      data &= 0x1F;
-      if (data==0) data=1 // MBC1 translates bank 0 to bank 1 (apparently regardless of upper bits)
-      // set lowest 5 bits of bank number
-      ROMbank = (ROMbank&0xE0)|(data&0x1F);
-      ROMbankoffset = (ROMbank-1)*0x4000 %ROM.length;
-    } else if (addr<=0x5fff) {
-      data &= 0x3
-      if (MBCRamMode==0) {
-        ROMbank = (ROMbank&0x1F)|(data<<5);
-        ROMbankoffset = (ROMbank-1)*0x4000  %ROM.length;
-      } else {
-        RAMbank=data;
-        RAMbankoffset = RAMbank*0x2000 - 0xA000
-      }
-    } else {
-      MBCRamMode = data&1;
-      if (MBCRamMode==0) {
-        RAMbank=0;
-        RAMbankoffset = RAMbank*0x2000 - 0xA000
-      } else {
-        ROMbank &=0x1F;
-        ROMbankoffset = (ROMbank-1)*0x4000  %ROM.length;
-      }
-    }
-    
-  break;
-
-  case 0x05: //  MBC2
-  case 0x06: //  MBC2+BATTERY
-    
-    if (addr <= 0x1FFF) {
-      if ((addr&0x0100) ==0)
-        RAMenabled = ((data & 0x0F) == 0xA) 
-    } else if (addr <= 0x3FFF){
-      data &=0x0F;
-      if (data==0) data=1
-      ROMbank = data;
-      ROMbankoffset = (ROMbank-1)*0x4000 %ROM.length;
-    }
-
-  break;
-
-  // case 0x08: //  ROM+RAM
-  // case 0x09: //  ROM+RAM+BATTERY
-  // case 0x0B: //  MMM01
-  // case 0x0C: //  MMM01+RAM
-  // case 0x0D: //  MMM01+RAM+BATTERY
-  // case 0x0F: //  MBC3+TIMER+BATTERY
-  case 0x10: //  MBC3+TIMER+RAM+BATTERY
-  case 0x11: //  MBC3
-  case 0x12: //  MBC3+RAM
-  case 0x13: //  MBC3+RAM+BATTERY
-
-    if (addr <= 0x1FFF) {
-      RAMenabled = ((data & 0x0F) == 0xA) 
-    } else if (addr <= 0x3FFF){
-      if (data==0) data=1 // allows access to banks 0x20, 0x40, 0x60
-      ROMbank = data&0x7F;
-      ROMbankoffset = (ROMbank-1)*0x4000 %ROM.length;
-    } else if (addr<=0x5fff) {
-      if (data < 8) {
-        RAMbank=data;
-        RAMbankoffset = RAMbank*0x2000 - 0xA000
-      } else{
-        // RTC registers here
-      }
-    } else {
-      // RTC latch
-    }
-  break;
-
-  case 0x19: //  MBC5
-  case 0x1A: //  MBC5+RAM
-  case 0x1B: //  MBC5+RAM+BATTERY
-  // case 0x1C: //  MBC5+RUMBLE
-  // case 0x1D: //  MBC5+RUMBLE+RAM
-  // case 0x1E: //  MBC5+RUMBLE+RAM+BATTERY
-    if (addr <= 0x1FFF) {
-      RAMenabled = ((data & 0x0F) == 0xA) 
-    } else if (addr <= 0x2FFF){
-      // Allows access to bank 0
-      ROMbank &= 0x100;
-      ROMbank |= data;
-      ROMbankoffset = (ROMbank-1)*0x4000;
-      while (ROMbankoffset>ROM.length) ROMbankoffset-=ROM.length;
-    } else if (addr <= 0x3FFF){
-      ROMbank &= 0xFF;
-      if (data&1) ROMbank+=0x100;
-      ROMbankoffset = (ROMbank-1)*0x4000;
-      while (ROMbankoffset>ROM.length) ROMbankoffset-=ROM.length;
-    } else if (addr<=0x5fff) {
-      RAMbank=data&0x0F;
-      RAMbankoffset = RAMbank*0x2000 - 0xA000
-    }
-  break;
-
-  // case 0x20: //  MBC6
-  // case 0x22: //  MBC7+SENSOR+RUMBLE+RAM+BATTERY
-  // case 0xFC: //  POCKET CAMERA
-  // case 0xFD: //  BANDAI TAMA5
-  // case 0xFE: //  HuC3
-  // case 0xFF: //  HuC1+RAM+BATTERY
-
-    default: throw Error("Unimplemented memory controller");
+    default: return "Unimplemented memory controller"
 
   }
 }
