@@ -4,14 +4,15 @@
 </head>
 <body>
   <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'> <br>
-  <input type="number" style="display: none;" id="start" value="0" onchange="startin(this.value)"> <input type="number" id="bank" value="0" onchange="changerombank(this.value)"> <br>
+  <input type="number" style="display: none;" id="start" value="0" onchange="startin(this.value)"> RomBank:<input type="number" id="bank" value="0" onchange="changerombank(this.value)"> <br>
   <input type="number" style="display: none;" id="finish" value="65536" onchange="finishin(this.value)"> <br>
+  <p id="mbc"></p>
   <textarea id=dbg style="width: 100%; height: 90vh; resize: none;">
   </textarea>
 </body>
 <script>
-function doMBC(addr, data){
-
+function doMBC(){
+  
   switch (ROM[0x147]) {
 
   // Cartridge Type = ROM[0x147]
@@ -128,14 +129,14 @@ function readMem(addr){
 function changerombank(bank){
   ROMbank = bank
   ROMbankoffset = (ROMbank-1)*0x4000;
-  debugdata()
+  debugData()
 }
 var openFile = function(event) {
   var input = event.target;
   var reader = new FileReader();
   reader.onload = function(){
     ROM = new Uint8Array(reader.result);
-    
+    document.getElementById('mbc').innerHTML=doMBC();
     //Overwrite first page with bootcode
     for (var i=0;i<256;i++) ROM[i]=bootCode[i];
     try{
