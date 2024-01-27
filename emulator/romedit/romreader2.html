@@ -127,9 +127,9 @@ function readMem(addr){
   return 0;
 }
 function changerombank(bank){
-  ROMbank = bank
+  ROMbank = parseInt(bank);
   ROMbankoffset = (ROMbank-1)*0x4000;
-  debugData()
+  debugData();
 }
 var openFile = function(event) {
   var input = event.target;
@@ -753,13 +753,13 @@ function decompile(){
 
 function extradb(ret,globallist){
   for(var j = 0;j < ret.length;j++){
-    start = ret[j]
-    n = start + 1
+    startvalue = ret[j]
+    n = startvalue + 1
     while(!globallist.includes(n)){
       n++;
     }
-    console.log("dbmark from" + start + "to" + n)
-    for(var m = start + 1; m < n ; m++){
+    // console.log("dbmark from" + startvalue + "to" + n)
+    for(var m = startvalue + 1; m < n ; m++){
       lateadddbmark(m)
     }
   }
@@ -829,7 +829,7 @@ function hex(data) {
   return "0x" + zeroPad((data).toString(16))
 }
 var debugData=function(){
-  debug = decompile(ROM)
+  debug = decompile(ROM);
   document.getElementById('dbg').innerHTML=debug;
 };
 
