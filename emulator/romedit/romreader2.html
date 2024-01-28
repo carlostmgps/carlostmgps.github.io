@@ -19,10 +19,10 @@
 <body>
   <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'> <br>
   <input type="number" style="display: none;" id="start" value="0" onchange="startin(this.value)"> RomBank:<input type="number" id="bank" value="1" onchange="changerombank(this.value)"> <br>
-  <input type="number" style="display: none;" id="finish" value="65536" onchange="finishin(this.value)"> <br>
+  <input type="number" style="display: none;" id="finish" value="65536" onchange="finishin(this.value)">
   <button onclick="useOnlineRom()">OnlineRoms</button>
   <p id="mbc"></p>
-  <div class=textarea id=dbg style="width: 100%; height: 90vh;">
+  <div class=textarea id=dbg style="width: 100%; height: 85vh;">
   </div>
 </body>
 <script>
