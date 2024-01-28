@@ -864,6 +864,14 @@ async function UrlFile(url, name, defaultType = 'application/octet-stream') {
     type: data.type || defaultType,
   })
 }
+function rangeStr(n){
+    r = [...Array(n).keys()]
+    t = [...Array(n).keys()]
+    for (let i = 0;i < n;i++) {
+        t[i] = String(r[i] + 1)
+    }
+    return t
+}
 
 
 function insertInput(myFile) {
@@ -881,6 +889,7 @@ function trigger(){
   else
     rominput.fireEvent("onchange");
 }
+
 function useOnlineRom(){
     alert("OnlineRomSelections");
     sel = [["red","blue","green","yellow"],["normal"],["dreamland","dreamland2"]];
