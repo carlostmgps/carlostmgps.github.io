@@ -845,6 +845,7 @@ function hex(data) {
 }
 var debugData=function(){
   debug = decompile(ROM);
+  debug = debug.replace('/n','<br>')
   document.getElementById('dbg').innerHTML=debug;
 };
 
