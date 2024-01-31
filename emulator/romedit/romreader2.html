@@ -146,6 +146,16 @@ function changerombank(bank){
   ROMbankoffset = (ROMbank-1)*0x4000;
   debugData();
 }
+function arrayDiff(a, b) {
+    let difference = [];
+    for (let i = 0; i < a.length; i++) {
+        if (b[i] != a[i]) {
+            difference.push([i,a[i],b[i]]);
+        }
+    }
+    return difference;
+};
+
 var openFile = function(event) {
   var input = event.target;
   var reader = new FileReader();
