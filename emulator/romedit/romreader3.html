@@ -20,7 +20,7 @@
   <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'> <br>
   <input type="number" style="display: none;" id="start" value="0" onchange="startin(this.value)"> RomBank:<input type="number" id="bank" value="1" onchange="changerombank(this.value)"> <br>
   <input type="number" style="display: none;" id="finish" value="65536" onchange="finishin(this.value)">
-  <button onclick="useOnlineRom()">OnlineRoms</button><button onclick="downloadrom()">DownloadRom</button><button onclick="calsum()">CalculateCheckSum</button>
+  <button onclick="useOnlineRom()">OnlineRoms</button><button onclick="downloadrom()">DownloadRom</button><button onclick="checksum(ROM)">CalculateCheckSum</button>
   <p id="mbc"></p>
   <div class=textarea id=dbg style="width: 100%; height: 85vh;">
   </div>
@@ -155,7 +155,17 @@ function arrayDiff(a, b) {
     }
     return difference;
 };
-
+function checksum(MEM){
+  var x = 0;
+  var p = 0x0134;
+  for(i=0;i!=0x19;i++){
+     x=x-MEM[i]-1;
+     if(x < 0){
+	x += 256
+     }
+  }
+  alert(x);
+}
 var openFile = function(event) {
   var input = event.target;
   var reader = new FileReader();
