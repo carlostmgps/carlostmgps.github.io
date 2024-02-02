@@ -1,0 +1,934 @@
+<html>
+<head>
+  <title>OnlineGBRomEditor v0.3</title>
+</head>
+<style>
+  .textarea {
+    -moz-appearance: textfield-multiline;
+    -webkit-appearance: textarea;
+    border: 1px solid gray;
+    font: medium -moz-fixed;
+    font: -webkit-small-control;
+    height: 28px;
+    overflow: auto;
+    padding: 2px;
+    resize: none;
+    width: 400px;
+  }
+</style>
+<body>
+  <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'> <br>
+  <input type="number" style="display: none;" id="start" value="0" onchange="startin(this.value)"> RomBank:<input type="number" id="bank" value="1" onchange="changerombank(this.value)"> <br>
+  <input type="number" style="display: none;" id="finish" value="65536" onchange="finishin(this.value)">
+  <button onclick="useOnlineRom()">OnlineRoms</button><button onclick="downloadrom()">DownloadRom</button><button onclick="calsum()">CalculateCheckSum</button>
+  <p id="mbc"></p>
+  <div class=textarea id=dbg style="width: 100%; height: 85vh;">
+  </div>
+</body>
+<script>
+function doMBC(){
+  
+  switch (ROM[0x147]) {
+
+  // Cartridge Type = ROM[0x147]
+
+  case 0:
+    return "ROM ONLY"
+    // do any type 0 carts have switchable ram?
+  case 0x01:
+    return "MBC1"
+  case 0x02:
+    return "MBC1+RAM"
+  case 0x03:
+    return "MBC1+RAM+BATTERY"
+  case 0x05:
+    return "MBC2"
+  case 0x06:
+    return "MBC2+BATTERY"
+  case 0x08:
+    return "ROM+RAM"
+  case 0x09:
+    return "ROM+RAM+BATTERY"
+  case 0x0B:
+    return "MMM01"
+  case 0x0C:
+    return "MMM01+RAM"
+  case 0x0D:
+    return "MMM01+RAM+BATTERY"
+  case 0x0F:
+    return "MBC3+TIMER+BATTERY"
+  case 0x10:
+    return "MBC3+TIMER+RAM+BATTERY"
+  case 0x11:
+    return "MBC3"
+  case 0x12:
+    return "MBC3+RAM"
+  case 0x13:
+    return "MBC3+RAM+BATTERY"
+  case 0x19:
+    return "MBC5"
+  case 0x1A:
+    return "MBC5+RAM"
+  case 0x1B:
+    return "MBC5+RAM+BATTERY"
+  case 0x1C:
+    return "MBC5+RUMBLE"
+  case 0x1D:
+    return "MBC5+RUMBLE+RAM"
+  case 0x1E:
+    return "MBC5+RUMBLE+RAM+BATTERY"
+  case 0x20:
+    return "MBC6"
+  case 0x22:
+    return "MBC7+SENSOR+RUMBLE+RAM+BATTERY"
+  case 0xFC:
+    return "POCKET CAMERA"
+  case 0xFD:
+    return "BANDAI TAMA5"
+  case 0xFE:
+    return "HuC3"
+  case 0xFF:
+    return "HuC1+RAM+BATTERY"
+
+    default: return "Unimplemented memory controller"
+
+  }
+}
+
+var start = 0;
+var finish = 65536;
+function startin(value){
+  start = parseInt(value,10);
+  debugData();
+}
+function finishin(value){
+  finish = parseInt(value,10);
+  debugData();
+}
+function ascii(c){
+  return ".................................!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~.€.‚ƒ„…†‡ˆ‰Š‹Œ.Ž..‘’“”•–—˜™š›œ.žŸ ¡¢£¤¥¦§¨©ª«¬.®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ".charAt(c)
+  .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+var bootCode = "31 FE FF AF 21 FF 9F 32 CB 7C 20 FB 21 26 FF 0E 11 3E 80 32 E2 0C 3E F3 E2 32 3E 77 77 3E FC E0 47 11 04 01 21 10 80 1A CD 95 00 CD 96 00 13 7B FE 34 20 F3 11 D8 00 06 08 1A 13 22 23 05 20 F9 3E 19 EA 10 99 21 2F 99 0E 0C 3D 28 08 32 0D 20 F9 2E 0F 18 F3 67 3E 64 57 E0 42 3E 91 E0 40 04 1E 02 0E 0C F0 44 FE 90 20 FA 0D 20 F7 1D 20 F2 0E 13 24 7C 1E 83 FE 62 28 06 1E C1 FE 64 20 06 7B E2 0C 3E 87 E2 F0 42 90 E0 42 15 20 D2 05 20 4F 16 20 18 CB 4F 06 04 C5 CB 11 17 C1 CB 11 17 05 20 F5 22 23 22 23 C9 CE ED 66 66 CC 0D 00 0B 03 73 00 83 00 0C 00 0D 00 08 11 1F 88 89 00 0E DC CC 6E E6 DD DD D9 99 BB BB 67 63 6E 0E EC CC DD DC 99 9F BB B9 33 3E 3C 42 B9 A5 B9 A5 42 3C 21 04 01 11 A8 00 1A 13 BE 20 FE 23 7D FE 34 20 F5 06 19 78 86 23 05 20 FB 86 20 FE 3E 01 E0 50".split(" ").map(x => parseInt(x,16))
+function f(a,l) {return ("0000"+a.toString(16).toUpperCase()).slice(-l||-2)}
+function toBuffer(uint8){
+  return uint8.buffer
+}
+function dl(name, byte) {
+    var blob = new Blob([byte], {type: "application/octet-stream"});
+    var link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    var fileName = name;
+    link.download = fileName;
+    link.click();
+};
+function downloadrom(){
+  if (ROM.length > 0) {
+    buf = toBuffer(ROM)
+    dl("createdrom.gb",buf)
+  }else{
+    alert("Error:ROM is empty!")
+  }
+}
+var ROM = new Uint8Array();
+var ROMbank = 1;
+var ROMbankoffset = (ROMbank-1)*0x4000;
+
+
+function readMem(addr){
+  if (addr <= 0x3fff) return ROM[ addr ];
+  if (addr <= 0x7fff) return ROM[ addr + ROMbankoffset ];
+  return 0;
+}
+function changerombank(bank){
+  ROMbank = parseInt(bank);
+  ROMbankoffset = (ROMbank-1)*0x4000;
+  debugData();
+}
+function arrayDiff(a, b) {
+    let difference = [];
+    for (let i = 0; i < a.length; i++) {
+        if (b[i] != a[i]) {
+            difference.push([i,a[i],b[i]]);
+        }
+    }
+    return difference;
+};
+
+var openFile = function(event) {
+  var input = event.target;
+  var reader = new FileReader();
+  reader.onload = function(){
+    ROM = new Uint8Array(reader.result);
+    document.getElementById('mbc').innerHTML=doMBC();
+    //Overwrite first page with bootcode
+    for (var i=0;i<256;i++) ROM[i]=bootCode[i];
+    try{
+      debugData()
+    }catch(e){
+      alert(e);
+    }
+  };
+  reader.readAsArrayBuffer(input.files[0]);
+};
+
+var op = Array(256)
+
+op[0x00] = "NOP"
+op[0x01] = "LD BC,d16"
+op[0x02] = "LD (BC),A"
+op[0x03] = "INC BC"
+op[0x04] = "INC B"
+op[0x05] = "DEC B"
+op[0x06] = "LD B,d8"
+op[0x07] = "RLCA"
+op[0x08] = "LD (a16),SP"
+op[0x09] = "ADD HL,BC"
+op[0x0a] = "LD A,(BC)"
+op[0x0b] = "DEC BC"
+op[0x0c] = "INC C"
+op[0x0d] = "DEC C"
+op[0x0e] = "LD C,d8"
+op[0x0f] = "RRCA"
+  
+op[0x10] = "STOP"
+op[0x11] = "LD DE,d16"
+op[0x12] = "LD (DE),A"
+op[0x13] = "INC DE"
+op[0x14] = "INC D"
+op[0x15] = "DEC D"
+op[0x16] = "LD D,d8"
+op[0x17] = "RLA"
+op[0x18] = "JR r8"
+op[0x19] = "ADD HL,DE"
+op[0x1a] = "LD A,(DE)"
+op[0x1b] = "DEC DE"
+op[0x1c] = "INC E"
+op[0x1d] = "DEC E"
+op[0x1e] = "LD E,d8"
+op[0x1f] = "RRA"
+  
+op[0x20] = "JR NZ,r8"
+op[0x21] = "LD HL,d16"
+op[0x22] = "LD (HL+),A"
+op[0x23] = "INC HL"
+op[0x24] = "INC H"
+op[0x25] = "DEC H"
+op[0x26] = "LD H,d8"
+op[0x27] = "DAA"
+op[0x28] = "JR Z,r8"
+op[0x29] = "ADD HL,HL"
+op[0x2a] = "LD A,(HL+)"
+op[0x2b] = "DEC HL"
+op[0x2c] = "INC L"
+op[0x2d] = "DEC L"
+op[0x2e] = "LD L,d8"
+op[0x2f] = "CPL"
+  
+op[0x30] = "JR NC,r8"
+op[0x31] = "LD SP,d16"
+op[0x32] = "LD (HL-),A"
+op[0x33] = "INC SP"
+op[0x34] = "INC (HL)"
+op[0x35] = "DEC (HL)"
+op[0x36] = "LD (HL),d8"
+op[0x37] = "SCF"
+op[0x38] = "JR C,r8"
+op[0x39] = "ADD HL,SP"
+op[0x3a] = "LD A,(HL-)"
+op[0x3b] = "DEC SP"
+op[0x3c] = "INC A"
+op[0x3d] = "DEC A"
+op[0x3e] = "LD A,d8"
+op[0x3f] = "CCF"
+
+op[0x40] = "LD B,B"
+op[0x41] = "LD B,C"
+op[0x42] = "LD B,D"
+op[0x43] = "LD B,E"
+op[0x44] = "LD B,H"
+op[0x45] = "LD B,L"
+op[0x46] = "LD B,(HL)"
+op[0x47] = "LD B,A"
+op[0x48] = "LD C,B"
+op[0x49] = "LD C,C"
+op[0x4a] = "LD C,D"
+op[0x4b] = "LD C,E"
+op[0x4c] = "LD C,H"
+op[0x4d] = "LD C,L"
+op[0x4e] = "LD C,(HL)"
+op[0x4f] = "LD C,A"
+  
+op[0x50] = "LD D,B"
+op[0x51] = "LD D,C"
+op[0x52] = "LD D,D"
+op[0x53] = "LD D,E"
+op[0x54] = "LD D,H"
+op[0x55] = "LD D,L"
+op[0x56] = "LD D,(HL)"
+op[0x57] = "LD D,A"
+op[0x58] = "LD E,B"
+op[0x59] = "LD E,C"
+op[0x5a] = "LD E,D"
+op[0x5b] = "LD E,E"
+op[0x5c] = "LD E,H"
+op[0x5d] = "LD E,L"
+op[0x5e] = "LD E,(HL)"
+op[0x5f] = "LD E,A"
+
+op[0x60] = "LD H,B"
+op[0x61] = "LD H,C"
+op[0x62] = "LD H,D"
+op[0x63] = "LD H,E"
+op[0x64] = "LD H,H"
+op[0x65] = "LD H,L"
+op[0x66] = "LD H,(DL)"
+op[0x67] = "LD H,A"
+op[0x68] = "LD L,B"
+op[0x69] = "LD L,C"
+op[0x6a] = "LD L,D"
+op[0x6b] = "LD L,E"
+op[0x6c] = "LD L,H"
+op[0x6d] = "LD L,L"
+op[0x6e] = "LD L,(DL)"
+op[0x6f] = "LD L,A"
+
+op[0x70] = "LD (HL),B"
+op[0x71] = "LD (HL),C"
+op[0x72] = "LD (HL),D"
+op[0x73] = "LD (HL),E"
+op[0x74] = "LD (HL),H"
+op[0x75] = "LD (HL),L"
+op[0x76] = "HALT"
+op[0x77] = "LD (HL),A"
+op[0x78] = "LD A,B"
+op[0x79] = "LD A,C"
+op[0x7a] = "LD A,D"
+op[0x7b] = "LD A,E"
+op[0x7c] = "LD A,H"
+op[0x7d] = "LD A,L"
+op[0x7e] = "LD A,(HL)"
+op[0x7f] = "LD A,A"
+
+op[0x80] = "ADD A,B"
+op[0x81] = "ADD A,C"
+op[0x82] = "ADD A,D"
+op[0x83] = "ADD A,E"
+op[0x84] = "ADD A,H"
+op[0x85] = "ADD A,L"
+op[0x86] = "ADD A,(HL)"
+op[0x87] = "ADD A,A"
+op[0x88] = "ADC A,B"
+op[0x89] = "ADC A,C"
+op[0x8a] = "ADC A,D"
+op[0x8b] = "ADC A,E"
+op[0x8c] = "ADC A,H"
+op[0x8d] = "ADC A,L"
+op[0x8e] = "ADC A,(HL)"
+op[0x8f] = "ADC A,A"
+
+op[0x90] = "SUB B"
+op[0x91] = "SUB C"
+op[0x92] = "SUB D"
+op[0x93] = "SUB E"
+op[0x94] = "SUB H"
+op[0x95] = "SUB L"
+op[0x96] = "SUB (HL)"
+op[0x97] = "SUB A"
+op[0x98] = "SBC A,B"
+op[0x99] = "SBC A,C"
+op[0x9a] = "SBC A,D"
+op[0x9b] = "SBC A,E"
+op[0x9c] = "SBC A,H"
+op[0x9d] = "SBC A,L"
+op[0x9e] = "SBC A,(HL)"
+op[0x9f] = "SBC A,A"
+
+op[0xa0] = "AND B"
+op[0xa1] = "AND C"
+op[0xa2] = "AND D"
+op[0xa3] = "AND E"
+op[0xa4] = "AND H"
+op[0xa5] = "AND L"
+op[0xa6] = "AND (HL)"
+op[0xa7] = "AND A"
+op[0xa8] = "XOR B"
+op[0xa9] = "XOR C"
+op[0xaa] = "XOR D"
+op[0xab] = "XOR E"
+op[0xac] = "XOR H"
+op[0xad] = "XOR L"
+op[0xae] = "XOR (HL)"
+op[0xaf] = "XOR A"
+
+op[0xb0] = "OR B"
+op[0xb1] = "OR C"
+op[0xb2] = "OR D"
+op[0xb3] = "OR E"
+op[0xb4] = "OR H"
+op[0xb5] = "OR L"
+op[0xb6] = "OR (HL)"
+op[0xb7] = "OR A"
+op[0xb8] = "CP B"
+op[0xb9] = "CP C"
+op[0xba] = "CP D"
+op[0xbb] = "CP E"
+op[0xbc] = "CP H"
+op[0xbd] = "CP L"
+op[0xbe] = "CP (HL)"
+op[0xbf] = "CP A"
+
+op[0xc0] = "RET NZ"
+op[0xc1] = "POP BC"
+op[0xc2] = "JP NZ,a16"
+op[0xc3] = "JP a16"
+op[0xc4] = "CALL NZ,a16"
+op[0xc5] = "PUSH BC"
+op[0xc6] = "ADD A,d8"
+op[0xc7] = "RST 00H"
+op[0xc8] = "RET Z"
+op[0xc9] = "RET"
+op[0xca] = "JP Z,a16"
+op[0xcb] = "!PREFIXCB!"
+op[0xcc] = "CALL Z,a16"
+op[0xcd] = "CALL a16"
+op[0xce] = "ADC A,d8"
+op[0xcf] = "RST 08H"
+
+op[0xd0] = "RET NC"
+op[0xd1] = "POP DE"
+op[0xd2] = "JP NC,a16"
+op[0xd3] = ""
+op[0xd4] = "CALL NC,a16"
+op[0xd5] = "PUSH DE"
+op[0xd6] = "SUB d8"
+op[0xd7] = "RST 10H"
+op[0xd8] = "RET C"
+op[0xd9] = "RETI"
+op[0xda] = "JP C,a16"
+op[0xdb] = ""
+op[0xdc] = "CALL C,a16"
+op[0xdd] = ""
+op[0xde] = "SBC A,d8"
+op[0xdf] = "RST 18H"
+
+
+op[0xe0] = "LD (a8),A"
+op[0xe1] = "POP HL"
+op[0xe2] = "LD (0xFF00+C),A"
+op[0xe3] = ""
+op[0xe4] = ""
+op[0xe5] = "PUSH HL"
+op[0xe6] = "AND d8"
+op[0xe7] = "RST 20H"
+op[0xe8] = "ADD SP,r8"
+op[0xe9] = "JP (HL)"
+op[0xea] = "LD (a16),A"
+op[0xeb] = ""
+op[0xec] = ""
+op[0xed] = ""
+op[0xee] = "XOR d8"
+op[0xef] = "RST 28H"
+
+op[0xf0] = "LD A,(a8)"
+op[0xf1] = "POP AF"
+op[0xf2] = "LD A,(C)"
+op[0xf3] = "DI"
+op[0xf4] = ""
+op[0xf5] = "PUSH AF"
+op[0xf6] = "OR d8"
+op[0xf7] = "RST 30H"
+op[0xf8] = "LD HL,SP+r8"
+op[0xf9] = "LD SP,HL"
+op[0xfa] = "LD A,(a16)"
+op[0xfb] = "EI"
+op[0xfc] = ""
+op[0xfd] = ""
+op[0xfe] = "CP d8"
+op[0xff] = "RST 38H"
+
+var cb = Array(256)
+
+cb[0x00] = "RLC B"
+cb[0x01] = "RLC C"
+cb[0x02] = "RLC D"
+cb[0x03] = "RLC E"
+cb[0x04] = "RLC H"
+cb[0x05] = "RLC L"
+cb[0x06] = "RLC (HL)"
+cb[0x07] = "RLC A"
+cb[0x08] = "RRC B"
+cb[0x09] = "RRC C"
+cb[0x0a] = "RRC D"
+cb[0x0b] = "RRC E"
+cb[0x0c] = "RRC H"
+cb[0x0d] = "RRC L"
+cb[0x0e] = "RRC (HL)"
+cb[0x0f] = "RRC A"
+  
+cb[0x10] = "RL B"
+cb[0x11] = "RL C"
+cb[0x12] = "RL D"
+cb[0x13] = "RL E"
+cb[0x14] = "RL H"
+cb[0x15] = "RL L"
+cb[0x16] = "RL (HL)"
+cb[0x17] = "RL A"
+cb[0x18] = "RR B"
+cb[0x19] = "RR C"
+cb[0x1a] = "RR D"
+cb[0x1b] = "RR E"
+cb[0x1c] = "RR H"
+cb[0x1d] = "RR L"
+cb[0x1e] = "RR (HL)"
+cb[0x1f] = "RR A"
+
+cb[0x20] = "SLA B"
+cb[0x21] = "SLA C"
+cb[0x22] = "SLA D"
+cb[0x23] = "SLA E"
+cb[0x24] = "SLA H"
+cb[0x25] = "SLA L"
+cb[0x26] = "SLA (HL)"
+cb[0x27] = "SLA A"
+cb[0x28] = "SRA B"
+cb[0x29] = "SRA C"
+cb[0x2a] = "SRA D"
+cb[0x2b] = "SRA E"
+cb[0x2c] = "SRA H"
+cb[0x2d] = "SRA L"
+cb[0x2e] = "SRA (HL)"
+cb[0x2f] = "SRA A"
+  
+cb[0x30] = "SWAP B"
+cb[0x31] = "SWAP C"
+cb[0x32] = "SWAP D"
+cb[0x33] = "SWAP E"
+cb[0x34] = "SWAP H"
+cb[0x35] = "SWAP L"
+cb[0x36] = "SWAP (HL)"
+cb[0x37] = "SWAP A"
+cb[0x38] = "SRL B"
+cb[0x39] = "SRL C"
+cb[0x3a] = "SRL D"
+cb[0x3b] = "SRL E"
+cb[0x3c] = "SRL H"
+cb[0x3d] = "SRL L"
+cb[0x3e] = "SRL (HL)"
+cb[0x3f] = "SRL A"
+
+cb[0x40] = "BIT 0,B"
+cb[0x41] = "BIT 0,C"
+cb[0x42] = "BIT 0,D"
+cb[0x43] = "BIT 0,E"
+cb[0x44] = "BIT 0,H"
+cb[0x45] = "BIT 0,L"
+cb[0x46] = "BIT 0,(HL)"
+cb[0x47] = "BIT 0,A"
+cb[0x48] = "BIT 1,B"
+cb[0x49] = "BIT 1,C"
+cb[0x4a] = "BIT 1,D"
+cb[0x4b] = "BIT 1,E"
+cb[0x4c] = "BIT 1,H"
+cb[0x4d] = "BIT 1,L"
+cb[0x4e] = "BIT 1,(HL)"
+cb[0x4f] = "BIT 1,A"
+  
+cb[0x50] = "BIT 2,B"
+cb[0x51] = "BIT 2,C"
+cb[0x52] = "BIT 2,D"
+cb[0x53] = "BIT 2,E"
+cb[0x54] = "BIT 2,H"
+cb[0x55] = "BIT 2,L"
+cb[0x56] = "BIT 2,(HL)"
+cb[0x57] = "BIT 2,A"
+cb[0x58] = "BIT 3,B"
+cb[0x59] = "BIT 3,C"
+cb[0x5a] = "BIT 3,D"
+cb[0x5b] = "BIT 3,E"
+cb[0x5c] = "BIT 3,H"
+cb[0x5d] = "BIT 3,L"
+cb[0x5e] = "BIT 3,(HL)"
+cb[0x5f] = "BIT 3,A"
+
+cb[0x60] = "BIT 4,B"
+cb[0x61] = "BIT 4,C"
+cb[0x62] = "BIT 4,D"
+cb[0x63] = "BIT 4,E"
+cb[0x64] = "BIT 4,H"
+cb[0x65] = "BIT 4,L"
+cb[0x66] = "BIT 4,(HL)"
+cb[0x67] = "BIT 4,A"
+cb[0x68] = "BIT 5,B"
+cb[0x69] = "BIT 5,C"
+cb[0x6a] = "BIT 5,D"
+cb[0x6b] = "BIT 5,E"
+cb[0x6c] = "BIT 5,H"
+cb[0x6d] = "BIT 5,L"
+cb[0x6e] = "BIT 5,(HL)"
+cb[0x6f] = "BIT 5,A"
+
+cb[0x70] = "BIT 6,B"
+cb[0x71] = "BIT 6,C"
+cb[0x72] = "BIT 6,D"
+cb[0x73] = "BIT 6,E"
+cb[0x74] = "BIT 6,H"
+cb[0x75] = "BIT 6,L"
+cb[0x76] = "BIT 6,(HL)"
+cb[0x77] = "BIT 6,A"
+cb[0x78] = "BIT 7,B"
+cb[0x79] = "BIT 7,C"
+cb[0x7a] = "BIT 7,D"
+cb[0x7b] = "BIT 7,E"
+cb[0x7c] = "BIT 7,H"
+cb[0x7d] = "BIT 7,L"
+cb[0x7e] = "BIT 7,(HL)"
+cb[0x7f] = "BIT 7,A"
+
+cb[0x80] = "RES 0,B"
+cb[0x81] = "RES 0,C"
+cb[0x82] = "RES 0,D"
+cb[0x83] = "RES 0,E"
+cb[0x84] = "RES 0,H"
+cb[0x85] = "RES 0,L"
+cb[0x86] = "RES 0,(HL)"
+cb[0x87] = "RES 0,A"
+cb[0x88] = "RES 1,B"
+cb[0x89] = "RES 1,C"
+cb[0x8a] = "RES 1,D"
+cb[0x8b] = "RES 1,E"
+cb[0x8c] = "RES 1,H"
+cb[0x8d] = "RES 1,L"
+cb[0x8e] = "RES 1,(HL)"
+cb[0x8f] = "RES 1,A"
+  
+cb[0x90] = "RES 2,B"
+cb[0x91] = "RES 2,C"
+cb[0x92] = "RES 2,D"
+cb[0x93] = "RES 2,E"
+cb[0x94] = "RES 2,H"
+cb[0x95] = "RES 2,L"
+cb[0x96] = "RES 2,(HL)"
+cb[0x97] = "RES 2,A"
+cb[0x98] = "RES 3,B"
+cb[0x99] = "RES 3,C"
+cb[0x9a] = "RES 3,D"
+cb[0x9b] = "RES 3,E"
+cb[0x9c] = "RES 3,H"
+cb[0x9d] = "RES 3,L"
+cb[0x9e] = "RES 3,(HL)"
+cb[0x9f] = "RES 3,A"
+
+cb[0xa0] = "RES 4,B"
+cb[0xa1] = "RES 4,C"
+cb[0xa2] = "RES 4,D"
+cb[0xa3] = "RES 4,E"
+cb[0xa4] = "RES 4,H"
+cb[0xa5] = "RES 4,L"
+cb[0xa6] = "RES 4,(HL)"
+cb[0xa7] = "RES 4,A"
+cb[0xa8] = "RES 5,B"
+cb[0xa9] = "RES 5,C"
+cb[0xaa] = "RES 5,D"
+cb[0xab] = "RES 5,E"
+cb[0xac] = "RES 5,H"
+cb[0xad] = "RES 5,L"
+cb[0xae] = "RES 5,(HL)"
+cb[0xaf] = "RES 5,A"
+
+cb[0xb0] = "RES 6,B"
+cb[0xb1] = "RES 6,C"
+cb[0xb2] = "RES 6,D"
+cb[0xb3] = "RES 6,E"
+cb[0xb4] = "RES 6,H"
+cb[0xb5] = "RES 6,L"
+cb[0xb6] = "RES 6,(HL)"
+cb[0xb7] = "RES 6,A"
+cb[0xb8] = "RES 7,B"
+cb[0xb9] = "RES 7,C"
+cb[0xba] = "RES 7,D"
+cb[0xbb] = "RES 7,E"
+cb[0xbc] = "RES 7,H"
+cb[0xbd] = "RES 7,L"
+cb[0xbe] = "RES 7,(HL)"
+cb[0xbf] = "RES 7,A"
+
+cb[0xc0] = "SET 0,B"
+cb[0xc1] = "SET 0,C"
+cb[0xc2] = "SET 0,D"
+cb[0xc3] = "SET 0,E"
+cb[0xc4] = "SET 0,H"
+cb[0xc5] = "SET 0,L"
+cb[0xc6] = "SET 0,(HL)"
+cb[0xc7] = "SET 0,A"
+cb[0xc8] = "SET 1,B"
+cb[0xc9] = "SET 1,C"
+cb[0xca] = "SET 1,D"
+cb[0xcb] = "SET 1,E"
+cb[0xcc] = "SET 1,H"
+cb[0xcd] = "SET 1,L"
+cb[0xce] = "SET 1,(HL)"
+cb[0xcf] = "SET 1,A"
+  
+cb[0xd0] = "SET 2,B"
+cb[0xd1] = "SET 2,C"
+cb[0xd2] = "SET 2,D"
+cb[0xd3] = "SET 2,E"
+cb[0xd4] = "SET 2,H"
+cb[0xd5] = "SET 2,L"
+cb[0xd6] = "SET 2,(HL)"
+cb[0xd7] = "SET 2,A"
+cb[0xd8] = "SET 3,B"
+cb[0xd9] = "SET 3,C"
+cb[0xda] = "SET 3,D"
+cb[0xdb] = "SET 3,E"
+cb[0xdc] = "SET 3,H"
+cb[0xdd] = "SET 3,L"
+cb[0xde] = "SET 3,(HL)"
+cb[0xdf] = "SET 3,A"
+
+cb[0xe0] = "SET 4,B"
+cb[0xe1] = "SET 4,C"
+cb[0xe2] = "SET 4,D"
+cb[0xe3] = "SET 4,E"
+cb[0xe4] = "SET 4,H"
+cb[0xe5] = "SET 4,L"
+cb[0xe6] = "SET 4,(HL)"
+cb[0xe7] = "SET 4,A"
+cb[0xe8] = "SET 5,B"
+cb[0xe9] = "SET 5,C"
+cb[0xea] = "SET 5,D"
+cb[0xeb] = "SET 5,E"
+cb[0xec] = "SET 5,H"
+cb[0xed] = "SET 5,L"
+cb[0xee] = "SET 5,(HL)"
+cb[0xef] = "SET 5,A"
+
+cb[0xf0] = "SET 6,B"
+cb[0xf1] = "SET 6,C"
+cb[0xf2] = "SET 6,D"
+cb[0xf3] = "SET 6,E"
+cb[0xf4] = "SET 6,H"
+cb[0xf5] = "SET 6,L"
+cb[0xf6] = "SET 6,(HL)"
+cb[0xf7] = "SET 6,A"
+cb[0xf8] = "SET 7,B"
+cb[0xf9] = "SET 7,C"
+cb[0xfa] = "SET 7,D"
+cb[0xfb] = "SET 7,E"
+cb[0xfc] = "SET 7,H"
+cb[0xfd] = "SET 7,L"
+cb[0xfe] = "SET 7,(HL)"
+cb[0xff] = "SET 7,A"
+
+
+
+
+
+
+  
+function zeroPad(num) {
+  return num.toString().padStart(4, "0");
+}
+function decompile(){
+  html = ""
+  var offset = 0
+  var ret = [];
+  for (var n = start; n < finish ; n++){
+    code = op[readMem(n)]
+    codeidx = readMem(n)
+    if(code == ""){
+	continue;
+    }
+    html += hex(n);
+    html +=" | "
+    offset = 0
+    if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
+    if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(readMem(n+2) *256 + readMem(n+1))); lateaddgloballocation(html, readMem(n+2) * 256 + readMem(n+1) , "FUNC_" + hex(readMem(n+2) *256 + readMem(n+1)) + ":"); n+=2; }
+    if(code.includes("a16") && !code.includes("LD") && !code.includes("CALL")){ code = code.replace("a16",hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
+    if(code.includes("a8")){ code = code.replace("a8","0xFF00+" + hex(readMem(n+1))); n+=1; }
+    if(code.includes("d8")){ code = code.replace("d8",hex(readMem(n+1))); n+=1; }
+    
+    if((readMem(n+1) & 0x80) == 0){ offset = 2; }
+    if(code.includes("r8")){ code = code.replace("r8","ADDR_" + hex(formatneg(n + offset + readMem(n+1)))); addlocallocation(html, offset + readMem(n+1), n); n+=1; }
+    if(code.includes("d16")){ code = code.replace("d16",hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
+    if(code == "!PREFIXCB!") { code = cb[readMem(n+1)]; n+=1 }
+    if(code == "RET"){
+      ret = [...ret,n]
+    }
+    html += code
+    html += "\n"
+  }
+  extradb(ret,globallist);
+  
+  try{
+    html = adddbmark(html);
+  }catch(e){
+    alert(e)
+    console.log(e)
+  }
+  html = addgloballocation(html);
+  dbidx = []
+  globalori = []
+  globalfin = []
+  globallist = []
+  return html
+}
+
+function extradb(ret,globallist){
+  for(var j = 0;j < ret.length;j++){
+    startvalue = ret[j]
+    n = startvalue + 1
+    while(!globallist.includes(n)){
+      n++;
+    }
+    // console.log("dbmark from" + startvalue + "to" + n)
+    for(var m = startvalue + 1; m < n ; m++){
+      lateadddbmark(m)
+    }
+  }
+}
+function replaceRange(s, start, end, substitute) {
+    return s.substring(0, start) + substitute + s.substring(end);
+}
+var dbidx = []
+
+var globalori = []
+var globalfin = []
+var globallist = []
+function lateadddbmark(idx){
+  dbidx = [...dbidx,idx]
+}
+function adddbmark(html){
+  for(var n2 = 0; n2 < dbidx.length; n2++){
+    idx = dbidx[n2]
+    original = "\n" + hex(idx) + " | ";
+    firstidx = html.indexOf(original);
+    if (firstidx == -1){ continue; }
+    lastidx = html.indexOf("\n", firstidx+6);
+    if (lastidx == -1){ continue; }
+    var sub = "\n.db_" + hex(idx) + " | " + hex(readMem(idx))
+    if (html.includes(sub)) { continue; }
+    html = replaceRange(html,firstidx,lastidx,sub)
+  }
+  dbidx = []
+  return html
+}
+function formatneg(num){
+  var final = num;
+  if (final > 256){
+    final -= 254
+  }
+  return final
+}
+function addlocallocation(html , localidx , nowidx){
+  if ((localidx + nowidx) > 256){
+    localidx -= 254
+  }
+  globalidx = nowidx + localidx
+  
+  var marker = "ADDR_" + hex(globalidx) + ":"
+  lateaddgloballocation(html , globalidx , marker)
+}
+function lateaddgloballocation(html , globalidx , marker){
+  original = "\n" + hex(globalidx) + " | "
+  globalori = [...globalori,original]
+  globallist = [...globallist,globalidx]
+  globalfin = [...globalfin,"\n\n" + marker + "\n" + hex(globalidx) + " | "]
+}
+function addgloballocation(html){
+  for (var n3 = 0; n3 < globalori.length;n3++){
+    original = globalori[n3];
+    fin = globalfin[n3];
+    if (html.includes(fin)) { continue; }
+    html = html.replace(original , fin)
+  }
+  globalori = []
+  globalfin = []
+  globallist = []
+  return html
+}
+
+function hex(data) {
+  return "0x" + zeroPad((data).toString(16))
+}
+var debugData=function(){
+  debug = decompile(ROM);
+  debug = debug.replaceAll("\n","<br>");
+  document.getElementById('dbg').innerHTML=debug;
+};
+
+function nthBit(n, k)
+{
+    return((n & (1 << (k - 1))) >> (k - 1));
+}
+
+
+function dec2bin(dec) {
+  return (dec >>> 0).toString(2);
+}
+var rominput = document.getElementById("fileinput")
+
+function select(title,selections){
+    selected = "YES";
+    while(!(selections.includes(String(selected)))){
+	selected = prompt(title);
+    }
+    return selected
+}
+async function readUrl(Url){
+    fileget = await UrlFile(Url,"load.gb");
+    console.log(Url);
+    insertInput(fileget);
+    trigger();
+}
+async function UrlFile(url, name, defaultType = 'application/octet-stream') {
+  const response = await fetch(url)
+  const data = await response.blob()
+  return new File([data], name, {
+    type: data.type || defaultType,
+  })
+}
+function rangeStr(n){
+    r = [...Array(n).keys()]
+    t = [...Array(n).keys()]
+    for (let i = 0;i < n;i++) {
+        t[i] = String(r[i] + 1)
+    }
+    return t
+}
+
+
+function insertInput(myFile) {
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(myFile);
+  rominput.files = dataTransfer.files;
+}
+
+function trigger(){
+  if ("createEvent" in document) {
+    var evt = document.createEvent("HTMLEvents");
+    evt.initEvent("change", false, true);
+    rominput.dispatchEvent(evt);
+  }
+  else
+    rominput.fireEvent("onchange");
+}
+
+function useOnlineRom(){
+    alert("OnlineRomSelections");
+    sel = [["red","blue","green","yellow"],["normal"],["dreamland","dreamland2"]];
+    ser = ["pkmn","tama","kirby"];
+    lan = ["zh","eng"];
+    series = select("选择系列: \n 1:宝可梦 \n 2:Tamagotchi \n 3:Kirby ",rangeStr(3));
+    version = select("选择版本: \n " + sel[parseInt(series)-1].map((e, i) => String(i + 1) + ":" + String(e)).join(" \n "),rangeStr(sel[parseInt(series)-1].length));
+    language = select("选择语言: \n 1:中文 \n 2:英文",rangeStr(2));
+    readUrl("https://carlostmgps.github.io/emulator/gameboy/" + ser[series-1] + "_" + sel[series - 1][version - 1] + "_" + lan[language - 1] + ".gb");
+}
+
+
+
+  
+</script>
+</html>
