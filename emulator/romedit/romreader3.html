@@ -790,7 +790,8 @@ function decompile(){
     html += "\n"
   }
   extradb(ret,jp,globallist);
-  
+  lateaddgloballocation(html, 0x0100 , "ROMEntryPoint----------");
+  lateaddgloballocation(html, 0x0000 , "BootStrap--------------");
   try{
     html = adddbmark(html);
   }catch(e){
@@ -849,6 +850,42 @@ function adddbmark(html){
     lastidx = html.indexOf("\n", firstidx+6);
     if (lastidx == -1){ continue; }
     var sub = "\n.db_" + hex(idx) + " | " + hex(readMem(idx))
+    if(idx >= 0x0104 && idx <= 0x0133){
+	var sub = "\n.NintendoLogo_" + hex(idx) + " | " + hex(readMem(idx))
+    }
+    if(idx >= 0x0134 && idx <= 0x0143){
+	var sub = "\n.TitleManufacturerCGBFlag_" + hex(idx) + " | " + hex(readMem(idx))
+    }
+    if(idx >= 0x0144 && idx <= 0x0145){
+	var sub = "\n.New_Licensee_Code_" + hex(idx) + " | " + hex(readMem(idx))
+    }
+    if(idx >= 0x0146 && idx <= 0x0146){
+	var sub = "\n.SGB_Flag_" + hex(idx) + " | " + hex(readMem(idx))
+    }
+    if(idx >= 0x0147 && idx <= 0x0147){
+	var sub = "\n.CartridgeMBC_Type_" + hex(idx) + " | " + hex(readMem(idx))
+    }
+    if(idx >= 0x0148 && idx <= 0x0148){
+	var sub = "\n.ROM_Size_" + hex(idx) + " | " + hex(readMem(idx))
+    }
+    if(idx >= 0x0149 && idx <= 0x0149){
+	var sub = "\n.RAM_Size_" + hex(idx) + " | " + hex(readMem(idx))
+    }
+    if(idx >= 0x014a && idx <= 0x014a){
+	var sub = "\n.DestinationCode_" + hex(idx) + " | " + hex(readMem(idx))
+    }
+    if(idx >= 0x014b && idx <= 0x014b){
+	var sub = "\n.Old_Licensee_Code_" + hex(idx) + " | " + hex(readMem(idx))
+    }
+    if(idx >= 0x014c && idx <= 0x014c){
+	var sub = "\n.Version_" + hex(idx) + " | " + hex(readMem(idx))
+    }
+    if(idx >= 0x014d && idx <= 0x014d){
+	var sub = "\n.HeaderCheckSum_" + hex(idx) + " | " + hex(readMem(idx))
+    }
+    if(idx >= 0x014e && idx <= 0x014f){
+	var sub = "\n.GlobalCheckSum_" + hex(idx) + " | " + hex(readMem(idx))
+    }
     if (html.includes(sub)) { continue; }
     html = replaceRange(html,firstidx,lastidx,sub)
   }
