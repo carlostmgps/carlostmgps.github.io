@@ -161,10 +161,19 @@ function checksum() {
 
     for (var i = 0; i <= 0x014C; i++) 
         calculated_header_checksum -= ROM[i] + 1;
+	if (calculated_header_checksum < 0){
+	    calculated_header_checksum += 256;
+	}
     for (var i = 0; i < 0x014E; i++) 
         calculated_global_checksum += ROM[i];
+        if (calculated_global_checksum > 65536){
+	    calculated_global_checksum -= 65536;
+	}
     for (var i = 0x0150; i < ROM.length; i++) 
         calculated_global_checksum += ROM[i];
+	if (calculated_global_checksum > 65536){
+	    calculated_global_checksum -= 65536;
+	}
     alert("header:" + calculated_header_checksum);
     alert("global:" + calculated_global_checksum);
 }
