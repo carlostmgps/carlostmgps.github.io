@@ -770,9 +770,6 @@ function decompile(){
     html +=" | "
     offset = 0
     if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
-    if (hex(readMem(n+2) *256 + readMem(n+1)) == "0x00b5" && (code.includes("CALL") || codeidx == 0xc3)){
-        alert(n)
-    }
     if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(readMem(n+2) *256 + readMem(n+1))); lateaddgloballocation(html, readMem(n+2) * 256 + readMem(n+1) , "FUNC_" + hex(readMem(n+2) *256 + readMem(n+1)) + ":"); n+=2; }
     if(code.includes("a16") && codeidx == 0xc3){ code = code.replace("a16","Addr_" + hex(readMem(n+2) *256 + readMem(n+1))); lateaddgloballocation(html, readMem(n+2) * 256 + readMem(n+1) , "JP_Point_" + hex(readMem(n+2) *256 + readMem(n+1)) + ":"); n+=2; }
     if(code.includes("a16") && !code.includes("LD") && !code.includes("CALL") && !codeidx == 0xc3){ code = code.replace("a16",hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
@@ -844,6 +841,17 @@ var globallist = []
 function lateadddbmark(idx){
   dbidx = [...dbidx,idx]
 }
+function getLength(opidx){
+  leng = 1;
+  opcode = op[opidx];
+  if(opcode.includes("a16")){ leng+=2; };
+  if(opcode.includes("a8")){ leng+=1; };
+  if(opcode.includes("d8")){ leng+=1; };
+  if(opcode.includes("r8")){ leng+=1; };
+  if(opcode.includes("d16")){ leng+=2; };
+  if(opcode == "!PREFIXCB!") { leng+=1; };
+  return leng
+}
 function adddbmark(html){
   for(var n2 = 0; n2 < dbidx.length; n2++){
     idx = dbidx[n2]
@@ -852,45 +860,51 @@ function adddbmark(html){
     if (firstidx == -1){ continue; }
     lastidx = html.indexOf("\n", firstidx+6);
     if (lastidx == -1){ continue; }
-    var sub = "\n.db_" + hex(idx) + " | " + hex(readMem(idx))
-    if(idx >= 0x0104 && idx <= 0x0133){
+    idxlength = getLength(readMem(idx));
+    var totalsub = ""
+    for (var repeat = 0; repeat < idxlength ; repeat++){
+      var sub = "\n.db_" + hex(idx) + " | " + hex(readMem(idx))
+      if(idx >= 0x0104 && idx <= 0x0133){
 	var sub = "\n.NintendoLogo_" + hex(idx) + " | " + hex(readMem(idx))
-    }
-    if(idx >= 0x0134 && idx <= 0x0143){
+      }
+      if(idx >= 0x0134 && idx <= 0x0143){
 	var sub = "\n.TitleManufacturerCGBFlag_" + hex(idx) + " | " + hex(readMem(idx))
-    }
-    if(idx >= 0x0144 && idx <= 0x0145){
+      }
+      if(idx >= 0x0144 && idx <= 0x0145){
 	var sub = "\n.New_Licensee_Code_" + hex(idx) + " | " + hex(readMem(idx))
-    }
-    if(idx >= 0x0146 && idx <= 0x0146){
+      }
+      if(idx >= 0x0146 && idx <= 0x0146){
 	var sub = "\n.SGB_Flag_" + hex(idx) + " | " + hex(readMem(idx))
-    }
-    if(idx >= 0x0147 && idx <= 0x0147){
+      }
+      if(idx >= 0x0147 && idx <= 0x0147){
 	var sub = "\n.CartridgeMBC_Type_" + hex(idx) + " | " + hex(readMem(idx))
-    }
-    if(idx >= 0x0148 && idx <= 0x0148){
+      }
+      if(idx >= 0x0148 && idx <= 0x0148){
 	var sub = "\n.ROM_Size_" + hex(idx) + " | " + hex(readMem(idx))
-    }
-    if(idx >= 0x0149 && idx <= 0x0149){
+      }
+      if(idx >= 0x0149 && idx <= 0x0149){
 	var sub = "\n.RAM_Size_" + hex(idx) + " | " + hex(readMem(idx))
-    }
-    if(idx >= 0x014a && idx <= 0x014a){
+      }
+      if(idx >= 0x014a && idx <= 0x014a){
 	var sub = "\n.DestinationCode_" + hex(idx) + " | " + hex(readMem(idx))
-    }
-    if(idx >= 0x014b && idx <= 0x014b){
+      }
+      if(idx >= 0x014b && idx <= 0x014b){
 	var sub = "\n.Old_Licensee_Code_" + hex(idx) + " | " + hex(readMem(idx))
-    }
-    if(idx >= 0x014c && idx <= 0x014c){
+      }
+      if(idx >= 0x014c && idx <= 0x014c){
 	var sub = "\n.Version_" + hex(idx) + " | " + hex(readMem(idx))
-    }
-    if(idx >= 0x014d && idx <= 0x014d){
+      }
+      if(idx >= 0x014d && idx <= 0x014d){
 	var sub = "\n.HeaderCheckSum_" + hex(idx) + " | " + hex(readMem(idx))
-    }
-    if(idx >= 0x014e && idx <= 0x014f){
+      }
+      if(idx >= 0x014e && idx <= 0x014f){
 	var sub = "\n.GlobalCheckSum_" + hex(idx) + " | " + hex(readMem(idx))
+      }
+      totalsub += sub;
+      idx += 1;
     }
-    if (html.includes(sub)) { continue; }
-    html = replaceRange(html,firstidx,lastidx,sub)
+    if (html.includes(totalsub)) { continue; }
+    html = replaceRange(html,firstidx,lastidx,totalsub)
   }
   dbidx = []
   return html
