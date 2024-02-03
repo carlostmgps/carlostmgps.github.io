@@ -769,6 +769,9 @@ function decompile(){
     html += hex(n);
     html +=" | "
     offset = 0
+    
+    if ((codeidx == 0xc3 || code.includes("CALL")) && hex(readMem(n+2) *256 + readMem(n+1)) == "0x00b5"){console.log(n)};
+    
     if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
     if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(readMem(n+2) *256 + readMem(n+1))); lateaddgloballocation(html, readMem(n+2) * 256 + readMem(n+1) , "FUNC_" + hex(readMem(n+2) *256 + readMem(n+1)) + ":"); n+=2; }
     if(code.includes("a16") && codeidx == 0xc3){ code = code.replace("a16","Addr_" + hex(readMem(n+2) *256 + readMem(n+1))); lateaddgloballocation(html, readMem(n+2) * 256 + readMem(n+1) , "JP_Point_" + hex(readMem(n+2) *256 + readMem(n+1)) + ":"); n+=2; }
