@@ -759,6 +759,7 @@ function decompile(){
   html = ""
   var offset = 0
   var ret = [];
+  var jp = []
   for (var n = start; n < finish ; n++){
     code = op[readMem(n)]
     codeidx = readMem(n)
@@ -770,7 +771,8 @@ function decompile(){
     offset = 0
     if(code.includes("a16") && code.includes("LD")){ code = code.replace("a16","DATA_" + hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
     if(code.includes("a16") && code.includes("CALL")){ code = code.replace("a16","FUNC_" + hex(readMem(n+2) *256 + readMem(n+1))); lateaddgloballocation(html, readMem(n+2) * 256 + readMem(n+1) , "FUNC_" + hex(readMem(n+2) *256 + readMem(n+1)) + ":"); n+=2; }
-    if(code.includes("a16") && !code.includes("LD") && !code.includes("CALL")){ code = code.replace("a16",hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
+    if(code.includes("a16") && codeidx == 0xc3){ code = code.replace("a16","Addr_" + hex(readMem(n+2) *256 + readMem(n+1))); lateaddgloballocation(html, readMem(n+2) * 256 + readMem(n+1) , "JP_Point_" + hex(readMem(n+2) *256 + readMem(n+1)) + ":"); n+=2; }
+    if(code.includes("a16") && !code.includes("LD") && !code.includes("CALL") && !codeidx == 0xc3){ code = code.replace("a16",hex(readMem(n+2) *256 + readMem(n+1))); n+=2; }
     if(code.includes("a8")){ code = code.replace("a8","0xFF00+" + hex(readMem(n+1))); n+=1; }
     if(code.includes("d8")){ code = code.replace("d8",hex(readMem(n+1))); n+=1; }
     
@@ -781,10 +783,13 @@ function decompile(){
     if(code == "RET"){
       ret = [...ret,n]
     }
+    if(codeidx == 0xc3){
+      jp = [...jp,n]
+    }
     html += code
     html += "\n"
   }
-  extradb(ret,globallist);
+  extradb(ret,jp,globallist);
   
   try{
     html = adddbmark(html);
@@ -800,7 +805,7 @@ function decompile(){
   return html
 }
 
-function extradb(ret,globallist){
+function extradb(ret,jp,globallist){
   for(var j = 0;j < ret.length;j++){
     startvalue = ret[j]
     n = startvalue + 1
@@ -808,6 +813,17 @@ function extradb(ret,globallist){
       n++;
     }
     // console.log("dbmark from" + startvalue + "to" + n)
+    for(var m = startvalue + 1; m < n ; m++){
+      lateadddbmark(m)
+    }
+  }
+  for(var j = 0;j < jp.length;j++){
+    startvalue = jp[j]
+    n = startvalue + 1
+    while(!globallist.includes(n)){
+      n++;
+    }
+    // console.log("JPMARK from" + startvalue + "to" + n)
     for(var m = startvalue + 1; m < n ; m++){
       lateadddbmark(m)
     }
