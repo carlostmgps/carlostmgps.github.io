@@ -930,12 +930,15 @@ function lateaddgloballocation(html , globalidx , marker){
   globalori = [...globalori,original]
   globallist = [...globallist,globalidx]
   globalfin = [...globalfin,"\n\n" + marker + "\n" + hex(globalidx) + " | "]
+  globalmarker = [...globalmarker,marker]
 }
+var globalmarker = []
 function addgloballocation(html){
   for (var n3 = 0; n3 < globalori.length;n3++){
     original = globalori[n3];
     fin = globalfin[n3];
-    if (html.includes(fin)) { continue; }
+    marker = globalmarker[n3];
+    if (html.includes(marker)) { continue; }
     html = html.replace(original , fin)
   }
   globalori = []
