@@ -759,7 +759,7 @@ function decompile(){
   html = ""
   var offset = 0
   var ret = [];
-  var jp = []
+  var jp = [];
   for (var n = start; n < finish ; n++){
     code = op[readMem(n)]
     codeidx = readMem(n)
@@ -792,6 +792,10 @@ function decompile(){
     html += code
     html += "\n"
   }
+  alert("starting first round");
+  alert("ret:" + ret);
+  alert("jp:" + jp);
+  alert("globallist:" + globallist);
   extradb(ret,jp,globallist);
   lateaddgloballocation(html, 0x0100 , "ROMEntryPoint----------");
   lateaddgloballocation(html, 0x0000 , "BootStrap--------------");
@@ -803,9 +807,9 @@ function decompile(){
   }
   dbidx = []
   alert("finished first round");
-  alert("ret:" + ret)
-  alert("jp:" + jp)
-  alert("globallist:" + globallist)
+  alert("ret:" + ret);
+  alert("jp:" + jp);
+  alert("globallist:" + globallist);
   extradb(ret,jp,globallist); //check db again
   html = adddbmark(html); // add db again
   html = addgloballocation(html);
@@ -820,7 +824,7 @@ function extradb(ret,jp,globallist){
   for(var j = 0;j < ret.length;j++){
     startvalue = ret[j]
     n = startvalue + 1
-    while(!globallist.includes(n)){
+    while(!globallist.includes(n) || n > 0xffff){
       n++;
     }
     // console.log("dbmark from" + startvalue + "to" + n)
@@ -831,7 +835,7 @@ function extradb(ret,jp,globallist){
   for(var j = 0;j < jp.length;j++){
     startvalue = jp[j]
     n = startvalue + 1
-    while(!globallist.includes(n)){
+    while(!globallist.includes(n) || n > 0xffff){
       n++;
     }
     // console.log("JPMARK from" + startvalue + "to" + n)
