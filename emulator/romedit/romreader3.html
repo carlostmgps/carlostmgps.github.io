@@ -796,11 +796,13 @@ function decompile(){
   lateaddgloballocation(html, 0x0100 , "ROMEntryPoint----------");
   lateaddgloballocation(html, 0x0000 , "BootStrap--------------");
   try{
-    html = adddbmark(html);
+    html = adddbmark(html); //add db and check if nonused globalmark
   }catch(e){
     alert(e)
     console.log(e)
   }
+  extradb(ret,jp,globallist); //check db again
+  html = adddbmark(html); // add db again
   html = addgloballocation(html);
   dbidx = []
   globalori = []
