@@ -801,6 +801,11 @@ function decompile(){
     alert(e)
     console.log(e)
   }
+  dbidx = []
+  alert("finished first round");
+  alert("ret:" + ret)
+  alert("jp:" + jp)
+  alert("globallist:" + globallist)
   extradb(ret,jp,globallist); //check db again
   html = adddbmark(html); // add db again
   html = addgloballocation(html);
