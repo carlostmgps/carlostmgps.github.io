@@ -886,8 +886,8 @@ function removelocallocation(localidx , nowidx){
   removegloballocation(globalidx)
 }
 function removeArray(array,idx){
-  if (idx > -1) { // only splice array when item is found
-    return array.splice(idx, 1); // 2nd parameter means remove one item only
+  if (!idx<0) { // only splice array when item is found
+    array.splice(idx, 1);// 2nd parameter means remove one item only
   }
   return array
 }
