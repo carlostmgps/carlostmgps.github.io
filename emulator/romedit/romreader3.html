@@ -855,6 +855,41 @@ function getLength(opidx){
   if(opcode == "!PREFIXCB!") { leng+=1; };
   return leng
 }
+function deleteMark(idx){
+    code = op[readMem(idx)]
+    codeidx = readMem(idx)
+    if(code == ""){
+	return
+    }
+    var offset = 0;
+    if(code.includes("a16") && code.includes("CALL")){ removegloballocation(readMem(idx+2) * 256 + readMem(idx+1)); }
+    if(code.includes("a16") && codeidx == 0xc3){ removegloballocation(readMem(idx+2) * 256 + readMem(idx+1)); }
+    if((readMem(idx+1) & 0x80) == 0){ offset = 2; }
+    if(code.includes("r8")){ removelocallocation(offset + readMem(idx+1), idx); }
+}
+function removelocallocation(localidx , nowidx){
+  if ((localidx + nowidx) > 256){
+    localidx -= 254
+  }
+  globalidx = nowidx + localidx
+  removegloballocation(globalidx)
+}
+function removeArray(array,idx){
+  if (idx > -1) { // only splice array when item is found
+    return array.splice(idx, 1); // 2nd parameter means remove one item only
+  }
+  return array
+}
+function removegloballocation(globalidx){
+  original = "\n" + hex(globalidx) + " | "
+  oriidx = globalori.indexOf(original);
+  if(oriidx > -1){
+    globalori = removeArray(globalori,oriidx)
+    globallist = removeArray(globallist,oriidx)
+    globalfin = removeArray(globalfin,oriidx)
+    globalmarker = removeArray(globalmarker,oriidx)
+  }
+}
 function adddbmark(html){
   for(var n2 = 0; n2 < dbidx.length; n2++){
     idx = dbidx[n2]
@@ -867,6 +902,7 @@ function adddbmark(html){
     var totalsub = ""
     for (var repeat = 0; repeat < idxlength ; repeat++){
       var sub = "\n.db_" + hex(idx) + " | " + hex(readMem(idx))
+      deleteMark(idx);
       if(idx >= 0x0104 && idx <= 0x0133){
 	var sub = "\n.NintendoLogo_" + hex(idx) + " | " + hex(readMem(idx))
       }
