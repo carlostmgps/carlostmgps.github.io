@@ -252,11 +252,9 @@ function trigger(i,t){
     var evt = document.createEvent("HTMLEvents");
     evt.initEvent(t, false, true);
     i.dispatchEvent(evt);
-    loaded = 1;
   }
   else
     i.fireEvent("on" + String(t));
-    loaded = 1;
 }
 async function blobtofile(blob, name, defaultType = 'application/octet-stream') {
   const data = blob
@@ -277,7 +275,6 @@ async function UrlFile(url, name, defaultType = 'application/octet-stream') {
     type: data.type || defaultType,
   })
 }
-var loaded = 1;
 function useOnlineRom(){
     alert("OnlineRomSelections by Carlos");
     sel = [["ruby","sapphire","emerald"]];
@@ -287,8 +284,6 @@ function useOnlineRom(){
     version = select("选择版本: \n " + sel[parseInt(series)-1].map((e, i) => String(i + 1) + ":" + String(e)).join(" \n "),rangeStr(sel[parseInt(series)-1].length));
     language = select("选择语言: \n 1:中文 \n 2:英文",rangeStr(2));
     readUrl("https://carlostmgps.github.io/emulator/gba/" + ser[series-1] + "_" + sel[series - 1][version - 1] + "_" + lan[language - 1] + ".gba",ROMinput,"gba");
-    loaded = 0;
-    while(loaded == 0) { alert("请等待。。。"); }
 }
 function select(title,selections){
     selected = "YES";
