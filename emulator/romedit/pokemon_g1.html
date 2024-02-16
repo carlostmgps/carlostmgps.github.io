@@ -20,7 +20,7 @@
 <body>
   <input type='file' accept='.gb' id=fileinput onchange='openFile(event)'> <br>
   <button onclick="useOnlineRom()">选择ROM</button><button onclick="downloadrom()">下载改版</button><button onclick="checksum()">计算CheckSum</button>
-  卡带类型：<p id="mbc"></p><br>
+  <p id="mbc"></p><br>
 </body>
 <script>
 function doMBC(){
@@ -93,11 +93,9 @@ function doMBC(){
 }
 function startin(value){
   start = parseInt(value,10);
-  debugData();
 }
 function finishin(value){
   finish = parseInt(value,10);
-  debugData();
 }
 function ascii(c){
   return ".................................!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~.€.‚ƒ„…†‡ˆ‰Š‹Œ.Ž..‘’“”•–—˜™š›œ.žŸ ¡¢£¤¥¦§¨©ª«¬.®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ".charAt(c)
@@ -177,7 +175,7 @@ var openFile = function(event) {
   var reader = new FileReader();
   reader.onload = function(){
     ROM = new Uint8Array(reader.result);
-    document.getElementById('mbc').innerHTML=doMBC();
+    document.getElementById('mbc').innerHTML="卡带类型：" +doMBC();
     //Overwrite first page with bootcode
     for (var i=0;i<256;i++) ROM[i]=bootCode[i];
   };
