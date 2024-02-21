@@ -150,24 +150,18 @@ function checksum() {
     var calculated_global_checksum = 0;
     // x=0:FOR i=0134h TO 014Ch:x=x-MEM[i]-1:NEXT
     for (var i = 0x0134; i <= 0x014B; i++){
-        calculated_header_checksum -= (ROM[i] + 1);
-	if (calculated_header_checksum < 0){
-	    calculated_header_checksum += 256;
-        }
+        calculated_header_checksum += 0b11111111 ^ ROM[i];
+	calculated_header_checksum &= 0b11111111;
     }
-    for (var i = 0; i < 0x014E; i++){
-        calculated_global_checksum += ROM[i];
-        if (calculated_global_checksum > 65536){
-	    calculated_global_checksum -= 65536;
-	}
+    alert("Rom 标头 CheckSum:" + calculated_header_checksum);
+    alert("原有CheckSum：" + ROM[0x014D]);
+    if (ROM[0x014D] == calculated_header_checksum){
+	alert("现有checksum正确，可以运行");
+    }else{
+	alert("现有checksum不正确，不可以运行");
+	ROM[0x014D] = calculated_header_checksum;
+	alert("已经修复checksum");
     }
-    for (var i = 0x0150; i < ROM.length; i++){
-        calculated_global_checksum += ROM[i];
-	if (calculated_global_checksum > 65536){
-	    calculated_global_checksum -= 65536;
-	}
-    }
-    alert("BootRomHeader:" + calculated_header_checksum);
 }
 var openFile = function(event) {
   var input = event.target;
