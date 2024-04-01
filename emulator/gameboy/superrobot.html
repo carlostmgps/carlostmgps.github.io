@@ -1,0 +1,3351 @@
+<!DOCTYPE html>
+<html><head><meta charset=utf-8>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script>
+   const firebaseApp = firebase.initializeApp({
+     apiKey: "AIzaSyAaW5hTL62TCnUs7guJa9adawQhpByngfg",
+     authDomain: "gameboy-data.firebaseapp.com",
+     databaseURL: "https://gameboy-data-default-rtdb.firebaseio.com",
+     projectId: "gameboy-data",
+     storageBucket: "gameboy-data.appspot.com",
+     messagingSenderId: "924831085457",
+     appId: "1:924831085457:web:64d39f1d88d358624d2030",
+     measurementId: "G-WT54QNW65S"
+   });
+   const db = firebaseApp.database();
+   const auth = firebaseApp.auth();
+</script>
+<script>
+document.write("<style>img[onload]{opacity:0;transition:opacity 2s}</style>");
+</script>
+<title>GameBoy 模拟器</title>
+<meta name=Description content="Gameboy 模拟器中文版">
+<link rel="stylesheet" href="gameboy.css">
+<style>body {font-family: Helvetica, sans-serif; margin:10px 0px 0px 0px;}
+iframe{display:block;border:0;margin:auto}
+#mxmain{width:80%;margin:auto}
+@media(max-width:1024px){
+ #mxmain{width:90%}
+ iframe{max-width:90vw;max-height:50.625vw}
+}
+#display{
+  width:650px; height:320px; display:block;
+  outline:3px solid #ccc; margin:5px auto;
+
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+* {
+    touch-action: manipulation;
+}
+
+#io,#stack{float:left;height:400px;overflow-y:scroll}
+#out{float:left;margin-right:10px}
+#dbg{display:none}</style>
+</head>
+<body>
+    <div class="gameboy">
+    <div class="front-plate">
+      <div class="front-plate-head">
+        <div class="vertical-stripe"></div>
+        <div class="vertical-stripe"></div>
+        <div class="vertical-stripe"></div>
+  
+        <div class="vertical-gouge vertical-gouge-1"></div>
+        <div class="vertical-gouge vertical-gouge-2"></div>
+  
+        <div class="on-off">
+          <div class="spike spike-left"><div></div></div>
+          <div class="spike spike-right"><div></div></div>
+        </div>
+      </div>
+  
+      <div class="screen-container">
+        <div class="screen-headline">
+          <span>DOT MATRIX WITH STEREO SOUND</span>
+        </div>
+  
+        <div class="battery-light">
+          <span>BATTERY</span>
+        </div>
+  
+        <div class="screen">
+	  <canvas id=display onclick="runto(0x10000);" ondblclick="fullScreen(this)">
+          </canvas>
+        </div>
+      </div>
+  
+      <div class="logo"></div>
+  
+      <div id="controller">
+  
+        <div class="buttons-a-b">
+          <div onmousedown="btdown(1);" ondblclick="pd(event)" onmouseup="btup(1);" ontouchstart="btdown(1);" ontouchend="btup(1);" class="button-b button-key-j" id="controller_b"></div>
+  
+          <div onmousedown="btdown(0);" onmouseup="btup(0);" ondblclick="pd(event)" ontouchstart="btdown(0);" ontouchend="btup(0);" class="button-a button-key-k" id="controller_a"></div> 
+        </div>
+        
+        <div onmousedown="btdown(3);" onmouseup="btup(3);" ondblclick="pd(event)" ontouchstart="btdown(3);" ontouchend="btup(3);" class="start button-key-m" id="controller_start"><div></div></div>
+  
+        <div onmousedown="btdown(2);" onmouseup="btup(2);" ondblclick="pd(event)" ontouchstart="btdown(2);" ontouchend="btup(2);" class="select button-key-n" id="controller_select"><div></div></div>
+  
+        <div class="cross-container">
+          <div class="spike"><div></div></div>
+          <div class="spike"><div></div></div>
+          <div class="spike"><div></div></div>
+          <div class="spike"><div></div></div>
+  
+          <div class="cross" id="controller_dpad">
+            <div class="top-down">
+              <div onmousedown="dpaddown(2);" ondblclick="pd(event)" onmouseup="dpadup(2);" ontouchstart="dpaddown(2);" ontouchend="dpadup(2);" class="button-top button-key-w" id="controller_up">
+                <div class="button-stripe"></div>
+                <div class="button-stripe"></div>
+                <div class="button-stripe"></div>
+              </div>
+              <div onmousedown="dpaddown(3);" ondblclick="pd(event)" onmouseup="dpadup(3);" ontouchstart="dpaddown(3);" ontouchend="dpadup(3);" class="button-bottom button-key-s" id="controller_down">
+                <div class="button-stripe"></div>
+                <div class="button-stripe"></div>
+                <div class="button-stripe"></div>
+              </div>
+            </div>
+  
+            <div class="left-right">
+              <div onmousedown="dpaddown(1);" ondblclick="pd(event)" onmouseup="dpadup(1);" ontouchstart="dpaddown(1);" ontouchend="dpadup(1);" class="button-left button-key-a" id="controller_left">
+                <div class="button-stripe"></div>
+                <div class="button-stripe"></div>
+                <div class="button-stripe"></div>
+              </div>
+              <div onmousedown="dpaddown(0);" ondblclick="pd(event)" onmouseup="dpadup(0);" ontouchstart="dpaddown(0);" ontouchend="dpadup(0);" class="button-right button-key-d" id="controller_right">
+                <div class="button-stripe"></div>
+                <div class="button-stripe"></div>
+                <div class="button-stripe"></div>
+              </div>
+            </div>
+            <div class="cross-middle-bumb"></div>
+          </div>
+        </div>
+  
+      </div>
+  
+      <div class="speaker">
+        <div><div class="speaker-inner-shadow"></div></div>
+        <div><div class="speaker-inner-shadow"></div></div>
+        <div><div class="speaker-inner-shadow"></div></div>
+        <div><div class="speaker-inner-shadow"></div></div>
+        <div><div class="speaker-inner-shadow"></div></div>
+        <div><div class="speaker-inner-shadow"></div></div>
+      </div>
+  
+      <div class="phones" id="volume-switch">
+        <div class="vertical-stripe"></div>
+        <div class="vertical-stripe"></div>
+        <div class="vertical-stripe"></div> 
+        <i></i>
+        <span>PHONES</span>
+      </div>
+  
+    </div>
+  
+    <div class="power-button" onclick='requestStop? runto(0x10000) : requestStop=true'><div></div></div>
+  </div>
+  <div id=dbg>
+    <pre id=out></pre>
+    <pre id=io></pre>
+    <pre id=stack></pre>
+
+    <button onclick="cpu(); debugData(); return false">CPU Step</button>
+    <button onclick="requestStop ? run() : (requestStop=true); return false">Stop / Frame</button>
+    <button onclick="runto();return false">Run To...</button>
+  </div>
+
+
+  <div style='width:480px;margin:auto'>
+    <input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'>
+    <button onclick="useOnlineRom()">线上游戏</button>
+    <button onclick='requestStop? runto(0x10000) : requestStop=true' id=start>开始/暂停</button>
+    <div style='display:inline-block;vertical-align:middle'>
+      <label style="display:block"><input type=checkbox checked=checked onchange="limitFrameRate=this.checked" autocomplete=off>稳定FPS</label>
+      <label style="display:block"><input type=checkbox onchange="showFrameRate=this.checked" autocomplete=off>显示FPS</label>
+    </div>
+
+
+    <br><br>
+
+
+    <a href='#' onclick='saveSram(this);'>下载本机存档</a> <button onclick="onlineSaveSram();">上载网上存档</button> / 
+    <a href='#' onclick='document.getElementById("loadsav").click(); return false;'>上载本机存档</a> <button onclick="onlineLoadSram();">下载网上存档</button>
+    <input type='file' id=loadsav style='display:none' accept='.sav' onchange='loadSram(event)'>
+    <button onclick="saveState(); return false">时空储存</button>
+    <button onclick="loadState(); return false">时空倒流</button>
+    <button onclick="showDebug(!debugOn); return false">Debug</button>
+  </div>
+
+  <br><br>
+
+
+  <br><br>
+  上下左右wasd A:方向右 B:方向下 Start:1 Select:2
+<script defer>
+var font=new Image();
+font.src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAICAYAAAAGP/oPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALRJREFUeNrsVtsOgCAIleZ/V19u88HNUdwCrQfZelA8x4gDBCmlIy37zHIUUSll79cAcFJnOB+F1/BTd2Cslf8JL53R8kNEBeCgpY9AvRyF1/Bzd3CJ1/it8VrWeVap1cs0StIqTVKYVKVSFVqS1WLT4LFtf+mFLQBJjVhFGgXX/f7h2hLnl5JP4fs9zJs9pRg9P7wtAidldhzWKr7NAE8CPEM4YsiNHMIjfyJChvCy93YJMAD0L/qXa2HkvgAAAABJRU5ErkJggg==";
+
+function fullScreen(e){
+  var d= document;
+  if (null!=(d.fullscreenElement || d.mozFullScreenElement || d.webkitFullscreenElement || d.msFullscreenElement)) {
+    (d.exitFullscreen || d.mozCancelFullScreen || d.webkitExitFullscreen || d.msExitFullscreen).apply(d);
+  } else {
+    showDebug(false);
+    (e.requestFullscreen || e.mozRequestFullScreen || e.webkitRequestFullscreen || e.msRequestFullscreen || (()=>{})).apply(e);
+  }
+}
+
+var dpixels = new Uint8Array(160*144);
+
+var limitFrameRate = true;
+var showFrameRate = false;
+
+var dctx = document.getElementById('display').getContext('2d');
+
+var dImgData = dctx.getImageData(0,0,160,144);
+
+for (i=0;i<160*144;i++){
+  dImgData.data[4*i+3] = 255
+}
+
+dctx.putImageData(dImgData,0,0)
+
+
+var lastSampleTime = 0;
+var frame = 0;
+var frameRate = 0;
+const sampleFrames = 5;
+
+function renderDisplayCanvas() {
+  //  0  White
+  //  1  Light gray
+  //  2  Dark gray
+  //  3  Black
+
+  var R = [224,136,52, 8 ],
+      G = [248,192,104,24],
+      B = [208,112,86, 32];
+
+  for (var i=0,j=0;i<160*144;i++){
+    dImgData.data[j++ ] = R[dpixels[i]]
+    dImgData.data[j++ ] = G[dpixels[i]]
+    dImgData.data[j   ] = B[dpixels[i]]
+    j+=2
+  }
+  dctx.putImageData(dImgData,0,0)
+
+  if (++frame >= sampleFrames){
+    frame = 0;
+    frameRate = ((1000 * sampleFrames / (thisFrame - lastSampleTime)) + frameRate)/2;
+    lastSampleTime = thisFrame;
+  }
+
+  if(showFrameRate) {
+    var t=frameRate.toFixed(2);
+    for (var c in t) {
+      dctx.drawImage(font, (t[c].charCodeAt(0)-46)*8, 0, 8,8,c*8,0,8,8)
+    }
+    
+  }
+}
+
+
+
+
+// We have infinite RAM
+const pixelDecoder=[]
+for (var d1 = 0; d1<256; d1++) {
+  pixelDecoder[d1]=[]
+  for (var d2 = 0; d2<256; d2++)
+    pixelDecoder[d1][d2] = [
+      ((d1&128)+ 2*(d2&128)) >>7,
+      ((d1&64) + 2*(d2&64)) >>6,
+      ((d1&32) + 2*(d2&32)) >>5,
+      ((d1&16) + 2*(d2&16)) >>4,
+      ((d1&8)  + 2*(d2&8)) >>3,
+      ((d1&4)  + 2*(d2&4)) >>2,
+      ((d1&2)  + 2*(d2&2)) >>1,
+      ((d1&1)  + 2*(d2&1))
+    ]
+}
+
+
+// LFSR prescaler lookups
+const snd4bit4 = [ // 3-bit "shift clock frequency"
+  2,
+  4,
+  8,
+  16,
+  32,
+  64,
+  128,
+  256,
+  512,
+  1024,
+  2048,
+  4096,
+  8192,
+  16384,
+  16384,// Prohibited code
+  16384 // Prohibited code
+]
+const snd4bit3 = [ // 4 bit "prescaler input clock" (14 step)
+  4 /4194304,
+  8 /4194304,
+  16/4194304,
+  24/4194304,
+  32/4194304,
+  40/4194304,
+  48/4194304,
+  56/4194304
+]
+
+var SoundEnabled = false;
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+const FFTsize = 512
+var reverseTable = new Uint32Array(FFTsize);
+var lfsr7bit = new Float32Array(127), lfsr15bit=new Float32Array(32767);
+(function(){
+  var limit = 1,  bit = FFTsize >> 1;
+  
+  // reverse table for FFT
+  while ( limit < FFTsize ) {
+    for ( i = 0; i < limit; i++ ) {
+      reverseTable[i + limit] = reverseTable[i] + bit;
+    }
+    limit = limit << 1;
+    bit = bit >> 1;
+  }
+
+  // precalculate LFSR patterns
+  var start_state = 127;
+  var lfsr = start_state;
+  var st=0
+
+  do {
+    bit  = ((lfsr >> 0) ^ (lfsr >> 1) ) & 1;
+    lfsr =  (lfsr >> 1) | (bit << 6);
+    lfsr7bit[st++]=(bit/4-0.125);
+  } while (lfsr != start_state); // has a period of 127
+
+  st=0;
+  do {
+    bit  = ((lfsr >> 0) ^ (lfsr >> 1)) & 1;
+    lfsr =  (lfsr >> 1) | (bit << 14);
+    lfsr15bit[st++]=(bit/4-0.125);
+  } while (lfsr != start_state); // period of 32767
+
+})();
+function setSound3Waveform() {
+  if (!sound[3].waveChanged) return;
+  var i, real = new Float32Array(FFTsize), imag = new Float32Array(FFTsize), samples=new Float32Array(FFTsize);
+
+  // sufficiently square edges!
+  for ( i = 0; i < 16; i++ ) {
+     samples[32*i+0] = 
+     samples[32*i+1] = 
+     samples[32*i+2] = 
+     samples[32*i+3] = 
+     samples[32*i+4] = 
+     samples[32*i+5] = 
+     samples[32*i+6] = 
+     samples[32*i+7] = 
+     samples[32*i+8] = 
+     samples[32*i+9] = 
+     samples[32*i+10] = 
+     samples[32*i+11] = 
+     samples[32*i+12] = 
+     samples[32*i+13] = 
+     samples[32*i+14] = 
+     samples[32*i+15] = 
+      MEM[0xFF30 + i]>>4;
+     samples[32*i+16] = 
+     samples[32*i+17] = 
+     samples[32*i+18] = 
+     samples[32*i+19] = 
+     samples[32*i+20] = 
+     samples[32*i+21] = 
+     samples[32*i+22] = 
+     samples[32*i+23] = 
+     samples[32*i+24] = 
+     samples[32*i+25] = 
+     samples[32*i+26] = 
+     samples[32*i+27] = 
+     samples[32*i+28] = 
+     samples[32*i+29] = 
+     samples[32*i+30] = 
+     samples[32*i+31] = 
+      MEM[0xFF30 + i]&0x0F;
+  }
+
+  
+  for ( i = 0; i < FFTsize; i++ ) {
+    real[i] = samples[reverseTable[i]]/4096;
+    imag[i] = 0;
+  }
+  
+  var halfSize = 1,
+    phaseShiftStepReal,
+    phaseShiftStepImag,
+    currentPhaseShiftReal,
+    currentPhaseShiftImag,
+    off,
+    tr,
+    ti,
+    tmpReal;
+
+  while ( halfSize < FFTsize ) {
+    phaseShiftStepReal = Math.cos(-3.141592653589793/halfSize);
+    phaseShiftStepImag = Math.sin(-3.141592653589793/halfSize);
+    currentPhaseShiftReal = 1.0;
+    currentPhaseShiftImag = 0.0;
+
+    for ( var fftStep = 0; fftStep < halfSize; fftStep++ ) {
+      i = fftStep;
+
+      while ( i < FFTsize ) {
+        off = i + halfSize;
+        tr = (currentPhaseShiftReal * real[off]) - (currentPhaseShiftImag * imag[off]);
+        ti = (currentPhaseShiftReal * imag[off]) + (currentPhaseShiftImag * real[off]);
+
+        real[off] = real[i] - tr;
+        imag[off] = imag[i] - ti;
+        real[i] += tr;
+        imag[i] += ti;
+
+        i += halfSize << 1;
+      }
+
+      tmpReal = currentPhaseShiftReal;
+      currentPhaseShiftReal = (tmpReal * phaseShiftStepReal) - (currentPhaseShiftImag * phaseShiftStepImag);
+      currentPhaseShiftImag = (tmpReal * phaseShiftStepImag) + (currentPhaseShiftImag * phaseShiftStepReal);
+    }
+    halfSize = halfSize << 1;
+  }
+  sound[3].oscillator.setPeriodicWave(
+    audioCtx.createPeriodicWave(real.slice(0,FFTsize/2),imag.slice(0,FFTsize/2), {disableNormalization:true})
+  );
+  sound[3].waveChanged=false;
+};
+
+
+const sound = {
+  1:{ // Square / Pulse with sweep and envelope
+    oscillator:audioCtx.createOscillator(),
+    freq: function(f) { sound[1].oscillator.frequency.setValueAtTime(f, audioCtx.currentTime) },
+    duty: function(d) { sound[1].oscillator.setPeriodicWave( sound.pulses[d] ) },
+    sweepTime: 0,
+    sweepDir: 1,
+    sweepShift: 0,
+    sweepPrescaler: 0,
+    freqnum: 0
+  },
+  2:{ // Square / Pulse with envelope
+    oscillator:audioCtx.createOscillator(),
+    freq: function(f) { sound[2].oscillator.frequency.setValueAtTime(f, audioCtx.currentTime) },
+    duty: function(d) { sound[2].oscillator.setPeriodicWave( sound.pulses[d] ) }
+  },
+  3:{ // Wave playback
+    oscillator:audioCtx.createOscillator(),
+    freq: function(f) { sound[3].oscillator.frequency.setValueAtTime(f, audioCtx.currentTime) },
+    waveChanged:true
+  },
+  4:{ //Noise
+    oscillator:audioCtx.createScriptProcessor(2048, 1, 1),
+    polySteps:function(x){ lfsrPhase=0;sound[4].oscillator.onaudioprocess = x?processLFSR7bit:processLFSR15bit; },
+    bitPeriod:1,
+    freq:function(bits4, bits3){ 
+      sound[4].bitPeriod=(audioCtx.sampleRate * snd4bit4[bits4] * snd4bit3[bits3])
+    }
+  }
+}
+
+function generatePulseWave(duty){
+  var res = 256; // up to 8192 according to spec
+  var real = new Float32Array(res);
+  var imag = new Float32Array(res);
+
+  real[0] = 0.5*duty;
+  for (var n = 1; n<res; n++) {
+    real[n] = 0.5*Math.sin( 3.141592653589793*n*duty )/(1.570796326794896*n)
+  }
+  return audioCtx.createPeriodicWave(real,imag, {disableNormalization:true});
+}
+
+sound.pulses = [
+  generatePulseWave(0.125),
+  generatePulseWave(0.25),
+  generatePulseWave(0.5),
+  generatePulseWave(0.75)
+]
+
+var lfsrPhase=0;
+var processLFSR7bit=function(e){
+  var output = e.outputBuffer.getChannelData(0);
+  var j=1/sound[4].bitPeriod;
+
+  for (var i = 0; i < 2048; i++) {
+    lfsrPhase+=j
+    if (lfsrPhase>127) lfsrPhase=0;
+    
+    output[i] = lfsr7bit[ ~~lfsrPhase ]
+  }
+
+}
+var processLFSR15bit=function(e){
+  var output = e.outputBuffer.getChannelData(0);
+  var j=Math.ceil(sound[4].bitPeriod);
+  
+  for (var i = 0; i < 2048; i+=j) {
+    if ((++lfsrPhase)>=32767) lfsrPhase-=32767;
+    var s = lfsr15bit[ lfsrPhase ]
+    for (var p=j;p--;) output[i+p] = s;
+  }
+}
+
+
+
+sound.SO1 = audioCtx.createGain()
+sound.SO2 = audioCtx.createGain()
+
+for (var i=1;i<=4;i++){
+  sound[i].gainNode=audioCtx.createGain()
+  sound[i].amp=function(a) { this.gainNode.gain.setValueAtTime(a, audioCtx.currentTime) }
+  sound[i].amp(0)
+  sound[i].oscillator.connect(sound[i].gainNode)
+  sound[i].gainNode.connect(sound.SO1)
+  sound[i].gainNode.connect(sound.SO2)
+
+  sound[i].initialized = false;
+  sound[i].lengthEnabled = false;
+  sound[i].length = 0;
+  sound[i].env = 0;
+  sound[i].envSpeed = 0;
+  sound[i].envDirection = 0;
+  sound[i].envCounter = 0;
+}
+
+sound[1].oscillator.start()
+sound[2].oscillator.start()
+sound[3].oscillator.start()
+sound[4].oscillator.onaudioprocess = processLFSR15bit;
+
+sound.final = audioCtx.createChannelMerger(2)
+sound.SO1.connect(sound.final, 0, 1)
+sound.SO2.connect(sound.final, 0, 0)
+
+sound.final.connect(audioCtx.destination)
+
+audioCtx.suspend()
+
+
+/*
+Memory map
+
+	$FFFF       	Interrupt Enable Flag
+	$FF80-$FFFE 	HRAM - 127 bytes
+	$FF00-$FF7F 	Hardware I/O Registers
+	$FEA0-$FEFF 	Unusable Memory
+	$FE00-$FE9F 	OAM - Object Attribute Memory
+	$E000-$FDFF 	Echo RAM - Reserved, Do Not Use
+	$D000-$DFFF 	Internal RAM - Bank 1-7 (switchable - CGB only)
+	$C000-$CFFF 	Internal RAM - Bank 0 (fixed)
+	$A000-$BFFF 	Cartridge RAM (If Available)
+	$9C00-$9FFF 	BG Map Data 2
+	$9800-$9BFF 	BG Map Data 1
+	$8000-$97FF 	Character RAM
+	$4000-$7FFF 	Cartridge ROM - Switchable Banks 1-xx
+	$0150-$3FFF 	Cartridge ROM - Bank 0 (fixed)
+	$0100-$014F 	Cartridge Header Area
+	$0000-$00FF 	Restart and Interrupt Vectors
+
+Bank switch:  write bank number to $2000 
+
+  Cartridge RAM has separate bank number to cartridge ROM
+
+
+Bootcode: 
+  load first bank of rom into MEM
+  overwrite first 256 bytes with bootcode
+  after verification, overwrite first 256 bytes with data from rom
+
+*/
+
+
+
+
+
+
+
+
+
+
+var MEM = new Uint8Array(0x10000); // Main address space
+var FirstROMPage, ROM = new Uint8Array(512); //populate later
+var ROMbank = 1; 
+var ROMbankoffset = (ROMbank-1)*0x4000;
+
+var cartRAM = new Uint8Array(0x8000); // some carts have up to 128K of ram?
+var RAMbank =0; 
+var RAMbankoffset = RAMbank*0x2000 - 0xA000;
+var RAMenabled=false;
+var MBCRamMode=0; //for MBC1
+
+var divPrescaler=0, timerPrescaler=0, timerLength=1, timerEnable=false;
+var LCD_enabled = false, LCD_lastmode=1, LCD_scan=0;
+var joypad_dpad = 0xef, joypad_buttons=0xdf; // 0=pressed
+var keys_dpad = 0xef, keys_buttons=0xdf; // 0=pressed
+
+document.onkeydown=function(e){
+  switch (e.keyCode){
+    case 87: //Up
+      
+      keys_dpad &=~(1<<2); break;
+    case 83: //Down
+      keys_dpad &=~(1<<3); break;
+    case 65: //Left
+      keys_dpad &=~(1<<1); break;
+    case 68: //Right
+      keys_dpad &=~(1<<0); break;
+    case 39: //A
+      if (!requestStop) {e.preventDefault(); e.stopPropagation();}
+      keys_buttons &=~(1<<0); break;
+    case 40: //B
+      if (!requestStop) {e.preventDefault(); e.stopPropagation();}
+      keys_buttons &=~(1<<1); break;
+    case 49: //Start
+      keys_buttons &=~(1<<3); break;
+    case 50: //Select
+      keys_buttons &=~(1<<2); break;
+  }
+}
+
+var dpaddown = function(n){keys_dpad &=~(1<<n);}
+var dpadup = function(n){keys_dpad |=(1<<n);}
+var btdown = function(n){keys_buttons &=~(1<<n);}
+var btup = function(n){keys_buttons |=(1<<n);}
+document.onkeyup=function(e){
+  switch (e.keyCode){
+    case 87: //Up
+      keys_dpad |=(1<<2); break;
+    case 83: //Down
+      keys_dpad |=(1<<3); break;
+    case 65: //Left
+      keys_dpad |=(1<<1); break;
+    case 68: //Right
+      keys_dpad |=(1<<0); break;
+    case 39: //A
+      keys_buttons |=(1<<0); break;
+    case 40: //B
+      keys_buttons |=(1<<1); break;
+    case 49: //Start
+      keys_buttons |=(1<<3); break;
+    case 50: //Select
+      keys_buttons |=(1<<2); break;
+  }
+}
+var doGamepad = function(){};
+// gamepad localstorage type: 0 for button, 1 for axes neg, 2 for axes pos
+
+var gamepad={
+  ctrl:["up","down","left","right","A","B","start","select","FastForward"],
+  layout:{},
+  text:document.getElementById("gamepadText"),
+  config:function(){
+    if (gamepad.text.innerHTML) return
+    var gp=navigator.getGamepads();
+    var nogamepads=true;
+    var inuseAP=[],inuseAN=[],inuseB=[];
+    for (var i=gp.length;i--;) {
+      if (gp[i]!==null) nogamepads=false;
+      inuseAP[i]=[],inuseAN[i]=[],inuseB[i]=[];
+    }
+    var learnstate=0;
+    if (nogamepads) {
+      alert("No Gamepads detected! Make sure it's connected and a button has been pressed since loading this page")
+      return;
+    }
+
+    gamepad.text.innerHTML="Press button for "+gamepad.ctrl[learnstate];
+
+    function setSingle(gpid, type, n){
+      if (learnstate>=gamepad.ctrl.length) return
+      gamepad.layout[gamepad.ctrl[learnstate]]={gpid,type,n};
+
+      learnstate++
+      gamepad.text.innerHTML=learnstate>=gamepad.ctrl.length?
+        "":"Press button for "+gamepad.ctrl[learnstate];
+    }
+    var wait=function(){
+      gp=navigator.getGamepads();
+      for (var i=gp.length;i--;) {
+        if (!gp[i]) continue;
+        for (var j=gp[i].buttons.length;j--;) {
+          if (gp[i].buttons[j].pressed && !inuseB[i][j]) {
+            inuseB[i][j]=true
+            setSingle(i, 0, j)
+          }
+        }
+        for (var j=gp[i].axes.length;j--;) {
+          if (gp[i].axes[j]>0.3 && !inuseAP[i][j]) {
+            inuseAP[i][j]=true
+            setSingle(i, 2, j)
+          } else if (gp[i].axes[j]<-0.3 && !inuseAN[i][j]) {
+            inuseAN[i][j]=true
+            setSingle(i, 1, j)
+          }
+        }
+      }
+      if (learnstate<gamepad.ctrl.length) setTimeout(wait,20)
+      else gamepad.set(),localStorage.gamepad=JSON.stringify(gamepad.layout);
+    }
+    setTimeout(wait,20)
+  },
+
+  set:function(){
+    var gp=navigator.getGamepads(), o=gamepad.layout ||{};
+    for (var i of gamepad.ctrl) {
+      gamepad[i]=()=>false;
+      if (!o[i] || !o[i].hasOwnProperty("gpid") || !gp[o[i].gpid]) continue;
+      let id=o[i].gpid, n=o[i].n;
+      if (o[i].type==0 && gp[id].buttons.length>n) {
+        gamepad[i]=(g)=>g[id].buttons[n].pressed;
+      } else if (o[i].type==1 && gp[id].axes.length>n) {
+        gamepad[i]=(g)=>g[id].axes[n]<-0.3;
+      } else if (o[i].type==2 && gp[id].axes.length>n) {
+        gamepad[i]=(g)=>g[id].axes[n]>0.3;
+      }
+    }
+    var ff=!limitFrameRate;
+    doGamepad = function (){
+      var gp=navigator.getGamepads();
+      joypad_dpad=
+         (gamepad.right(gp)?0:1)
+        +(gamepad.left(gp) ?0:2)
+        +(gamepad.up(gp)   ?0:4)
+        +(gamepad.down(gp) ?0:8);
+
+      joypad_buttons=
+         (gamepad.A(gp)     ?0:1)
+        +(gamepad.B(gp)     ?0:2)
+        +(gamepad.select(gp)?0:4)
+        +(gamepad.start(gp) ?0:8);
+
+      var gff=gamepad.FastForward(gp);
+      if (gff!=ff) limitFrameRate=!(ff=gff)
+    };
+  }
+}
+
+if (localStorage.gamepad) gamepad.layout=JSON.parse(localStorage.gamepad);
+window.addEventListener("gamepadconnected", gamepad.set);
+window.addEventListener("gamepaddisconnected", gamepad.set);
+
+
+function readMem(addr){
+  if (addr <= 0x3fff) return ROM[ addr ];
+  if (addr <= 0x7fff) return ROM[ addr + ROMbankoffset ];
+
+  // Cartridge RAM
+  if (addr >= 0xA000 && addr <=0xBFFF) return cartRAM[ addr + RAMbankoffset ];
+
+  // Joypad
+  if (addr==0xFF00) {
+    if (MEM[0xFF00]&0x20) {
+      return joypad_dpad & keys_dpad
+    } else if (MEM[0xFF00]&0x10) {
+      return joypad_buttons & keys_buttons
+    } else return 0xFF;
+  }
+
+  return MEM[addr];
+}
+
+function readMem16(addr){
+  //just presuming that some peripherals will need to hook on 16 bits
+  return [readMem(addr+1),readMem(addr)]
+}
+
+function writeMem(addr, data){
+  if (addr<=0x7fff) { 
+    doMBC(addr, data);
+    return;
+  }
+
+  if (addr >= 0xA000 && addr <=0xBFFF && RAMenabled){
+    cartRAM[ addr + RAMbankoffset ] = data;
+    return
+  }
+
+  //DIV register: reset
+  if (addr==0xFF04) {MEM[0xFF04]=0;return;}
+  // Timer control
+  if (addr==0xFF07) {
+    timerEnable = ((data&(1<<2))!=0);
+    timerLength = [ 1024, 16, 64, 256 ][ data&0x3 ];
+    timerPrescaler=timerLength; //+cycles for this instruction?
+    MEM[addr] = 0xF8|data;
+    return;
+  }
+
+  // Sound Control
+  if (addr==0xFF26) {
+    if (data&(1<<7)) {
+      MEM[0xFF26]=data&(1<<7);
+      SoundEnabled = true;
+      audioCtx.resume()
+    } else {
+      SoundEnabled = false;
+      // should we set each oscillator to amplitude zero too?
+      audioCtx.suspend()
+      // Zero all sound registers
+      resetSoundRegisters();
+    }
+    return;
+  }
+  if (addr>=0xFF10 && addr <=0xFF25) {
+    if (!SoundEnabled) return;
+    // FF10 - NR10 - Channel 1 Sweep register (R/W)
+    if (addr == 0xFF10) {
+      sound[1].sweepTime = (data>>4)&0x7;
+      sound[1].sweepPrescaler = sound[1].sweepTime;
+      sound[1].sweepDir = (data&(1<<3)) ? 0 : 1;
+      sound[1].sweepShift = data&0x7;
+      MEM[addr] = data &0x80
+      return;
+    }
+    // FF11 - NR11 - Channel 1 Sound length/Wave pattern duty (R/W)
+    if (addr == 0xFF11) {
+      MEM[addr] = data;
+      sound[1].duty(data>>6)
+      return;
+    }
+    // FF12 - NR12 - Channel 1 Volume Envelope (R/W)
+    if (addr == 0xFF12) {
+      MEM[addr] = data
+      sound[1].envDirection = (data&(1<<3)) ? 1: -1;
+      sound[1].envSpeed = data&0x7;
+      sound[1].envCounter = 0;
+      return;
+    }
+    // FF13 - NR13 - Channel 1 Frequency lo (Write Only)
+    if (addr == 0xFF13) {
+      sound[1].freqnum=(((MEM[0xFF14]&0x7)<<8)+ data);
+      sound[1].freq(  131072/(2048-  sound[1].freqnum  )  )
+      MEM[addr] = data
+      return;
+    }
+    // FF14 - NR14 - Channel 1 Frequency hi (R/W)
+    if (addr == 0xFF14) {
+      //bit 7 is initialize
+      sound[1].freqnum=(((data&0x7)<<8)+ MEM[0xFF13]);
+      sound[1].freq(  131072/(2048-  sound[1].freqnum  )  )
+      if (data&(1<<7)) {
+        sound[1].initialized = true
+        sound[1].env = MEM[0xFF12]>>4; // default envelope value
+        sound[1].envCounter = 0;
+        sound[1].amp( sound[1].env/15 )
+
+        sound[1].lengthEnabled = (data&(1<<6)) !=0;
+        sound[1].length = (64-(MEM[0xFF11]&0x3F));
+
+        MEM[0xFF26] |= (1<<0) // flag sound 1 as on
+        //if (sound[1].sweepShift) {sweepCalculate()}
+      }
+      MEM[addr] = data
+      return;
+    }
+
+
+    // FF16 - NR21 - Channel 2 Sound Length/Wave Pattern Duty (R/W)
+        // Bit 7-6 - Wave Pattern Duty (Read/Write)
+        // Bit 5-0 - Sound length data (Write Only) (t1: 0-63)
+    if (addr == 0xFF16) {
+      MEM[addr] = data
+      sound[2].duty(data>>6)
+      return;
+    }
+
+    // FF17 - NR22 - Channel 2 Volume Envelope (R/W)
+    if (addr == 0xFF17) {
+      MEM[addr] = data
+      sound[2].envDirection = (data&(1<<3)) ? 1: -1;
+      sound[2].envSpeed = data&0x7;
+      sound[2].envCounter = 0;
+      return;
+    }
+    // FF18 - NR23 - Channel 2 Frequency lo data (W)
+    if (addr == 0xFF18) {
+      sound[2].freq(  131072/(2048-  (((MEM[0xFF19]&0x7)<<8)+ data)  )  )
+      MEM[addr] = data
+      return;
+    }
+    // FF19 - NR24 - Channel 2 Frequency hi data (R/W)
+    if (addr == 0xFF19) {
+      sound[2].freq(  131072/(2048-  (((data&0x7)<<8)+ MEM[0xFF18])  )  )
+      //bit 7 is initialize
+      if (data&(1<<7)) {
+        sound[2].initialized = true
+        sound[2].env = MEM[0xFF17]>>4; //Default envelope value
+        sound[2].envCounter = 0;
+        sound[2].amp( sound[2].env/15 )
+
+        sound[2].lengthEnabled = (data&(1<<6)) !=0;
+        sound[2].length = (64-(MEM[0xFF16]&0x3F));
+        MEM[0xFF26] |= (1<<1) // flag sound 2 as on
+      }
+      MEM[addr] = data
+      return;
+    }
+
+    // Sound 3 - user-defined waveform
+    // "it can output a sound while changing its length, frequency, and level"
+    // not sure what changing its length means
+
+    // FF1A - NR30 - Channel 3 Sound on/off (R/W)
+    if (addr==0xFF1A) {
+      if (data&(1<<7)) {
+        sound[3].initialized=true;
+
+        // is this the right (only?) place to load the waveform?
+        setSound3Waveform()
+
+      } else {
+        sound[3].initialized=false;
+        sound[3].amp(0)
+      }
+      return;
+    }
+    // FF1B - NR31 - Channel 3 Sound Length
+    if (addr==0xFF1B) {
+      MEM[addr] = data
+      return;
+    }
+    // FF1C - NR32 - Channel 3 Select output level (R/W)
+    if (addr==0xFF1C) {
+      // Really we ought to bit-crush it, but whatever
+      if (sound[3].initialized) sound[3].amp( [ 0,0.5,0.25,0.125 ][((data>>5)&0x3)] )
+      MEM[addr] = data
+      return;
+    }
+
+    // FF1D - NR33 - Channel 3 Frequency's lower data (W)
+    if (addr == 0xFF1D) {
+      sound[3].freq(   65536/(2048-  (((MEM[0xFF1E]&0x7)<<8)+ data)  )  )
+      MEM[addr] = data
+      return;
+    }
+    // FF1E - NR34 - Channel 3 Frequency's higher data (R/W)
+    if (addr == 0xFF1E) {
+      sound[3].freq(   65536/(2048-  (((data&0x7)<<8)+ MEM[0xFF1D])  )  )
+      //bit 7 is initialize
+      if (data&(1<<7)) {
+
+        sound[3].initialized = true
+
+        sound[3].amp( [ 0,0.5,0.25,0.15 ][((MEM[0xFF1C]>>5)&0x3)] )
+
+        sound[3].lengthEnabled = (data&(1<<6)) !=0;
+        sound[3].length = (256-MEM[0xFF1B]);
+
+        MEM[0xFF26] |= (1<<2) // flag sound 3 as on
+      }
+      MEM[addr] = data
+      return;
+    }
+
+    // Sound 4 - Noise
+    // FF20 - NR41 - Channel 4 Sound Length (R/W)
+    if (addr==0xFF20) {
+      MEM[addr] = data
+      return;
+    }
+    // FF21 - NR42 - Channel 4 Volume Envelope (R/W)
+    if (addr==0xFF21) {
+      MEM[addr] = data
+      sound[4].envDirection = (data&(1<<3)) ? 1: -1;
+      sound[4].envSpeed = data&0x7;
+      sound[4].envCounter = 0;
+      return;
+    }
+    // FF22 - NR43 - Channel 4 Polynomial Counter (R/W)
+    if (addr==0xFF22) {
+      sound[4].freq(data>>4, data&0x7)
+      sound[4].polySteps(data&(1<<3))
+
+      MEM[addr] = data
+      return;
+    }
+    // FF23 - NR44 - Channel 4 Counter/consecutive; Inital (R/W)
+    if (addr==0xFF23) {
+
+      sound[4].initialized = true
+      sound[4].env = MEM[0xFF21]>>4; //Default envelope value
+      sound[4].envCounter = 0;
+      sound[4].amp( sound[4].env/15 )
+      sound[4].length = (64-(MEM[0xFF20]&0x3F));
+      
+      MEM[0xFF26] |= (1<<3) // flag sound 4 as on
+
+      sound[4].lengthEnabled = (data&(1<<6)) !=0;
+      MEM[addr] = data; 
+      return
+    }
+
+
+    // FF24 - NR50 - Channel control / ON-OFF / Volume (R/W)
+    if (addr == 0xFF24) {
+       //  Bit 7   - Output Vin to SO2 terminal (1=Enable)
+       //  Bit 6-4 - SO2 output level (volume)  (0-7)
+       //  Bit 3   - Output Vin to SO1 terminal (1=Enable)
+       //  Bit 2-0 - SO1 output level (volume)  (0-7)
+
+      // is level zero mute ? "minimum level"
+      sound.SO2.gain.setValueAtTime(((data>>4)&0x7)/7, audioCtx.currentTime)
+      sound.SO1.gain.setValueAtTime((data&0x7)/7,      audioCtx.currentTime)
+      MEM[addr] = data; 
+      return
+    }
+
+    // FF25 - NR51 - Selection of Sound output terminal (R/W)
+    if (addr == 0xff25) {
+
+      var con = (MEM[0xff25]^data) & data;
+      var dis = (MEM[0xff25]^data) & (~data);
+
+      for (var i=0;i<4;i++) {
+        if (con&(1<<i)){
+	  try {
+            sound[i+1].gainNode.connect(sound.SO1)
+          }catch (error) {
+            console.log(error);
+          }
+	}
+        if (dis&(1<<i)){
+	  try {
+            sound[i+1].gainNode.disconnect(sound.SO1)
+          }catch (error) {
+            console.log(error);
+          }
+        }
+        if (con&(1<<(4+i))){
+	  try {
+            sound[i+1].gainNode.connect(sound.SO2)
+          }catch (error) {
+            console.log(error);
+          }
+	}
+        if (dis&(1<<(4+i))){
+	  try {
+            sound[i+1].gainNode.disconnect(sound.SO2)
+          }catch (error) {
+            console.log(error);
+          }
+        }
+      }
+      MEM[addr] = data; 
+      return
+    }
+
+    return;
+  }
+  if (addr>=0xFF30 && addr<=0xFF3F) sound[3].waveChanged=true;
+
+  //LCD control
+  if (addr==0xFF40) {
+    var cc = data&(1<<7);
+    if (LCD_enabled !=cc) {
+      LCD_enabled=!!cc;
+      if (!LCD_enabled){ // Disabling the display sets it to mode 1
+        // this should also probably set all pixels to white
+        LCD_scan=0;
+        MEM[0xFF41] = (MEM[0xFF41] & 0xFC) +1;
+      }
+    }
+  }
+  if (addr==0xFF41) {
+    //don't overwrite the lowest two bits (mode)
+    MEM[0xFF41] &= 0x3
+    data &= 0xFC
+    MEM[0xFF41] |= 0x80|data; // BGB has highest bit always set
+    return;
+  }
+
+  // LY - write causes reset
+  if (addr==0xFF44) { MEM[0xFF44] = 0; return }
+
+  // FF46 - DMA - DMA Transfer and Start Address (W)
+  if (addr==0xFF46) {
+    var st=data<<8;
+    for (var i=0;i<=0x9F;i++) 
+      MEM[0xFE00 +i] = readMem(st + i);
+    return
+  }
+
+  // disable bootrom
+  if (addr==0xFF50) { for (var i=0;i<256;i++) ROM[i]=FirstROMPage[i]; return}
+
+  MEM[addr] = data;
+}
+function writeMem16(addr, dataH, dataL){
+  writeMem(addr, dataL)
+  writeMem(addr+1, dataH)
+}
+
+function doMBC(addr, data){
+
+  switch (ROM[0x147]) {
+
+  // Cartridge Type = ROM[0x147]
+
+  case 0: // ROM ONLY
+    // do any type 0 carts have switchable ram?
+  break;
+
+  case 0x01: //  MBC1
+  case 0x02: //  MBC1+RAM
+  case 0x03: //  MBC1+RAM+BATTERY
+    if (addr <= 0x1FFF) {
+      RAMenabled = ((data & 0x0F) == 0xA) 
+    } else if (addr <= 0x3FFF){
+      data &= 0x1F;
+      if (data==0) data=1 // MBC1 translates bank 0 to bank 1 (apparently regardless of upper bits)
+      // set lowest 5 bits of bank number
+      ROMbank = (ROMbank&0xE0)|(data&0x1F);
+      ROMbankoffset = (ROMbank-1)*0x4000 %ROM.length;
+    } else if (addr<=0x5fff) {
+      data &= 0x3
+      if (MBCRamMode==0) {
+        ROMbank = (ROMbank&0x1F)|(data<<5);
+        ROMbankoffset = (ROMbank-1)*0x4000  %ROM.length;
+      } else {
+        RAMbank=data;
+        RAMbankoffset = RAMbank*0x2000 - 0xA000
+      }
+    } else {
+      MBCRamMode = data&1;
+      if (MBCRamMode==0) {
+        RAMbank=0;
+        RAMbankoffset = RAMbank*0x2000 - 0xA000
+      } else {
+        ROMbank &=0x1F;
+        ROMbankoffset = (ROMbank-1)*0x4000  %ROM.length;
+      }
+    }
+    
+  break;
+
+  case 0x05: //  MBC2
+  case 0x06: //  MBC2+BATTERY
+    
+    if (addr <= 0x1FFF) {
+      if ((addr&0x0100) ==0)
+        RAMenabled = ((data & 0x0F) == 0xA) 
+    } else if (addr <= 0x3FFF){
+      data &=0x0F;
+      if (data==0) data=1
+      ROMbank = data;
+      ROMbankoffset = (ROMbank-1)*0x4000 %ROM.length;
+    }
+
+  break;
+
+  // case 0x08: //  ROM+RAM
+  // case 0x09: //  ROM+RAM+BATTERY
+  // case 0x0B: //  MMM01
+  // case 0x0C: //  MMM01+RAM
+  // case 0x0D: //  MMM01+RAM+BATTERY
+  // case 0x0F: //  MBC3+TIMER+BATTERY
+  case 0x10: //  MBC3+TIMER+RAM+BATTERY
+  case 0x11: //  MBC3
+  case 0x12: //  MBC3+RAM
+  case 0x13: //  MBC3+RAM+BATTERY
+
+    if (addr <= 0x1FFF) {
+      RAMenabled = ((data & 0x0F) == 0xA) 
+    } else if (addr <= 0x3FFF){
+      if (data==0) data=1 // allows access to banks 0x20, 0x40, 0x60
+      ROMbank = data&0x7F;
+      ROMbankoffset = (ROMbank-1)*0x4000 %ROM.length;
+    } else if (addr<=0x5fff) {
+      if (data < 8) {
+        RAMbank=data;
+        RAMbankoffset = RAMbank*0x2000 - 0xA000
+      } else{
+        // RTC registers here
+      }
+    } else {
+      // RTC latch
+    }
+  break;
+
+  case 0x19: //  MBC5
+  case 0x1A: //  MBC5+RAM
+  case 0x1B: //  MBC5+RAM+BATTERY
+  // case 0x1C: //  MBC5+RUMBLE
+  // case 0x1D: //  MBC5+RUMBLE+RAM
+  // case 0x1E: //  MBC5+RUMBLE+RAM+BATTERY
+    if (addr <= 0x1FFF) {
+      RAMenabled = ((data & 0x0F) == 0xA) 
+    } else if (addr <= 0x2FFF){
+      // Allows access to bank 0
+      ROMbank &= 0x100;
+      ROMbank |= data;
+      ROMbankoffset = (ROMbank-1)*0x4000;
+      while (ROMbankoffset>ROM.length) ROMbankoffset-=ROM.length;
+    } else if (addr <= 0x3FFF){
+      ROMbank &= 0xFF;
+      if (data&1) ROMbank+=0x100;
+      ROMbankoffset = (ROMbank-1)*0x4000;
+      while (ROMbankoffset>ROM.length) ROMbankoffset-=ROM.length;
+    } else if (addr<=0x5fff) {
+      RAMbank=data&0x0F;
+      RAMbankoffset = RAMbank*0x2000 - 0xA000
+    }
+  break;
+
+  // case 0x20: //  MBC6
+  // case 0x22: //  MBC7+SENSOR+RUMBLE+RAM+BATTERY
+  // case 0xFC: //  POCKET CAMERA
+  // case 0xFD: //  BANDAI TAMA5
+  // case 0xFE: //  HuC3
+  // case 0xFF: //  HuC1+RAM+BATTERY
+
+    default: throw Error("Unimplemented memory controller");
+
+  }
+}
+function resetSoundRegisters(){
+  
+   MEM[0xFF10] = 0x80   // NR10
+   MEM[0xFF11] = 0xBF   // NR11
+   MEM[0xFF12] = 0xF3   // NR12
+   MEM[0xFF13] = 0
+   MEM[0xFF14] = 0xBF   // NR14
+   MEM[0xFF15] = 0xFF // NA
+   MEM[0xFF16] = 0x3F   // NR21
+   MEM[0xFF17] = 0x00   // NR22
+   MEM[0xFF18] = 0
+   MEM[0xFF19] = 0xBF   // NR24
+   MEM[0xFF1A] = 0x7F   // NR30
+   MEM[0xFF1B] = 0xFF   // NR31
+   MEM[0xFF1C] = 0x9F   // NR32
+   MEM[0xFF1D] = 0
+   MEM[0xFF1E] = 0xBF   // NR33
+   MEM[0xFF1F] = 0xFF // NA
+   MEM[0xFF20] = 0xFF   // NR41
+   MEM[0xFF21] = 0x00   // NR42
+   MEM[0xFF22] = 0x00   // NR43
+   MEM[0xFF23] = 0xBF   // NR30
+   MEM[0xFF24] = 0x77   // NR50
+   writeMem(0xFF25,0xF3)  // NR51
+   MEM[0xFF26] = 0xF1   // NR52
+
+}
+
+
+
+
+var REG = new Uint8Array(8);
+
+var FLAGS = {
+  Z:false,
+  N:false,
+  H:false,
+  C:false
+}
+
+var PC = 0
+
+var SP = 0
+
+var IME = false // Interrupt master enable
+var cpu_halted=false;
+
+
+const A = 0b111
+const B = 0b000
+const C = 0b001
+const D = 0b010
+const E = 0b011
+const H = 0b100
+const L = 0b101
+
+const HL = 0b110
+
+const Immediate = 257
+const BC = 258
+const DE = 259
+const SPr = 260
+
+const opcodes = Array(256);
+for (var i=0;i<256;i++) opcodes[i]=function(){ throw Error("Undefined Opcode" )};
+
+const CBcodes = Array(256);
+for (var i=0;i<256;i++) CBcodes[i]=function(){ throw Error("Undefined 0xCB Opcode" )};
+
+
+function ld(a,b){ 
+
+  if (b==Immediate) return function(){
+    REG[a] = readMem( PC+1 );
+    PC+=2
+    return 8;
+  }
+
+  return function(){
+    REG[a] = REG[b];
+    PC++
+    return 4;
+  }
+}
+function ld_from_mem(a, b, c){
+  if (b==Immediate) return function(){
+    REG[a] = readMem( readMem( PC+1 ) + (readMem( PC+2 ) <<8) );
+    PC+=3;
+    return 16;
+  }
+
+  return function(){
+    REG[a] = readMem( (REG[b]<<8)+REG[c] );
+    PC++;
+    return 8;
+  }
+}
+
+function ld_to_mem(a, b, c){
+  if (a==Immediate) return function(){
+    writeMem( readMem( PC+1 ) + (readMem( PC+2 ) <<8), REG[b] )
+    PC+=3
+    return 16;
+  }
+  if (c==Immediate) return function(){
+    writeMem( (REG[a]<<8)+REG[b] , readMem(PC+1) );
+    PC+=2
+    return 12
+  }
+  return function(){
+    writeMem( (REG[a]<<8)+REG[b] , REG[c] );
+    PC++
+    return 8
+  }
+}
+
+// Messy...
+function ld16(a,b,c){
+  if (b==Immediate) {
+    if (a==HL) return function(){
+      // mem to hl
+      var s = readMem16(readMem( PC+1 ) + (readMem( PC+2 )<<8));
+
+      REG[H] = s[0]
+      REG[L] = s[1]
+
+      PC+=3
+      return 12
+    }
+
+    // immediate into SP... 
+    return function(){
+      SP = readMem( PC+1 ) + (readMem( PC+2 ) <<8)
+      PC+=3
+      return 12
+    }
+
+  }
+  if (c==Immediate) return function(){
+    
+    REG[a] = readMem( PC+2 )
+    REG[b] = readMem( PC+1 )
+
+    PC+=3
+    return 12
+  }
+
+  // ld sp, hl
+  return function(){
+    SP = (REG[H]<<8) + REG[L]
+    PC++
+    return 8
+  }
+}
+
+function ldd(a,b){ //load with decrement
+  if (a==HL) return function(){
+    writeMem( (REG[H]<<8)+REG[L] , REG[A] );
+
+    if (REG[L]==0) REG[H]--;
+    REG[L]--;
+    
+    PC++
+    return 8
+  }
+
+  return function(){
+    REG[A] = readMem( (REG[H]<<8)+REG[L] );
+
+    if (REG[L]==0) REG[H]--;
+    REG[L]--;
+
+    PC++
+    return 8
+  }
+
+}
+function ldi(a,b){ //load with increment
+  if (a==HL) return function(){
+    writeMem( (REG[H]<<8)+REG[L] , REG[A] );
+    
+    if (REG[L]==255) REG[H]++;
+    REG[L]++;
+    
+    PC++
+    return 8
+  }
+
+  return function(){
+    REG[A] = readMem( (REG[H]<<8)+REG[L] );
+
+    if (REG[L]==255) REG[H]++;
+    REG[L]++;
+
+    PC++
+    return 8
+  }
+
+}
+
+function ldc(a,b){
+  if (a==A) return function(){ //LD   A, (FF00+C)
+    REG[A] = readMem( 0xFF00 + REG[C] )
+    PC++
+    return 8
+  }
+  return function(){ //LD   (FF00+C),A
+    writeMem(0xFF00 + REG[C], REG[A])
+    PC++
+    return 8
+  }
+}
+function ldh(a,b){
+  if (a==A) return function(){ //LD   A, (FF00+n)
+    REG[A] = readMem( 0xFF00 + readMem(PC+1) )
+    PC+=2
+    return 12
+  }
+  return function(){ //LD   (FF00+n),A
+    writeMem(0xFF00 + readMem(PC+1), REG[A])
+    PC+=2
+    return 12
+  }
+}
+
+
+function ALU(op, a, b){
+
+  if (b == Immediate) return function(){
+    REG[A] = ALU_process_8bit( op, readMem( PC+1 ) )
+    PC+=2
+    return 8
+  }
+  if (b == HL) return function(){
+    REG[A] = ALU_process_8bit( op, readMem( (REG[H]<<8)+REG[L] ) );
+    PC++
+    return 8
+  }
+  return function(){
+    REG[A] = ALU_process_8bit( op, REG[b]);
+    PC++
+    return 4
+  }
+}
+
+const ADD = 1
+const ADC = 2
+const SUB = 3
+const SBC = 4
+const AND = 5
+const OR  = 6
+const XOR = 7
+const CP  = 8
+
+
+function ALU_process_8bit(op, b){
+
+  var result = REG[A];
+  FLAGS.N = false;
+
+  switch (op){
+    case ADD: 
+      FLAGS.H = !!(((REG[A]&0x0F) + (b&0x0F)) & 0x10)
+      result += b;
+    break;
+    case ADC:
+      FLAGS.H = !!(((REG[A]&0x0F) + (b&0x0F) + FLAGS.C) & 0x10)
+      result += b + FLAGS.C;
+    break;
+    case SUB: 
+      result -= b;
+      FLAGS.N = true;
+      FLAGS.H = !!(((REG[A]&0x0F) - (b&0x0F)) & 0x10)
+    break;
+
+    case CP:
+      result -= b;
+      FLAGS.N = true;
+      FLAGS.H = !!(((REG[A]&0x0F) - (b&0x0F)) & 0x10)
+      FLAGS.Z = ((result & 0xff) == 0)
+      FLAGS.C = result > 255 || result < 0;
+    return REG[A];
+
+    case SBC:
+      result -= b + FLAGS.C;
+      FLAGS.N = true;
+      FLAGS.H = !!(((REG[A]&0x0F) - (b&0x0F) - FLAGS.C) & 0x10)
+    break;
+    case AND:
+      result &= b;
+      FLAGS.H = true
+    break;
+    case OR:
+      result |= b;
+      FLAGS.H = false
+    break;
+    case XOR: 
+      result ^= b;
+      FLAGS.H = false
+    break;
+
+  }
+
+  FLAGS.Z = ((result&0xff) == 0)
+  FLAGS.C = result > 255 || result < 0;
+
+  return result&0xFF;
+}
+
+function inc(a){return incdec(a, 1)}
+function dec(a){return incdec(a, -1)}
+
+function incdec(r,offset) {
+  if (r==HL) return function(){
+    writeMem((REG[H]<<8)+REG[L], incdec_process_8bit( readMem( (REG[H]<<8)+REG[L] ) ,offset))
+    PC++
+    return 12
+  }
+
+  return function(){
+    REG[r]=incdec_process_8bit(REG[r],offset)
+    PC++
+    return 4
+  }
+}
+
+function incdec_process_8bit(a,offset) {
+    var result = a+offset;
+    FLAGS.H = !!(((a&0x0F) +offset) & 0x10)
+    FLAGS.N = offset == -1
+    FLAGS.Z = ((result & 0xff) == 0)
+    return result;
+}
+
+// 16 bit inc / dec affect no flags
+function inc16(a,b) {
+  if (a==SPr) return function(){
+    SP++
+    PC++
+    return 8
+  }
+  return function(){
+    if (REG[b] ==255) REG[a]++;
+    REG[b]++;
+    PC++;
+    return 8
+  }
+}
+function dec16(a,b) {
+  if (a==SPr) return function(){
+    SP--
+    PC++
+    return 8
+  }
+  return function(){
+    if (REG[b] ==0) REG[a]--;
+    REG[b]--;
+    PC++;
+    return 8
+  }
+}
+
+function signedOffset(b){
+  return (b>127)? (b-256) : b;
+}
+
+function jrNZ(){
+  if (FLAGS.Z) {PC+=2; return 8}
+  PC += 2+signedOffset(readMem(PC+1))
+  return 12
+}
+
+function jrNC(){
+  if (FLAGS.C) {PC+=2; return 8}
+  PC += 2+signedOffset(readMem(PC+1))
+  return 12
+}
+
+function jrZ(){
+  if (!FLAGS.Z) {PC+=2; return 8}
+  PC += 2+signedOffset(readMem(PC+1));
+  return 12
+}
+
+function jrC(){
+  if (!FLAGS.C) {PC+=2; return 8}
+  PC += 2+signedOffset(readMem(PC+1))
+	return 12
+}
+
+function jr(){ //unconditional relative
+  PC += 2+signedOffset(readMem(PC+1))
+  return 12
+}
+
+function jp(){ //unconditional absolute
+  PC = readMem(PC+1)+(readMem(PC+2)<<8)
+  return 16
+}
+function jpNZ(){
+  if (FLAGS.Z) {PC+=3; return 12}
+  PC = readMem(PC+1)+(readMem(PC+2)<<8)
+  return 16
+}
+function jpNC(){
+  if (FLAGS.C) {PC+=3; return 12}
+  PC = readMem(PC+1)+(readMem(PC+2)<<8)
+  return 16
+}
+function jpZ(){
+  if (!FLAGS.Z) {PC+=3; return 12}
+  PC = readMem(PC+1)+(readMem(PC+2)<<8)
+  return 16
+}
+function jpC(){
+  if (!FLAGS.C) {PC+=3; return 12}
+  PC = readMem(PC+1)+(readMem(PC+2)<<8)
+  return 16
+}
+
+function jpHL(){
+  PC = (REG[H]<<8)+REG[L]
+  return 4
+}
+
+function push(a,b) {
+  if (a==A) return function(){
+    var flags = (FLAGS.Z << 7) + (FLAGS.N << 6) + (FLAGS.H << 5) + (FLAGS.C << 4)
+    SP -=2
+    writeMem16(SP, REG[A], flags)
+    PC++
+    return 16
+  }
+  return function(){
+    SP-=2
+    writeMem16(SP, REG[a], REG[b])
+    PC++
+    return 16
+  }
+}
+
+function pop(a,b) {
+  if (a==A) return function(){
+    var s = readMem16(SP);
+    REG[A] = s[0]
+    FLAGS.Z = (s[1] & (1<<7)) != 0
+    FLAGS.N = (s[1] & (1<<6)) != 0
+    FLAGS.H = (s[1] & (1<<5)) != 0
+    FLAGS.C = (s[1] & (1<<4)) != 0
+    SP+=2
+    PC++
+    return 12
+  }
+  return function(){
+    var s = readMem16(SP);
+    REG[a] = s[0]
+    REG[b] = s[1]
+    SP+=2
+    PC++
+    return 12
+  }
+}
+
+function call(){
+  SP -=2
+  var npc = PC+3
+  writeMem16(SP, npc>>8, npc&0xFF)
+  PC = readMem(PC+1)+(readMem(PC+2)<<8)
+  return 24
+}
+function callNZ(){
+  if (FLAGS.Z) {PC+=3; return 12}
+  return call()
+}
+function callNC(){
+  if (FLAGS.C) {PC+=3; return 12}
+  return call()
+}
+function callZ(){
+  if (!FLAGS.Z) {PC+=3; return 12}
+  return call()
+}
+function callC(){
+  if (!FLAGS.C) {PC+=3; return 12}
+  return call()
+}
+
+function ret(){
+  var s = readMem16(SP);
+  SP+=2
+  PC = (s[0]<<8)+s[1]
+  return 16
+}
+function retNZ(){
+  if (FLAGS.Z) {PC++; return 8}
+  ret()
+  return 20
+}
+function retNC(){
+  if (FLAGS.C) {PC++; return 8}
+  ret()
+  return 20
+}
+function retZ(){
+  if (!FLAGS.Z) {PC++; return 8}
+  ret()
+  return 20
+}
+function retC(){
+  if (!FLAGS.C) {PC++; return 8}
+  ret()
+  return 20
+}
+function reti(){
+  IME = true
+  return ret()
+}
+
+function ei(){
+  // This needs to wait until the end of the next instruction
+  IME = true
+  PC++
+  return 4
+}
+
+function di(){
+  IME = false
+  PC++
+  return 4
+}
+
+function rst(a){
+  return function(){
+    SP -=2
+    var npc = PC+1 // datasheets say to push the current program counter, but surely it means the return address
+    writeMem16(SP, npc>>8, npc&0xFF)
+    PC = a
+    return 16
+  }
+}
+
+const RLC = 1
+const RRC = 2
+const RL  = 3
+const RR  = 4
+const SLA = 5
+const SRA = 6
+const SRL = 7
+
+function shift_fast(op, a){
+  return function(){
+    REG[a] = shift_process(op, REG[a])
+    FLAGS.Z=false // Bizarre, but correct
+    PC++
+    return 4
+  }
+}
+
+function shift(op, a){
+  if (a==HL) return function(){
+    var addr= (REG[H]<<8)+REG[L];
+    writeMem( addr , shift_process( op, readMem(addr) ) )
+    PC++
+    return 16
+  }
+  return function(){
+    REG[a] = shift_process(op, REG[a])
+    PC++
+    return 8
+  }
+}
+
+function shift_process(op, a){
+
+  var bit7 = a>>7, bit0 = a&1;
+
+  switch (op) {
+    case RLC: // Rotate byte left, save carry
+      a = ((a<<1)&0xff) + bit7
+      FLAGS.C = !!bit7
+    break;
+    case RRC: // Rotate byte right, save carry
+      a = ((a>>1)&0xff) + (bit0<<7)
+      FLAGS.C = !!bit0
+    break;
+    case RL : //Rotate left through carry
+      a = ((a<<1)&0xff) + FLAGS.C 
+      FLAGS.C = !!bit7
+    break;
+    case RR : //Rotate right through carry
+      a = ((a>>1)&0xff) + (FLAGS.C<<7)
+      FLAGS.C = !!bit0
+    break;
+    case SLA: //Shift left
+      a = ((a<<1)&0xff)
+      FLAGS.C = !!bit7
+    break;
+    case SRA: //Shift right arithmetic
+      a = ((a>>1)&0xff) + (bit7<<7)
+      FLAGS.C = !!bit0
+    break;
+    case SRL: //Shift right logical
+      a = ((a>>1)&0xff)
+      FLAGS.C = !!bit0
+    break;
+  }
+
+  FLAGS.N=false
+  FLAGS.H=false
+  FLAGS.Z= (a&0xFF)==0
+  return a
+}
+
+function ccf(){
+  FLAGS.N =false
+  FLAGS.H =false
+  FLAGS.C =!FLAGS.C
+  PC++
+  return 4
+}
+function scf(){
+  FLAGS.N =false
+  FLAGS.H =false
+  FLAGS.C =true
+  PC++
+  return 4
+}
+function cpl(){
+  REG[A] = ~REG[A]
+  FLAGS.N =true
+  FLAGS.H =true
+  PC++
+  return 4
+}
+function addHL(a,b){
+  if (a==SPr) return function(){
+    var c = (REG[L] += (SP&0xFF))>255?1:0;
+    var h = REG[H] + (SP>>8) + c
+    FLAGS.H = !!(((REG[H]&0x0F) + ((SP>>8)&0x0F) + c) & 0x10)
+    REG[H] = h;
+    FLAGS.C = (h>255)
+    FLAGS.N=false
+    PC++
+    return 8
+  }
+  return function(){
+    var c = (REG[L]+= REG[b])>255?1:0;
+    var h = REG[H] + REG[a] + c
+    FLAGS.H = !!(((REG[H]&0x0F) + (REG[a]&0x0F) + c) & 0x10)
+    REG[H] = h;
+    FLAGS.C = (h>255)
+    FLAGS.N=false
+    PC++
+    return 8
+  }
+}
+function daa(){
+//http://gbdev.gg8.se/wiki/articles/DAA
+
+  if (FLAGS.N) {
+    if (FLAGS.C) REG[A]-=0x60;
+    if (FLAGS.H) REG[A]-=0x06;
+  } else {
+    if (       REG[A]>0x99 || FLAGS.C) {REG[A]+=0x60; FLAGS.C=true}
+    if ((REG[A]&0x0f)>0x09 || FLAGS.H) REG[A]+=0x06;
+  }
+
+  FLAGS.Z = REG[A] == 0
+  FLAGS.H = false
+
+  PC++
+  return 4
+}
+function ld_imm_sp(){
+  writeMem16( readMem(PC+1)+(readMem(PC+2)<<8) , SP>>8, SP&0xFF );
+  PC+=3
+  return 20
+}
+function ld_hl_spdd(){
+  var b = signedOffset(readMem(PC+1));
+
+  FLAGS.H= !!(((SP&0x0F) + (b&0x0F)) &0x010)
+  FLAGS.C= !!(((SP&0xFF) + (b&0xFF)) &0x100)
+
+  var n = SP + b
+  REG[H] =(n>>8)
+  REG[L] =n&0xFF
+
+  FLAGS.N=false
+  FLAGS.Z=false
+  PC+=2
+  return 12
+}
+function add_sp_n(){
+  var b=signedOffset(readMem(PC+1))
+
+  FLAGS.H= !!(((SP&0x0F) + (b&0x0F)) &0x010)
+  FLAGS.C= !!(((SP&0xFF) + (b&0xFF)) &0x100)
+
+  SP += b
+  FLAGS.N=false
+  FLAGS.Z=false
+
+  SP&=0xFFFF
+  PC+=2
+  return 16
+}
+
+function halt() {
+// if interrupts disabled, stall 1 cycle, skip next instruction and continue
+  cpu_halted=true;
+  PC++;
+  return 4
+}; 
+function stop(){
+  //TODO
+  PC+=2;
+  return 4
+}
+
+const unused = function(){ return 4 }; //GMB locks when called
+
+opcodes[ 0x00 ] = function nop(){ PC++; return 4 };
+opcodes[ 0x01 ] = ld16(B,C,Immediate);
+opcodes[ 0x02 ] = ld_to_mem(B,C,A);
+opcodes[ 0x03 ] = inc16(B,C);
+opcodes[ 0x04 ] = inc(B);
+opcodes[ 0x05 ] = dec(B);
+opcodes[ 0x06 ] = ld(B, Immediate);
+opcodes[ 0x07 ] = shift_fast(RLC, A) //rlca
+opcodes[ 0x08 ] = ld_imm_sp; //LD   (nn),SP
+opcodes[ 0x09 ] = addHL(B,C);
+opcodes[ 0x0A ] = ld_from_mem(A, B, C);
+opcodes[ 0x0B ] = dec16(B,C);
+opcodes[ 0x0C ] = inc(C);
+opcodes[ 0x0D ] = dec(C);
+opcodes[ 0x0E ] = ld(C, Immediate);
+opcodes[ 0x0F ] = shift_fast(RRC, A);
+
+
+opcodes[ 0x10 ] = stop;
+opcodes[ 0x11 ] = ld16(D,E,Immediate);
+opcodes[ 0x12 ] = ld_to_mem(D,E,A);
+opcodes[ 0x13 ] = inc16(D,E);
+opcodes[ 0x14 ] = inc(D);
+opcodes[ 0x15 ] = dec(D);
+opcodes[ 0x16 ] = ld(D, Immediate);
+opcodes[ 0x17 ] = shift_fast(RL, A) 
+opcodes[ 0x18 ] = jr;
+opcodes[ 0x19 ] = addHL(D,E); //ADD HL, DE
+opcodes[ 0x1A ] = ld_from_mem(A, D, E);
+opcodes[ 0x1B ] = dec16(D,E);
+opcodes[ 0x1C ] = inc(E);
+opcodes[ 0x1D ] = dec(E);
+opcodes[ 0x1E ] = ld(E, Immediate);
+opcodes[ 0x1F ] = shift_fast(RR, A);
+
+opcodes[ 0x20 ] = jrNZ;
+opcodes[ 0x21 ] = ld16(H,L,Immediate);
+opcodes[ 0x22 ] = ldi(HL,A);
+opcodes[ 0x23 ] = inc16(H,L);
+opcodes[ 0x24 ] = inc(H);
+opcodes[ 0x25 ] = dec(H);
+opcodes[ 0x26 ] = ld(H, Immediate);
+opcodes[ 0x27 ] = daa;
+opcodes[ 0x28 ] = jrZ;
+opcodes[ 0x29 ] = addHL(H,L);
+opcodes[ 0x2A ] = ldi(A,HL);
+opcodes[ 0x2B ] = dec16(H,L);
+opcodes[ 0x2C ] = inc(L);
+opcodes[ 0x2D ] = dec(L);
+opcodes[ 0x2E ] = ld(L, Immediate);
+opcodes[ 0x2F ] = cpl;
+
+opcodes[ 0x30 ] = jrNC;
+opcodes[ 0x31 ] = ld16(SPr, Immediate);
+opcodes[ 0x32 ] = ldd(HL,A);
+opcodes[ 0x33 ] = inc16(SPr);
+opcodes[ 0x34 ] = inc(HL);
+opcodes[ 0x35 ] = dec(HL);
+opcodes[ 0x36 ] = ld_to_mem(H,L,Immediate);
+opcodes[ 0x37 ] = scf;
+opcodes[ 0x38 ] = jrC;
+opcodes[ 0x39 ] = addHL(SPr);
+opcodes[ 0x3A ] = ldd(A,HL);
+opcodes[ 0x3B ] = dec16(SPr);
+opcodes[ 0x3C ] = inc(A);
+opcodes[ 0x3D ] = dec(A);
+opcodes[ 0x3E ] = ld(A, Immediate);
+opcodes[ 0x3F ] = ccf;
+
+
+opcodes[ 0x40 ] = ld(B,B);
+opcodes[ 0x41 ] = ld(B,C);
+opcodes[ 0x42 ] = ld(B,D);
+opcodes[ 0x43 ] = ld(B,E);
+opcodes[ 0x44 ] = ld(B,H);
+opcodes[ 0x45 ] = ld(B,L);
+opcodes[ 0x46 ] = ld_from_mem(B, H, L );
+opcodes[ 0x47 ] = ld(B,A);
+
+opcodes[ 0x48 ] = ld(C,B);
+opcodes[ 0x49 ] = ld(C,C);
+opcodes[ 0x4A ] = ld(C,D);
+opcodes[ 0x4B ] = ld(C,E);
+opcodes[ 0x4C ] = ld(C,H);
+opcodes[ 0x4D ] = ld(C,L);
+opcodes[ 0x4E ] = ld_from_mem(C, H, L );
+opcodes[ 0x4F ] = ld(C,A);
+
+opcodes[ 0x50 ] = ld(D,B);
+opcodes[ 0x51 ] = ld(D,C);
+opcodes[ 0x52 ] = ld(D,D);
+opcodes[ 0x53 ] = ld(D,E);
+opcodes[ 0x54 ] = ld(D,H);
+opcodes[ 0x55 ] = ld(D,L);
+opcodes[ 0x56 ] = ld_from_mem(D, H, L );
+opcodes[ 0x57 ] = ld(D,A);
+
+opcodes[ 0x58 ] = ld(E,B);
+opcodes[ 0x59 ] = ld(E,C);
+opcodes[ 0x5A ] = ld(E,D);
+opcodes[ 0x5B ] = ld(E,E);
+opcodes[ 0x5C ] = ld(E,H);
+opcodes[ 0x5D ] = ld(E,L);
+opcodes[ 0x5E ] = ld_from_mem(E, H, L );
+opcodes[ 0x5F ] = ld(E,A);
+
+opcodes[ 0x60 ] = ld(H,B);
+opcodes[ 0x61 ] = ld(H,C);
+opcodes[ 0x62 ] = ld(H,D);
+opcodes[ 0x63 ] = ld(H,E);
+opcodes[ 0x64 ] = ld(H,H);
+opcodes[ 0x65 ] = ld(H,L);
+opcodes[ 0x66 ] = ld_from_mem(H, H, L );
+opcodes[ 0x67 ] = ld(H,A);
+
+opcodes[ 0x68 ] = ld(L,B);
+opcodes[ 0x69 ] = ld(L,C);
+opcodes[ 0x6A ] = ld(L,D);
+opcodes[ 0x6B ] = ld(L,E);
+opcodes[ 0x6C ] = ld(L,H);
+opcodes[ 0x6D ] = ld(L,L);
+opcodes[ 0x6E ] = ld_from_mem(L, H, L );
+opcodes[ 0x6F ] = ld(L,A);
+
+opcodes[ 0x70 ] = ld_to_mem(H,L, B);
+opcodes[ 0x71 ] = ld_to_mem(H,L, C);
+opcodes[ 0x72 ] = ld_to_mem(H,L, D);
+opcodes[ 0x73 ] = ld_to_mem(H,L, E);
+opcodes[ 0x74 ] = ld_to_mem(H,L, H);
+opcodes[ 0x75 ] = ld_to_mem(H,L, L);
+opcodes[ 0x76 ] = halt;
+opcodes[ 0x77 ] = ld_to_mem(H,L, A);
+
+opcodes[ 0x78 ] = ld(A,B);
+opcodes[ 0x79 ] = ld(A,C);
+opcodes[ 0x7A ] = ld(A,D);
+opcodes[ 0x7B ] = ld(A,E);
+opcodes[ 0x7C ] = ld(A,H);
+opcodes[ 0x7D ] = ld(A,L);
+opcodes[ 0x7E ] = ld_from_mem(A, H, L );
+opcodes[ 0x7F ] = ld(A,A);
+
+opcodes[ 0x80 ] = ALU(ADD,A,B);
+opcodes[ 0x81 ] = ALU(ADD,A,C);
+opcodes[ 0x82 ] = ALU(ADD,A,D);
+opcodes[ 0x83 ] = ALU(ADD,A,E);
+opcodes[ 0x84 ] = ALU(ADD,A,H);
+opcodes[ 0x85 ] = ALU(ADD,A,L);
+opcodes[ 0x86 ] = ALU(ADD,A, HL );
+opcodes[ 0x87 ] = ALU(ADD,A,A);
+
+opcodes[ 0x88 ] = ALU(ADC,A,B);
+opcodes[ 0x89 ] = ALU(ADC,A,C);
+opcodes[ 0x8A ] = ALU(ADC,A,D);
+opcodes[ 0x8B ] = ALU(ADC,A,E);
+opcodes[ 0x8C ] = ALU(ADC,A,H);
+opcodes[ 0x8D ] = ALU(ADC,A,L);
+opcodes[ 0x8E ] = ALU(ADC,A, HL );
+opcodes[ 0x8F ] = ALU(ADC,A,A);
+
+opcodes[ 0x90 ] = ALU(SUB,A,B);
+opcodes[ 0x91 ] = ALU(SUB,A,C);
+opcodes[ 0x92 ] = ALU(SUB,A,D);
+opcodes[ 0x93 ] = ALU(SUB,A,E);
+opcodes[ 0x94 ] = ALU(SUB,A,H);
+opcodes[ 0x95 ] = ALU(SUB,A,L);
+opcodes[ 0x96 ] = ALU(SUB,A, HL );
+opcodes[ 0x97 ] = ALU(SUB,A,A);
+
+opcodes[ 0x98 ] = ALU(SBC,A,B);
+opcodes[ 0x99 ] = ALU(SBC,A,C);
+opcodes[ 0x9A ] = ALU(SBC,A,D);
+opcodes[ 0x9B ] = ALU(SBC,A,E);
+opcodes[ 0x9C ] = ALU(SBC,A,H);
+opcodes[ 0x9D ] = ALU(SBC,A,L);
+opcodes[ 0x9E ] = ALU(SBC,A, HL );
+opcodes[ 0x9F ] = ALU(SBC,A,A);
+
+opcodes[ 0xA0 ] = ALU(AND,A,B);
+opcodes[ 0xA1 ] = ALU(AND,A,C);
+opcodes[ 0xA2 ] = ALU(AND,A,D);
+opcodes[ 0xA3 ] = ALU(AND,A,E);
+opcodes[ 0xA4 ] = ALU(AND,A,H);
+opcodes[ 0xA5 ] = ALU(AND,A,L);
+opcodes[ 0xA6 ] = ALU(AND,A, HL );
+opcodes[ 0xA7 ] = ALU(AND,A,A);
+
+opcodes[ 0xA8 ] = ALU(XOR,A,B);
+opcodes[ 0xA9 ] = ALU(XOR,A,C);
+opcodes[ 0xAA ] = ALU(XOR,A,D);
+opcodes[ 0xAB ] = ALU(XOR,A,E);
+opcodes[ 0xAC ] = ALU(XOR,A,H);
+opcodes[ 0xAD ] = ALU(XOR,A,L);
+opcodes[ 0xAE ] = ALU(XOR,A, HL );
+opcodes[ 0xAF ] = ALU(XOR,A,A);
+
+opcodes[ 0xB0 ] = ALU(OR,A,B);
+opcodes[ 0xB1 ] = ALU(OR,A,C);
+opcodes[ 0xB2 ] = ALU(OR,A,D);
+opcodes[ 0xB3 ] = ALU(OR,A,E);
+opcodes[ 0xB4 ] = ALU(OR,A,H);
+opcodes[ 0xB5 ] = ALU(OR,A,L);
+opcodes[ 0xB6 ] = ALU(OR,A, HL );
+opcodes[ 0xB7 ] = ALU(OR,A,A);
+
+opcodes[ 0xB8 ] = ALU(CP,A,B);
+opcodes[ 0xB9 ] = ALU(CP,A,C);
+opcodes[ 0xBA ] = ALU(CP,A,D);
+opcodes[ 0xBB ] = ALU(CP,A,E);
+opcodes[ 0xBC ] = ALU(CP,A,H);
+opcodes[ 0xBD ] = ALU(CP,A,L);
+opcodes[ 0xBE ] = ALU(CP,A, HL );
+opcodes[ 0xBF ] = ALU(CP,A,A);
+
+opcodes[ 0xC0 ] = retNZ;
+opcodes[ 0xC1 ] = pop(B,C);
+opcodes[ 0xC2 ] = jpNZ;
+opcodes[ 0xC3 ] = jp;
+opcodes[ 0xC4 ] = callNZ;
+opcodes[ 0xC5 ] = push(B,C);
+opcodes[ 0xC6 ] = ALU(ADD,A,Immediate);
+opcodes[ 0xC7 ] = rst(0x00);
+opcodes[ 0xC8 ] = retZ;
+opcodes[ 0xC9 ] = ret;
+opcodes[ 0xCA ] = jpZ;
+opcodes[ 0xCB ] = function(){ return CBcodes[ readMem( ++PC ) ](); }
+opcodes[ 0xCC ] = callZ;
+opcodes[ 0xCD ] = call;
+opcodes[ 0xCE ] = ALU(ADC,A,Immediate);
+opcodes[ 0xCF ] = rst(0x08);
+
+opcodes[ 0xD0 ] = retNC;
+opcodes[ 0xD1 ] = pop(D,E);
+opcodes[ 0xD2 ] = jpNC;
+opcodes[ 0xD3 ] = unused;
+opcodes[ 0xD4 ] = callNC;
+opcodes[ 0xD5 ] = push(D,E);
+opcodes[ 0xD6 ] = ALU(SUB,A,Immediate);
+opcodes[ 0xD7 ] = rst(0x10);
+opcodes[ 0xD8 ] = retC;
+opcodes[ 0xD9 ] = reti; //RETI
+opcodes[ 0xDA ] = jpC;
+opcodes[ 0xDB ] = unused;
+opcodes[ 0xDC ] = callC;
+opcodes[ 0xDD ] = unused;
+opcodes[ 0xDE ] = ALU(SBC,A,Immediate);
+opcodes[ 0xDF ] = rst(0x18);
+
+opcodes[ 0xE0 ] = ldh(Immediate, A); //LD   (FF00+n),A
+opcodes[ 0xE1 ] = pop(H,L);
+opcodes[ 0xE2 ] = ldc(C, A); //LD   (FF00+C),A
+opcodes[ 0xE3 ] = unused;
+opcodes[ 0xE4 ] = unused;
+opcodes[ 0xE5 ] = push(H,L);
+opcodes[ 0xE6 ] = ALU(AND,A,Immediate);
+opcodes[ 0xE7 ] = rst(0x20);
+opcodes[ 0xE8 ] = add_sp_n; //ADD  SP,dd
+opcodes[ 0xE9 ] = jpHL;
+opcodes[ 0xEA ] = ld_to_mem(Immediate, A); //LD   (nn),A
+opcodes[ 0xEB ] = unused;
+opcodes[ 0xEC ] = unused;
+opcodes[ 0xED ] = unused;
+opcodes[ 0xEE ] = ALU(XOR,A,Immediate);
+opcodes[ 0xEF ] = rst(0x28);
+
+opcodes[ 0xF0 ] = ldh(A, Immediate); //LD   A,(FF00+n)
+opcodes[ 0xF1 ] = pop(A,FLAGS);
+opcodes[ 0xF2 ] =  ldc(A, C); //LD   A,(FF00+C)
+opcodes[ 0xF3 ] = di;
+opcodes[ 0xF4 ] = unused;
+opcodes[ 0xF5 ] = push(A, FLAGS);
+opcodes[ 0xF6 ] = ALU(OR,A,Immediate);
+opcodes[ 0xF7 ] = rst(0x30);
+opcodes[ 0xF8 ] = ld_hl_spdd; //LD   HL,SP+dd
+opcodes[ 0xF9 ] = ld16();
+opcodes[ 0xFA ] = ld_from_mem(A, Immediate); //LD   A,(nn)
+opcodes[ 0xFB ] = ei;
+opcodes[ 0xFC ] = unused;
+opcodes[ 0xFD ] = unused;
+opcodes[ 0xFE ] = ALU(CP,A,Immediate);
+opcodes[ 0xFF ] = rst(0x38);
+
+
+
+
+CBcodes[ 0x00 ] = shift(RLC, B);
+CBcodes[ 0x01 ] = shift(RLC, C);
+CBcodes[ 0x02 ] = shift(RLC, D);
+CBcodes[ 0x03 ] = shift(RLC, E);
+CBcodes[ 0x04 ] = shift(RLC, H);
+CBcodes[ 0x05 ] = shift(RLC, L);
+CBcodes[ 0x06 ] = shift(RLC, HL );
+CBcodes[ 0x07 ] = shift(RLC, A);
+CBcodes[ 0x08 ] = shift(RRC, B);
+CBcodes[ 0x09 ] = shift(RRC, C);
+CBcodes[ 0x0A ] = shift(RRC, D);
+CBcodes[ 0x0B ] = shift(RRC, E);
+CBcodes[ 0x0C ] = shift(RRC, H);
+CBcodes[ 0x0D ] = shift(RRC, L);
+CBcodes[ 0x0E ] = shift(RRC, HL );
+CBcodes[ 0x0F ] = shift(RRC, A);
+
+CBcodes[ 0x10 ] = shift(RL, B);
+CBcodes[ 0x11 ] = shift(RL, C);
+CBcodes[ 0x12 ] = shift(RL, D);
+CBcodes[ 0x13 ] = shift(RL, E);
+CBcodes[ 0x14 ] = shift(RL, H);
+CBcodes[ 0x15 ] = shift(RL, L);
+CBcodes[ 0x16 ] = shift(RL, HL );
+CBcodes[ 0x17 ] = shift(RL, A);
+CBcodes[ 0x18 ] = shift(RR, B);
+CBcodes[ 0x19 ] = shift(RR, C);
+CBcodes[ 0x1A ] = shift(RR, D);
+CBcodes[ 0x1B ] = shift(RR, E);
+CBcodes[ 0x1C ] = shift(RR, H);
+CBcodes[ 0x1D ] = shift(RR, L);
+CBcodes[ 0x1E ] = shift(RR, HL );
+CBcodes[ 0x1F ] = shift(RR, A);
+
+CBcodes[ 0x20 ] = shift(SLA, B);
+CBcodes[ 0x21 ] = shift(SLA, C);
+CBcodes[ 0x22 ] = shift(SLA, D);
+CBcodes[ 0x23 ] = shift(SLA, E);
+CBcodes[ 0x24 ] = shift(SLA, H);
+CBcodes[ 0x25 ] = shift(SLA, L);
+CBcodes[ 0x26 ] = shift(SLA, HL );
+CBcodes[ 0x27 ] = shift(SLA, A);
+CBcodes[ 0x28 ] = shift(SRA, B);
+CBcodes[ 0x29 ] = shift(SRA, C);
+CBcodes[ 0x2A ] = shift(SRA, D);
+CBcodes[ 0x2B ] = shift(SRA, E);
+CBcodes[ 0x2C ] = shift(SRA, H);
+CBcodes[ 0x2D ] = shift(SRA, L);
+CBcodes[ 0x2E ] = shift(SRA, HL );
+CBcodes[ 0x2F ] = shift(SRA, A);
+
+CBcodes[ 0x38 ] = shift(SRL, B);
+CBcodes[ 0x39 ] = shift(SRL, C);
+CBcodes[ 0x3A ] = shift(SRL, D);
+CBcodes[ 0x3B ] = shift(SRL, E);
+CBcodes[ 0x3C ] = shift(SRL, H);
+CBcodes[ 0x3D ] = shift(SRL, L);
+CBcodes[ 0x3E ] = shift(SRL, HL );
+CBcodes[ 0x3F ] = shift(SRL, A);
+
+
+function swap(r){
+  if (r==HL) return function(){
+    var a = readMem( (REG[H]<<8)+REG[L] );
+    a = (a>>4) + ((a<<4)&0xFF);
+    writeMem( (REG[H]<<8)+REG[L] , a ); 
+    FLAGS.Z = (a==0)
+    FLAGS.N =false
+    FLAGS.H =false
+    FLAGS.C =false
+    PC++
+    return 16
+  }
+  return function (){
+    REG[r] = (REG[r]>>4) + ((REG[r]<<4)&0xFF)
+    FLAGS.Z = (REG[r]==0)
+    FLAGS.N =false
+    FLAGS.H =false
+    FLAGS.C =false
+    PC++
+    return 8
+  }
+}
+
+CBcodes[ 0x30 ] = swap(B);
+CBcodes[ 0x31 ] = swap(C);
+CBcodes[ 0x32 ] = swap(D);
+CBcodes[ 0x33 ] = swap(E);
+CBcodes[ 0x34 ] = swap(H);
+CBcodes[ 0x35 ] = swap(L);
+CBcodes[ 0x36 ] = swap(HL);
+CBcodes[ 0x37 ] = swap(A);
+
+function bit(b, r) {
+  b = (1<<b);
+
+  if (r==HL) return function(){
+    FLAGS.Z = ((readMem((REG[H]<<8)+REG[L]) & b) == 0)
+    FLAGS.H = true;
+    FLAGS.N = false;
+    PC++
+    return 12
+  }
+  return function(){
+    FLAGS.Z = ((REG[r] & b) == 0)
+    FLAGS.H = true;
+    FLAGS.N = false;
+    PC++
+    return 8
+  }
+}
+function set(b, r) {
+  b = (1<<b);
+
+  if (r==HL) return function(){
+    writeMem(
+      (REG[H]<<8)+REG[L],
+      readMem((REG[H]<<8)+REG[L]) | b
+    )
+    PC++
+    return 16
+  }
+  return function(){
+    REG[r] |= b
+    PC++
+    return 8
+  }
+}
+function res(b, r) {
+  b = ~(1<<b);
+
+  if (r==HL) return function(){
+    writeMem(
+      (REG[H]<<8)+REG[L],
+      readMem((REG[H]<<8)+REG[L]) & b
+    )
+    PC++
+    return 16
+  }
+  return function(){
+    REG[r] &= b
+    PC++
+    return 8
+  }
+}
+
+for (var i=0;i<8;i++){
+  for (var j=0;j<8;j++) {
+    CBcodes[ 0x40 + i*8 + j ] = bit(i, j);
+    CBcodes[ 0x80 + i*8 + j ] = res(i, j);
+    CBcodes[ 0xC0 + i*8 + j ] = set(i, j);
+  }
+}
+
+
+
+var bootCode = "31 FE FF AF 21 FF 9F 32 CB 7C 20 FB 21 26 FF 0E 11 3E 80 32 E2 0C 3E F3 E2 32 3E 77 77 3E FC E0 47 11 04 01 21 10 80 1A CD 95 00 CD 96 00 13 7B FE 34 20 F3 11 D8 00 06 08 1A 13 22 23 05 20 F9 3E 19 EA 10 99 21 2F 99 0E 0C 3D 28 08 32 0D 20 F9 2E 0F 18 F3 67 3E 64 57 E0 42 3E 91 E0 40 04 1E 02 0E 0C F0 44 FE 90 20 FA 0D 20 F7 1D 20 F2 0E 13 24 7C 1E 83 FE 62 28 06 1E C1 FE 64 20 06 7B E2 0C 3E 87 E2 F0 42 90 E0 42 15 20 D2 05 20 4F 16 20 18 CB 4F 06 04 C5 CB 11 17 C1 CB 11 17 05 20 F5 22 23 22 23 C9 CE ED 66 66 CC 0D 00 0B 03 73 00 83 00 0C 00 0D 00 08 11 1F 88 89 00 0E DC CC 6E E6 DD DD D9 99 BB BB 67 63 6E 0E EC CC DD DC 99 9F BB B9 33 3E 3C 42 B9 A5 B9 A5 42 3C 21 04 01 11 A8 00 1A 13 BE 20 FE 23 7D FE 34 20 F5 06 19 78 86 23 05 20 FB 86 20 FE 3E 01 E0 50".split(" ").map(x => parseInt(x,16))
+
+
+
+function sweepCalculate(){
+  //If the result of this formula is a value consisting of more than 11 bits, sound output is stopped and the Sound 1 ON flag of NR52 (bit 0) is reset.
+  //In a subtraction operation, if the subtrahend is less than 0, the result is the pre-calculation value X (t ) = X ( t - 1 ). However, if n = 0, shifting does not occur and the frequency is unchanged.
+
+  if (sound[1].sweepDir) {
+    sound[1].freqnum += (sound[1].freqnum >> sound[1].sweepShift);
+    if (sound[1].freqnum>0x7ff) {
+      sound[1].initialized=false;
+      MEM[0xFF26] &= ~(1<<0) // flag sound 1 as off
+      sound[1].amp(0)
+    } else sound[1].freq( 131072/(2048-sound[1].freqnum) )
+  } else {
+    sound[1].freqnum -= (sound[1].freqnum >> sound[1].sweepShift);
+    if (sound[1].freqnum<0) sound[1].freqnum += (sound[1].freqnum >> sound[1].sweepShift);
+    sound[1].freq( 131072/(2048-sound[1].freqnum) )
+  }
+}
+
+
+var soundPrescaler1=0, soundPrescaler2=0;
+function soundStep(){ //256 times per second
+  if (!SoundEnabled) return;
+
+  // length resolution 1/256 second
+
+  // Sound length = (64 - t1) x (1/256) sec
+
+  if (sound[1].lengthEnabled) {
+    if (--sound[1].length <=0) {
+      sound[1].lengthEnabled=false;
+      sound[1].initialized=false;
+      sound[1].amp(0)
+      MEM[0xFF26] &= ~(1<<0) // flag sound 1 as off
+    }
+  }
+  if (sound[2].lengthEnabled) {
+    if (--sound[2].length <=0) {
+      sound[2].lengthEnabled=false;
+      sound[2].initialized=false;
+      sound[2].amp(0)
+      MEM[0xFF26] &= ~(1<<1) // flag sound 2 as off
+    }
+  }
+  if (sound[3].lengthEnabled) {
+    if (--sound[3].length <=0) {
+      sound[3].lengthEnabled=false;
+      sound[3].initialized=false;
+      sound[3].amp(0)
+      MEM[0xFF26] &= ~(1<<2) // flag sound 3 as off
+    }
+  }
+  if (sound[4].lengthEnabled) {
+    if (--sound[4].length <=0) {
+      sound[4].lengthEnabled=false;
+      sound[4].initialized=false;
+      sound[4].amp(0)
+      MEM[0xFF26] &= ~(1<<3) // flag sound 4 as off
+    }
+  }
+
+
+  if (soundPrescaler1++) {
+    soundPrescaler1=0;
+    // sweep resolution 1/128 second
+
+    if (sound[1].initialized && sound[1].sweepTime ) {
+      if (--sound[1].sweepPrescaler<0) {
+        sound[1].sweepPrescaler += sound[1].sweepTime;
+        sweepCalculate();
+      }
+    }
+
+    if (soundPrescaler2++) {
+      soundPrescaler2=0;
+      // envelope resolution 1/64 second
+
+      for (var i of [1,2,4]) {
+
+        if (sound[i].initialized&&sound[i].envSpeed) {
+          // counter is reset when speed changes
+          if(++sound[i].envCounter == sound[i].envSpeed) {
+            sound[i].envCounter=0;
+
+            sound[i].env += sound[i].envDirection;
+            if (sound[i].env <= 0){
+              sound[i].env=0;
+              sound[i].initialized=false;
+            }else if (sound[i].env >= 15) {
+              sound[i].env=15;
+              sound[i].initialized=false;
+            }
+          
+            sound[i].amp( sound[i].env/15 )
+          }
+        }
+
+      }
+
+    }
+  }
+
+
+//The flags get set when sound output is restarted by setting the Initial flag (Bit 7 in NR14-NR44), the flag remains set until the sound length has expired (if enabled). A volume envelopes which has decreased to zero volume will NOT cause the sound flag to go off.
+
+  
+
+}
+
+
+
+
+
+
+function triggerInterrupt(vector){
+  cpu_halted=false
+  writeMem16(SP-=2, PC>>8, PC&0xFF)
+  PC = vector; 
+  IME=false
+
+  return 20
+}
+
+
+function cpu(){
+
+  var cycles =4;
+
+  if (!cpu_halted) {
+    cycles = opcodes[readMem(PC)]();
+  }
+  
+  // DIV  = 0xFF04 //Divider Register (R/W)
+  // TIMA = 0xFF05 //Timer counter (R/W)
+  // TMA  = 0xFF06 //Timer Modulo (R/W)
+  // TAC  = 0xFF07 //Timer Control (R/W)
+
+  //DIV register
+  // Seems to be running very slightly faster than BGB, possibly 
+  // some instructions are returning the wrong number
+  if ((divPrescaler += cycles) >255) {
+    divPrescaler-=256
+    MEM[0xFF04]++;
+  }
+  if (timerEnable){
+    timerPrescaler-= cycles
+    while (timerPrescaler<0) {
+      timerPrescaler+=timerLength;
+      if (MEM[0xFF05]++ ==0xFF) {
+        MEM[0xFF05]=MEM[0xFF06];
+        // Set interrupt flag here
+        MEM[0xFF0F] |= 1<<2;
+        cpu_halted = false
+      }
+    }
+  }
+
+
+  // FF41 - STAT - LCDC Status (R/W)
+  // FF42 - SCY - Scroll Y (R/W)
+  // FF43 - SCX - Scroll X (R/W)
+  // FF44 - LY - LCDC Y-Coordinate (R)
+  // FF45 - LYC - LY Compare (R/W)
+  // FF46 - DMA - DMA Transfer and Start Address (W)
+  // FF47 - BGP - BG Palette Data (R/W) - Non CGB Mode Only
+  // FF48 - OBP0 - Object Palette 0 Data (R/W) - Non CGB Mode Only
+  // FF49 - OBP1 - Object Palette 1 Data (R/W) - Non CGB Mode Only
+  // FF4A - WY - Window Y Position (R/W)
+  // FF4B - WX - Window X Position minus 7 (R/W)
+
+  // Complete scan line takes 456 clks.
+
+  //  Mode 0 H-blank period        - 204 clks
+  //  Mode 1 V-blank period        - 4560 clks
+  //  Mode 2 Reading OAM           - 80 clks
+  //  Mode 3 Reading OAM and VRAM  - 172 clks
+  //
+  //  Mode 2  2_____2_____2_____2_____2_____2___________________2____
+  //  Mode 3  _33____33____33____33____33____33__________________3___
+  //  Mode 0  ___000___000___000___000___000___000________________000
+  //  Mode 1  ____________________________________11111111111111_____
+
+  if (LCD_enabled){
+    LCD_scan += cycles;
+    
+    var mode=0, coincidence=false, draw=false;
+    if (LCD_scan <= 80) mode = 2
+    else if (LCD_scan <= 252) mode = 3
+    else if (LCD_scan < 456) {
+      draw = (LCD_lastmode!=0)
+      mode = 0
+    } else {
+      mode = 2
+      LCD_scan -= 456;
+      MEM[0xFF44] ++;
+      if (MEM[0xFF44] > 153) MEM[0xFF44] =0;
+      coincidence = (MEM[0xFF44] == MEM[0xFF45]);
+    }
+
+    if (MEM[0xFF44] >= 144) mode = 1; //vblank
+    else if (draw){
+      //Draw scanline
+      var LY = MEM[0xFF44];
+      var dpy = LY*160;
+
+      var drawWindow = (MEM[0xFF40] & (1<<5)) && LY >= MEM[0xFF4A];
+      var bgStopX = drawWindow ? MEM[0xFF4B]-7 : 160;
+
+      //  FF40 - LCDC - LCD Control (R/W)
+      //
+      //  Bit 7 - LCD Display Enable             (0=Off, 1=On)
+      //  Bit 6 - Window Tile Map Display Select (0=9800-9BFF, 1=9C00-9FFF)
+      //  Bit 5 - Window Display Enable          (0=Off, 1=On)
+      //  Bit 4 - BG & Window Tile Data Select   (0=8800-97FF, 1=8000-8FFF)
+      //  Bit 3 - BG Tile Map Display Select     (0=9800-9BFF, 1=9C00-9FFF)
+      //  Bit 2 - OBJ (Sprite) Size              (0=8x8, 1=8x16)
+      //  Bit 1 - OBJ (Sprite) Display Enable    (0=Off, 1=On)
+      //  Bit 0 - BG Display (for CGB see below) (0=Off, 1=On)
+
+      var baseTileOffset, tileSigned;
+      // Tile Data Select
+      if (MEM[0xFF40]&(1<<4)) {
+        baseTileOffset =  0x8000;
+        tileSigned = false;
+      } else {
+        baseTileOffset =  0x9000;
+        tileSigned = true;
+      }
+      var bgpalette = [
+        (MEM[0xFF47])&3,
+        (MEM[0xFF47]>>2)&3,
+        (MEM[0xFF47]>>4)&3,
+        (MEM[0xFF47]>>6)&3
+      ]
+
+      function grabTile(n, offset){
+        if (tileSigned && n >127){
+          var tileptr = offset+(n-256)*16;
+        }else{
+          var tileptr = offset+n*16;
+        }
+        var d1 = MEM[tileptr ], d2 = MEM[tileptr +1]
+        return pixelDecoder[d1][d2]
+      }
+
+      if ( MEM[0xFF40] & 1 ) { // BG enabled
+        // BG Tile map display select
+        var bgTileMapAddr = MEM[0xFF40]&(1<<3) ? 0x9C00 : 0x9800;
+
+        //scy FF42
+        //scx FF43
+        // scanline number FF44
+        // pixel row = FF44 + FF42
+        // tile row = pixel row >> 3
+        // 32 bytes per row
+        // pixel column = FF43
+        // tile column = pixel column >> 3
+        
+        var x    = MEM[0xFF43] >>3;
+        var xoff = MEM[0xFF43] & 7;
+        var y = (LY + MEM[0xFF42]) &0xFF;
+
+        // Y doesn't change throughout a scanline
+        bgTileMapAddr += (~~(y/8))*32; 
+        var tileOffset=baseTileOffset+(y&7)*2;
+
+        var pix = grabTile(MEM[ bgTileMapAddr + x ], tileOffset);
+
+        for (var i=0;i<bgStopX;i++) {
+          dpixels[dpy + i] = bgpalette[pix[ xoff++ ]]
+
+          if (xoff==8) {
+            x = (x+1)&0x1F; //wrap horizontally in tile map
+
+            pix = grabTile(MEM[ bgTileMapAddr + x ], tileOffset);
+            xoff=0;
+          }
+
+        }
+      }
+
+      // FF4A - WY
+      // FF4B - WX
+
+      if ( drawWindow ) { // Window display enable
+        // Window Tile map display select
+        var wdTileMapAddr = MEM[0xFF40]&(1<<6) ? 0x9C00 : 0x9800;
+
+        var xoff=0;
+        var y=LY-MEM[0xFF4A];
+
+        wdTileMapAddr += (~~(y/8))*32; 
+        var tileOffset=baseTileOffset+(y&7)*2;
+
+        pix = grabTile(MEM[ wdTileMapAddr ], tileOffset);
+
+        for (var i=Math.max(0,bgStopX);i<160;i++) {
+          dpixels[dpy + i] = bgpalette[pix[ xoff++ ]]
+          if (xoff==8) {
+            pix = grabTile(MEM[ ++wdTileMapAddr ], tileOffset);
+            xoff=0;
+          }
+        }
+
+      }
+
+      if ( MEM[0xFF40] & 2 ) { // Sprite display enabled
+        
+        // Render sprites
+        var height, tileNumMask;
+        if (MEM[0xFF40]&(1<<2)) {
+          height=16;
+          tileNumMask=0xFE; // in 8x16 mode, lowest bit of tile number is ignored
+        } else {
+          height=8;
+          tileNumMask=0xFF; 
+        }
+
+        var OBP0 = [
+          0,
+          (MEM[0xFF48]>>2)&3,
+          (MEM[0xFF48]>>4)&3,
+          (MEM[0xFF48]>>6)&3
+        ],
+        OBP1 = [
+          0,
+          (MEM[0xFF49]>>2)&3,
+          (MEM[0xFF49]>>4)&3,
+          (MEM[0xFF49]>>6)&3
+        ],
+        background=bgpalette[0];
+
+        // OAM 4 bytes per sprite, 40 sprites
+        for (var i=0xFE9C;i>=0xFE00;i-=4) {
+          var ypos = MEM[i]-16+height;
+          if ( LY >= ypos-height && LY < ypos) {
+
+            var tileNum = 0x8000 + (MEM[i+2]&tileNumMask)*16,
+                xpos = MEM[i+1],
+                att = MEM[i+3];
+            
+            // Bit7   OBJ-to-BG Priority (0=OBJ Above BG, 1=OBJ Behind BG color 1-3)
+            //        (Used for both BG and Window. BG color 0 is always behind OBJ)
+            // Bit6   Y flip          (0=Normal, 1=Vertically mirrored)
+            // Bit5   X flip          (0=Normal, 1=Horizontally mirrored)
+            // Bit4   Palette number  **Non CGB Mode Only** (0=OBP0, 1=OBP1)
+
+            var palette = att&(1<<4) ? OBP1 : OBP0 ;
+            var behind = att&(1<<7);
+            
+            if (att&(1<<6)) { // Y flip
+              tileNum += (ypos-LY-1)*2 
+            }else{
+              tileNum += (LY-ypos+height)*2 
+            }
+            var d1= MEM[tileNum], d2= MEM[tileNum+1],
+              row = pixelDecoder[d1][d2];
+
+            if (att&(1<<5)) { // x flip
+              if (behind) {
+                for (var j = 0; j<Math.min(xpos,8); j++) {
+                  if (dpixels[dpy + xpos -1 - j] == background && row[j]) 
+                    dpixels[dpy + xpos -1 - j] = palette[row[ j ]];
+                }
+              }else{
+                for (var j = 0; j<Math.min(xpos,8); j++) {
+                  if (row[ j ]) dpixels[dpy + xpos -(j+1)] = palette[row[ j ]];
+                }
+              }
+            } else {
+              if (behind) { 
+                for (var j = Math.max(8-xpos,0); j<8; j++) {
+                  if (dpixels[dpy + xpos -8 + j] == background && row[j]) 
+                    dpixels[dpy + xpos -8 + j] = palette[row[ j ]];
+                }
+              } else {
+                for (var j = Math.max(8-xpos,0); j<8; j++) {
+                  if (row[ j ]) dpixels[dpy + xpos -8 + j] = palette[row[ j ]];
+                }
+              }
+            }
+
+          }
+        }
+
+      }
+
+    }
+
+    //  0xFF41 - LCDC Status
+    //  Bit 6 - LYC=LY Coincidence Interrupt (1=Enable) (Read/Write)
+    //  Bit 5 - Mode 2 OAM Interrupt         (1=Enable) (Read/Write)
+    //  Bit 4 - Mode 1 V-Blank Interrupt     (1=Enable) (Read/Write)
+    //  Bit 3 - Mode 0 H-Blank Interrupt     (1=Enable) (Read/Write)
+    //  Bit 2 - Coincidence Flag  (0:LYC<>LY, 1:LYC=LY) (Read Only)
+
+    if (coincidence){
+      if (MEM[0xFF41] & (1<<6)) { //coincidence interrupt enabled
+        MEM[0xFF0F] |= 1<<1; // LCD STAT Interrupt flag
+        MEM[0xFF41] |= 1<<2; // coincidence flag
+      }
+    } else MEM[0xFF41] &= 0xFB//~(1<<2)
+    if (LCD_lastmode!=mode) { //Mode change
+      if (mode == 0) {
+        if (MEM[0xFF41] & (1<<3)) MEM[0xFF0F] |= 1<<1;
+      } else if (mode == 1) {
+
+        // LCD STAT interrupt on v-blank
+        if (MEM[0xFF41] & (1<<4)) MEM[0xFF0F] |= 1<<1;
+
+        // Main V-Blank interrupt
+        if (MEM[0xFFFF] & 1) MEM[0xFF0F] |= 1<<0;
+
+        renderDisplayCanvas();
+
+      } else if (mode == 2){
+        if (MEM[0xFF41] & (1<<5)) MEM[0xFF0F] |= 1<<1;
+      }
+
+      MEM[0xFF41] &= 0xF8;
+      MEM[0xFF41] += mode;
+      LCD_lastmode=mode;
+    }
+
+  }
+
+  // Interrupts
+  // FFFF - IE - Interrupt Enable (R/W)
+  // FF0F - IF - Interrupt Flag (R/W)
+  // Bit 0: V-Blank  Interrupt Enable  (INT 40h)  (1=Enable)
+  // Bit 1: LCD STAT Interrupt Enable  (INT 48h)  (1=Enable)
+  // Bit 2: Timer    Interrupt Enable  (INT 50h)  (1=Enable)
+  // Bit 3: Serial   Interrupt Enable  (INT 58h)  (1=Enable)
+  // Bit 4: Joypad   Interrupt Enable  (INT 60h)  (1=Enable)
+
+  if (IME) {
+    // if enabled and flag set
+    var i = MEM[0xFF0F] & MEM[0xFFFF];
+
+    if ( i&(1<<0) ) { 
+      MEM[0xFF0F] &=~(1<<0)
+      cycles += triggerInterrupt(0x40)
+    } else if ( i&(1<<1) ) {
+      MEM[0xFF0F] &=~(1<<1)
+      cycles += triggerInterrupt(0x48)
+    } else if ( i&(1<<2) ) {
+      MEM[0xFF0F] &=~(1<<2)
+      cycles += triggerInterrupt(0x50)
+    } else if ( i&(1<<3) ) {
+      MEM[0xFF0F] &=~(1<<3)
+      cycles += triggerInterrupt(0x58)
+    } else if ( i&(1<<4) ) {
+      MEM[0xFF0F] &=~(1<<4)
+      cycles += triggerInterrupt(0x60)
+    }
+
+  } //else cpu_halted=false
+
+  return cycles
+}
+
+
+var requestStop = true;
+var targ=0x40 //v-blank
+function runto(end){
+  if (!requestStop) return
+  if (ROM.length<1000) return //don't run if no rom loaded
+
+  
+  requestStop =false;
+
+  targ=end?end:parseInt(prompt('Address', f(targ,4)),16); 
+
+  run()
+}
+
+
+// Clock speed 4.194304 MHz
+// DIV speed 16384 => CPU/256
+
+const soundStepClocks = 4194304/256;
+const frameClocks = 4194304/59.7;
+const frameIntervalMs = 1000/59.7;
+var soundStepCountdown = soundStepClocks;
+var frameCountdown = frameClocks;
+var thisFrame, lastFrame = performance.now();
+
+function run(time){
+  thisFrame = time || performance.now()
+  if (limitFrameRate){
+    let d = thisFrame - lastFrame
+    if (d >= frameIntervalMs - 0.1) {
+      lastFrame = thisFrame - (d % frameIntervalMs)
+    } else {
+      requestAnimationFrame(run);
+      return
+    }
+  }
+
+  doGamepad()
+
+  while (true){
+    var cycles = cpu();
+    soundStepCountdown -= cycles;
+    frameCountdown -= cycles;
+
+    if (soundStepCountdown < 0){
+      soundStepCountdown += soundStepClocks;
+      soundStep();
+    }
+    if (frameCountdown < 0){
+      frameCountdown += frameClocks;
+      break;
+    }
+    if (PC == targ) break;
+  }
+
+  if (PC != targ && !requestStop) {
+    if (limitFrameRate){
+      window.requestAnimationFrame(run);
+    }else{
+      frameCountdown+=frameClocks*2 //this can go much higher
+      window.setTimeout(run, 0);
+    }
+  } else {
+    requestStop=true
+    sound[1].amp(0);
+    sound[2].amp(0);
+    sound[3].amp(0);
+    sound[4].amp(0);
+  }
+  if (debugOn) debugData()
+}
+
+
+
+const ioMap={
+0xFF00:"JOYP ",
+0xFF01:"SB ",
+0xFF02:"SC ",
+0xFF04:"DIV ",
+0xFF05:"TIMA ",
+0xFF06:"TMA ",
+0xFF07:"TAC ",
+0xFF0F:"IF ",
+0xFF10:"NR10 ",
+0xFF11:"NR11 ",
+0xFF12:"NR12 ",
+0xFF13:"NR13 ",
+0xFF14:"NR14 ",
+0xFF16:"NR21 ",
+0xFF17:"NR22 ",
+0xFF18:"NR23 ",
+0xFF19:"NR24 ",
+0xFF1A:"NR30 ",
+0xFF1B:"NR31 ",
+0xFF1C:"NR32 ",
+0xFF1D:"NR33 ",
+0xFF1E:"NR34 ",
+0xFF20:"NR41 ",
+0xFF21:"NR42 ",
+0xFF22:"NR43 ",
+0xFF23:"NR44 ",
+0xFF24:"NR50 ",
+0xFF25:"NR51 ",
+0xFF26:"NR52 ",
+//0xFF3F:"Wave Pattern",
+0xFF40:"LCDC ",
+0xFF41:"STAT ",
+0xFF42:"SCY ",
+0xFF43:"SCX ",
+0xFF44:"LY ",
+0xFF45:"LYC ",
+0xFF46:"DMA ",
+0xFF47:"BGP ",
+0xFF48:"OBP0 ",
+0xFF49:"OBP1 ",
+0xFF4A:"WY ",
+0xFF4B:"WX ",
+//0xFF4D:"KEY1 ",
+//0xFF4F:"VBK ",
+//0xFF51:"HDMA1 ",
+//0xFF52:"HDMA2 ",
+//0xFF53:"HDMA3 ",
+//0xFF54:"HDMA4 ",
+//0xFF55:"HDMA5 ",
+//0xFF56:"RP ",
+//0xFF68:"BCPS/BGPI ",
+//0xFF69:"BCPD/BGPD ",
+//0xFF6A:"OCPS/OBPI ",
+//0xFF6B:"OCPD/OBPD ",
+//0xFF6C:"Undocumented (FEh) ",
+//0xFF70:"SVBK ",
+//0xFF72:"Undocumented (00h) ",
+//0xFF73:"Undocumented (00h) ",
+//0xFF74:"Undocumented (00h) ",
+//0xFF75:"Undocumented (8Fh) ",
+//0xFF76:"Undocumented (00h) ",
+//0xFF77:"Undocumented (00h) ",
+0xFFFF:"IE "
+}
+
+
+
+
+
+
+
+
+
+
+
+var debugOn=false;
+function showDebug(on){
+  debugOn = on;
+  document.getElementById('dbg').style.display= on?'block':'none';
+  if (on) debugData();
+}
+
+
+function ascii(c){
+  return ".................................!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~.€.‚ƒ„…†‡ˆ‰Š‹Œ.Ž..‘’“”•–—˜™š›œ.žŸ ¡¢£¤¥¦§¨©ª«¬.®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ".charAt(c)
+  .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+function f(a,l) {return ("0000"+a.toString(16).toUpperCase()).slice(-l||-2)}
+(debugData=function(){
+
+  var debugOffset = PC&0xFF00;
+  var debug = "";
+  for (var j=0;j<16;j++) {
+
+    debug+= "$"+f(debugOffset + j*16,4)+"   "
+    for (var i=0;i<16;i++) {
+      var q=i+j*16 + debugOffset;
+      debug+="<span title='$"+ f(q,4) +"'"
+      debug+= PC==q ? " style='color:red'>":">"
+      debug+=f(readMem(q))+"</span>"
+ 
+      debug+=(i==7?"|":" ")
+      
+    }
+    debug+="|  "
+    for (var i=0;i<16;i++) {
+      var c=readMem(i+j*16 + debugOffset)
+      debug+= ascii(c);
+    }
+    
+    
+    debug+="\n"
+  }
+
+
+  debug+="\nAF: "+ f(REG[A]) + f((FLAGS.Z << 7) + (FLAGS.N << 6) + (FLAGS.H << 5) + (FLAGS.C << 4))+"        Z: "+FLAGS.Z
+  debug+="\nBC: "+ f(REG[B])+ f(REG[C])+"        N: "+FLAGS.N
+  debug+="\nDE: "+ f(REG[D])+ f(REG[E])+"        H: "+FLAGS.H
+  debug+="\nHL: "+ f(REG[H])+ f(REG[L])+"        C: "+FLAGS.C
+  debug+="\nSP: "+ f(SP,4)
+  debug+="\nPC: "+ f(PC,4)
+  debug+="\n\nIME:"+IME
+
+  document.getElementById('out').innerHTML=debug;
+
+  debug=""
+  for (var i in ioMap) {
+    var r=f(readMem(i));
+    debug+="$"+f(i*1,4)+": "+(r==0?"--":r)+" - "+ioMap[i]+" \n"
+  }
+  document.getElementById('io').innerHTML=debug
+
+  debug=""
+  for (var i=SP+20;i>=SP-20;i-=2) {
+    if (i>0xfffe || i<0) {debug+=" ----  ----\n"}else{
+      var r=f(readMem(i+1)) + f(readMem(i));
+      debug+="$"+f(i,4)+": "+r+(i==SP?"*":"")+" \n"
+    }
+  }
+  document.getElementById('stack').innerHTML=debug
+
+})();
+
+
+
+var openFile = function(event) {
+  var input = event.target;
+  var reader = new FileReader();
+  reader.onload = function(){
+    ROM = new Uint8Array(reader.result);
+    FirstROMPage = ROM.slice(0,256)
+
+    //Overwrite first page with bootcode
+    for (var i=0;i<256;i++) ROM[i]=bootCode[i];
+
+    // According to BGB
+    MEM[0xFF41] = 1
+    MEM[0xFF43] = 0
+
+    resetSoundRegisters()
+
+    ROMbank = 1; ROMbankoffset = (ROMbank-1)*0x4000;
+    RAMbank =0; RAMbankoffset = RAMbank*0x2000 - 0xA000;
+    RAMenabled=false; MBCRamMode=0;
+    divPrescaler=0, timerPrescaler=0, timerLength=1, timerEnable=false;
+    LCD_enabled = false, LCD_lastmode=1, LCD_scan=0;
+    PC=0, SP=0,IME=false,cpu_halted=false;
+
+    
+  };
+  reader.readAsArrayBuffer(input.files[0]);
+};
+
+
+var fileinput=document.getElementById("fileinput");
+var start=document.getElementById("start");
+
+
+
+
+
+
+
+
+function onlineSaveSram(){
+  var len = [0,2,8,32,128,64][ROM[0x149]]*1024;
+  if (ROM[0x147]==5 || ROM[0x147]==6) len=512; //MBC2
+  ascii = btoa(String.fromCharCode(...cartRAM.slice(0,len)));
+  pass = prompt("自定义存档码(要记得，不要留空):");
+  if (pass==""){ return "" }
+  dbWrite(db,pass,ascii);
+}
+function onlineLoadSram(){
+  const dbRef = db.ref();
+  let key = prompt("输入存档码:")
+  dbRef.child(key).get().then((snapshot) => {
+  if (snapshot.exists()) {
+    loadascii(snapshot.val())
+  } else {
+    alert("找不到存档")
+  }}).catch((error) => {
+    console.error(error);
+  });
+}
+function loadascii(ascii){
+  decode = atob(ascii);
+  chars = new Uint8Array();
+  for(let i = 0;i < decode.length;i++){
+    char = decode.charCodeAt(i);
+    console.log(char);
+    chars = appendlist(chars,char);
+  }
+  console.log(chars);
+  cartRAM = chars;
+}
+	
+	
+function saveSram(a){
+  a.download=fileinput.files[0].name.replace(/\.gbc?$/,'.sav')
+  var len = [0,2,8,32,128,64][ROM[0x149]]*1024
+
+  if (ROM[0x147]==5 || ROM[0x147]==6) len=512; //MBC2
+  console.log(btoa(String.fromCharCode(...cartRAM.slice(0,len))))
+  a.href='data:application/octet-stream;base64,'+btoa(String.fromCharCode(...cartRAM.slice(0,len)))
+}
+	
+function loadSram(e) {
+  var reader = new FileReader();
+  reader.onload = function(){ cartRAM = new Uint8Array(reader.result); };
+  reader.readAsArrayBuffer(e.target.files[0]);
+}
+
+
+
+
+	
+	
+function saveState(){
+  localStorage.savestate= JSON.stringify({
+    PC:PC,
+    SP:SP,
+    REG: REG.join(),
+    FLAGS: FLAGS,
+    IME:IME,
+    cpu_halted:cpu_halted,
+    MEM: MEM.join(),
+    //ROM: ROM,  //too big for localstorage
+    ROMbank: ROMbank,
+    ROMbankoffset:ROMbankoffset,
+    cartRAM: cartRAM.join(),
+    RAMbank: RAMbank,
+    RAMbankoffset: RAMbankoffset,
+    MBCRamMode: MBCRamMode,
+    LCD_enabled: LCD_enabled,
+    LCD_lastmode: LCD_lastmode
+  })
+}
+function loadState(){
+  if (!localStorage.savestate) return
+  for (var i=0;i<256;i++) ROM[i]=FirstROMPage[i];
+  var all=JSON.parse(localStorage.savestate);
+  MEM = Uint8Array.from(all.MEM.split(","));
+  PC=all.PC;
+  SP=all.SP;
+  REG=Uint8Array.from(all.REG.split(","));
+  FLAGS=all.FLAGS;
+  IME=all.IME;
+  cpu_halted=cpu_halted;
+  //rom=rom
+  ROMbank= all.ROMbank;
+  ROMbankoffset= all.ROMbankoffset;
+  cartRAM= Uint8Array.from(all.cartRAM.split(","));
+  RAMbank= all.RAMbank;
+  RAMbankoffset= all.RAMbankoffset;
+  MBCRamMode= all.MBCRamMode;
+  LCD_enabled= all.LCD_enabled;
+  LCD_lastmode= all.LCD_lastmode;
+}
+
+
+async function UrlFile(url, name, defaultType = 'application/octet-stream') {
+  const response = await fetch(url)
+  const data = await response.blob()
+  return new File([data], name, {
+    type: data.type || defaultType,
+  })
+}
+
+
+function insertInput(myFile) {
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(myFile);
+  fileinput.files = dataTransfer.files;
+}
+
+function trigger(){
+  if ("createEvent" in document) {
+    var evt = document.createEvent("HTMLEvents");
+    evt.initEvent("change", false, true);
+    fileinput.dispatchEvent(evt);
+  }
+  else
+    fileinput.fireEvent("onchange");
+}
+if (fileinput.files.length) openFile({"target":{"files":fileinput.files}})
+function loadbinarytorom(bin){
+    ROM = bin;
+    FirstROMPage = ROM.slice(0,256)
+
+    //Overwrite first page with bootcode
+    for (var i=0;i<256;i++) ROM[i]=bootCode[i];
+
+    // According to BGB
+    MEM[0xFF41] = 1
+    MEM[0xFF43] = 0
+
+    resetSoundRegisters()
+
+    ROMbank = 1; ROMbankoffset = (ROMbank-1)*0x4000;
+    RAMbank =0; RAMbankoffset = RAMbank*0x2000 - 0xA000;
+    RAMenabled=false; MBCRamMode=0;
+    divPrescaler=0, timerPrescaler=0, timerLength=1, timerEnable=false;
+    LCD_enabled = false, LCD_lastmode=1, LCD_scan=0;
+    PC=0, SP=0,IME=false,cpu_halted=false;
+
+}
+function select(title,selections){
+    selected = "YES";
+    while(!(selections.includes(String(selected)))){
+	selected = prompt(title);
+    }
+    return selected
+}
+function rangeStr(n){
+    r = [...Array(n).keys()]
+    t = [...Array(n).keys()]
+    for (let i = 0;i < n;i++) {
+        t[i] = String(r[i] + 1)
+    }
+    return t
+}
+function triggerstart(){
+    if ("createEvent" in document) {
+    var evt2 = document.createEvent("HTMLEvents");
+    evt2.initEvent("click", false, true);
+    start.dispatchEvent(evt2);
+  }
+  else
+    start.fireEvent("onclick");
+}
+function useOnlineRom(){
+    alert("OnlineRomSelections");
+    sel = [["red","blue","green","yellow"],["normal"],["dreamland","dreamland2"]];
+    ser = ["pkmn","tama","kirby"];
+    lan = ["zh","eng"];
+    series = select("选择系列: \n 1:宝可梦 \n 2:Tamagotchi \n 3:Kirby ",rangeStr(3));
+    version = select("选择版本: \n " + sel[parseInt(series)-1].map((e, i) => String(i + 1) + ":" + String(e)).join(" \n "),rangeStr(sel[parseInt(series)-1].length));
+    language = select("选择语言: \n 1:中文 \n 2:英文",rangeStr(2));
+    readUrl("https://carlostmgps.github.io/emulator/gameboy/" + ser[series-1] + "_" + sel[series - 1][version - 1] + "_" + lan[language - 1] + ".gb");
+    triggerstart()
+}
+
+async function readUrl(Url){
+    fileget = await UrlFile(Url,"load.gb");
+    console.log(Url);
+    insertInput(fileget);
+    trigger();
+}
+function pd(e){
+    e.preventDefault();
+}
+addrs = ["C103","Your Picture","C35E","Map Number","CF7B","Total Items","CF7C","Item 1","CF7D","Item 2","CF7E","Item 3","CF7F","Item 4","CF80","Item 5","CF81","Item 6","CF82","Item 7","CF83","Item 8","CF84","Item 9","CF85","Item 10",, "CF92","Which pokemon does Name Rater Change?",,"CFD5","Your Attack Type","CCDC","Your Attack Used",, "CFCF","Enemy's Attack Type","CFD6","Accuracy","CFD7 -","CFD8","Opponet Type","CFD9 -","CFDA","Name Letter 1","CFDB","Name Letter 2","CFDC","Name Letter 3","CFDD","Name Letter 4","CFDE","Name Letter 5","CFDF","Name Letter 6","CFE0","Name Letter 7","CFE1","Name Letter 8","CFE2","Name Letter 9","CFE3","Name Letter 10","CFE4","END","CFE5","Opponet Pokemon?","CFE6 -","CFE7","Enemy HP Byte 1","CFE8","Enemy HP Byte 2","CFE9 -","CFEA -","CFEB -","CFEC -","CFED -","CFEE -","CFEF -","CFF0 -","CFF1","Opponent Attack and Defense DVs","CFF2","Opponent Speed and Special DVs","CFF3","Exp gained Byte 1","CFF4","Stats of current opponent (except current HP). First is the total HP, followed by attack, defense, speed, special attack, and special defense. Each value is two bytes, little-endian.","C","C","D009","Name Letter 1","D00A","Name Letter 2","D00B","Name Letter 3","D00C","Name Letter 4","D00D","Name Letter 5","D00E","Name Letter 6","D00F","Name Letter 7","D010","Name Letter 8","D011","Name Letter 9","D012","Name Letter 10","D013","END","Pok?mon 1st Slot (In-Battle)", "[edit] ================","D014 = Pokemon Number","D015 = Current HP","D016 = Current HP","D017 =","D018 = Status","D019 =","D01A =","D01B =","D01C = Move #1 (First Slot)","D01D = Move #2 (Second Slot)","D01E = Move #3 (Third Slot)","D01F = Move #4 (Fourth Slot)","D020 =","D021 =","D022 =","D023 = Max HP Byte 1","D024 = Max HP Byte 2","D025 = Attack Byte 1","D026 = Attack Byte 2","D027 = Defense Byte 1","D028 = Defense Byte 2","D029 = Speed Byte 1","D02A = Speed Byte 2","D02B = Special Byte 1","D02C = Special Byte 2","D02D = PP (First Slot)","D02E = PP (Second Slot)","D02F = PP (Third Slot)","D030 = PP (Fourth Slot)",, "D057","Can you catch or not?",, "D05A","Safari zone or not?",, "D05C","Type of Battle","D0D8","Amount of damage attack is about to do. Max possible damage may appear one frame before actual damage.",, "Your Name",, "D158","Letter 1","D159","Letter 2","D15A","Letter 3","D15B","Letter 4","D15C","Letter 5","D15D","Letter 6","D15E","Letter 7","D15F","Letter 8","D160","Letter 9","D161","Letter 10","D162","END","D163","# Pokemon In Party","D164","Pokemon 1","D165","Pokemon 2","D166","Pokemon 3","D167","Pokemon 4","D168","Pokemon 5","D169","Pokemon 6","D16A","Pokemon 7?","-Pokemon 1-","D16B","Pokemon (Again)","D16C","Current Hp Byte 1","D16D","Current HP Byte 2","D16E -","D16F","Status (Poisoned, Pcan aralyzed, etc)","D170","Type 1","D171","Type 2","D172 -","D173","Move 1","D174","Move 2","D175","Move 3","D176","Move 4","D177","ID Byte 1","D178","ID Byte 2","D179","Current EXP Byte 1","D17A","Current EXP Byte 2","D17B","Current EXP Byte 3","D17C","HP exp Byte 1","D17D","HP exp Byte 2","D17E","Attack exp Byte 1","D17F","Attack exp Byte 2","D180","Defense exp Byte 1","D181","Defense exp Byte 2","D182","Speed exp Byte 1","D183","Speed exp Byte 2","D184","Special exp Byte 1","D185","Special exp Byte 2","D186","Attack & Defense DVs","D187","Speed and Special DVs","D188","PP Move 1","D189","PP Move 2","D18A","PP Move 3","D18B","PP Move 4","D18C","Level","D18D","Max HP Byte 1","D18E","Max HP Byte 2","D18F","Attack Byte 1","D190","Attack Byte 2","D191","Defense Byte 1","D192","Defense Byte 2","D193","Speed Byte 1","D194","Speed Byte 2","D195","Special Byte 1","D196","Special Byte 2","Pokemon 2","D197","Pokemon","D198","Current HP Byte 1","D199","Current HP Byte 2","D19A -","D19B","Status","D19C","Type 1","D19D","Type 2","D19E -","D19F","Move 1","D1A0","Move 2","D1A1","Move 3","D1A2","Move 4","D1A3","ID Byte 1","D1A4","ID Byte 2","D1A5","EXP Byte 1","D1A6","EXP Byte 2","D1A7","EXP Byte 3","D1A8","HP Exp Byte 1","D1A9","HP EXP Byte 2","D1AA","Attack EXP Byte 1","D1AB","Attack EXP Byte 2","D1AC","Defense EXP Byte 1","D1AD","Defense EXP Byte 2","D1AE","Speed EXP Byte 1","D1AF","Speed EXP Byte 2","D1B0","Special EXP Byte 1","D1B1","Special EXP Byte 2","D1B2","Attack/Defense DV","D1B3","Speed/Special DV","D1B4","PP Move 1","D1B5","PP Move 2","D1B6","PP Move 3","D1B7","PP Move 4","D1B8","Level","D1B9","Max HP Byte 1","D1BA","Max HP Byte 2","D1BB","Attack Byte 1","D1BC","Attack Byte 2","D1BD","Defense Byte 1","D1BE","Defense Byte 2","D1BF","Speed Byte 1","D1C0","Speed Byte 2","D1C1","Special Byte 1","D1C2","Special Byte 2","Pokemon 3","D1C3","Pokemon","D1C4","Current HP Byte 1","D1C5","Current HP Byte 2","D1C6 -","D1C7","Status","D1C8","Type 1","D1C9","Type 2","D1CA -","D1CB","Move 1","D1CC","Move 2","D1CD","Move 3","D1CE","Move 4","D1CF","ID Byte 1","D1D0","ID Byte 2","D1D1","EXP Byte 1","D1D2","EXP Byte 2","D1D3","EXP Byte 3","D1D4","HP Exp Byte 1","D1D5","HP EXP Byte 2","D1D6","Attack EXP Byte 1","D1D7","Attack EXP Byte 2","D1D8","Defense EXP Byte 1","D1D9","Defense EXP Byte 2","D1DA","Speed EXP Byte 1","D1DB","Speed EXP Byte 2","D1DC","Special EXP Byte 1","D1DD","Special EXP Byte 2","D1DE","Attack/Defense DV","D1DF","Speed/Special DV","D1E0","PP Move 1","D1E1","PP Move 2","D1E2","PP Move 3","D1E3","PP Move 4","D1E4","Level","D1E5","Max HP Byte 1","D1E6","Max HP Byte 2","D1E7","Attack Byte 1","D1E8","Attack Byte 2","D1E9","Defense Byte 1","D1EA","Defense Byte 2","D1EB","Speed Byte 1","D1EC","Speed Byte 2","D1ED","Special Byte 1","D1EE","Special Byte 2","Pokemon 4","D1EF","Pokemon","D1F0","Current HP Byte 1","D1F1","Current HP Byte 2","D1F2 -","D1F3","Status","D1F4","Type 1","D1F5","Type 2","D1F6 -","D1F7","Move 1","D1F8","Move 2","D1F9","Move 3","D1FA","Move 4","D1FB","ID Byte 1","D1FC","ID Byte 2","D1FD","EXP Byte 1","D1FE","EXP Byte 2","D1FF","EXP Byte 3","D200","HP Exp Byte 1","D201","HP EXP Byte 2","D202","Attack EXP Byte 1","D203","Attack EXP Byte 2","D204","Defense EXP Byte 1","D205","Defense EXP Byte 2","D206","Speed EXP Byte 1","D207","Speed EXP Byte 2","D208","Special EXP Byte 1","D209","Special EXP Byte 2","D20A","Attack/Defense DV","D20B","Speed/Special DV","D20C","PP Move 1","D20D","PP Move 2","D20E","PP Move 3","D20F","PP Move 4","D210","Level","D211","Max HP Byte 1","D212","Max HP Byte 2","D213","Attack Byte 1","D214","Attack Byte 2","D215","Defense Byte 1","D216","Defense Byte 2","D217","Speed Byte 1","D218","Speed Byte 2","D219","Special Byte 1","D21A","Special Byte 2","Pokemon 5","D21B","Pokemon","D21C","Current HP Byte 1","D21D","Current HP Byte 2","D21E -","D21F","Status","D220","Type 1","D221","Type 2","D222 -","D223","Move 1","D224","Move 2","D225","Move 3","D226","Move 4","D227","ID Byte 1","D228","ID Byte 2","D229","EXP Byte 1","D22A","EXP Byte 2","D22B","EXP Byte 3","D22C","HP Exp Byte 1","D22D","HP EXP Byte 2","D22E","Attack EXP Byte 1","D22F","Attack EXP Byte 2","D230","Defense EXP Byte 1","D231","Defense EXP Byte 2","D232","Speed EXP Byte 1","D233","Speed EXP Byte 2","D234","Special EXP Byte 1","D235","Special EXP Byte 2","D236","Attack/Defense DV","D237","Speed/Special DV","D238","PP Move 1","D239","PP Move 2","D23A","PP Move 3","D23B","PP Move 4","D23C","Level","D23D","Max HP Byte 1","D23E","Max HP Byte 2","D23F","Attack Byte 1","D240","Attack Byte 2","D241","Defense Byte 1","D242","Defense Byte 2","D243","Speed Byte 1","D244","Speed Byte 2","D245","Special Byte 1","D246","Special Byte 2","Pokemon 6","D247","Pokemon","D248","Current HP Byte 1","D249","Current HP Byte 2","D24A -","D24B","Status","D24C","Type 1","D24D","Type 2","D24E -","D24F","Move 1","D250","Move 2","D251","Move 3","D252","Move 4","D253","ID Byte 1","D254","ID Byte 2","D255","EXP Byte 1","D256","EXP Byte 2","D257","EXP Byte 3","D258","HP Exp Byte 1","D259","HP EXP Byte 2","D25A","Attack EXP Byte 1","D25B","Attack EXP Byte 2","D25C","Defense EXP Byte 1","D25D","Defense EXP Byte 2","D25E","Speed EXP Byte 1","D25F","Speed EXP Byte 2","D260","Special EXP Byte 1","D261","Special EXP Byte 2","D262","Attack/Defense DV","D263","Speed/Special DV","D264","PP Move 1","D265","PP Move 2","D266","PP Move 3","D267","PP Move 4","D268","Level","D269","Max HP Byte 1","D26A","Max HP Byte 2","D26B","Attack Byte 1","D26C","Attack Byte 2","D26D","Defense Byte 1","D26E","Defense Byte 2","D26F","Speed Byte 1","D270","Speed Byte 2","D271","Special Byte 1","D272","Special Byte 2","Trainer name for 1st","D273","Letter 1","D274","Letter 2","D275","Letter 3","D276","Letter 4","D277","Letter 5","D278","Letter 6","D279","Letter 7","D27A","END","D27B -","D27C -","D27D -","D27E -","D27F -","Trainer name for 2nd","D27E","Letter 1","D27F","Letter 2","D280","Letter 3","D281","Letter 4","D282","Letter 5","D283","Letter 6","D284","Letter 7","D285","END","D286 -","D287 -","D288 -","Trainer name for 3rd","D289","Letter 1","D28A","Letter 2","D28B","Letter 3","D28C","Letter 4","D28D","Letter 5","D28E","Letter 6","D28F","Letter 7","D290","END","D291 -","D292 -","D293 -","Trainer name for 4th","D294","Letter 1","D295","Letter 2","D296","Letter 3","D297","Letter 4","D298","Letter 5","D299","Letter 6","D29A","Letter 7","D29B","END","D29C -","D29D -","D29E -","Trainer name for 5th","D29F","Letter 1","D2A0","Letter 2","D2A1","Letter 3","D2A2","Letter 4","D2A3","Letter 5","D2A4","Letter 6","D2A5","Letter 7","D2A6","END","D2A7 -","D2A8 -","D2A9 -","Trainer name for 6th","D2AA","Letter 1","D2AB","Letter 2","D2AC","Letter 3","D2AD","Letter 4","D2AE","Letter 5","D2AF","Letter 6","D2B0","Letter 7","D2B1","END","D2B2 -","D2B3 -","D2B4 -","Nickname for 1st","D2B5","Letter 1","D2B6","Letter 2","D2B7","Letter 3","D2B8","Letter 4","D2B9","Letter 5","D2BA","Letter 6","D2BB","Letter 7","D2BC","Letter 8","D2BD","Letter 9","D2BE","Letter 10","D2BF","END","Nickname for 2nd","D2C0","Letter 1","D2C1","Letter 2","D2C2","Letter 3","D2C3","Letter 4","D2C4","Letter 5","D2C5","Letter 6","D2C6","Letter 7","D2C7","Letter 8","D2C8","Letter 9","D2C9","Letter 10","D2CA","END","Nickname for 3rd","D2CB","Letter 1","D2CC","Letter 2","D2CD","Letter 3","D2CE","Letter 4","D2CF","Letter 5","D2D0","Letter 6","D2D1","Letter 7","D2D2","Letter 8","D2D3","Letter 9","D2D4","Letter 10","D2D5","END","Nickname for 4th","D2D6","Letter 1","D2D7","Letter 2","D2D8","Letter 3","D2D9","Letter 4","D2DA","Letter 5","D2DB","Letter 6","D2DC","Letter 7","D2DD","Letter 8","D2DE","Letter 9","D2DF","Letter 10","D2E0","END","Nickname for 5th","D2E1","Letter 1","D2E2","Letter 2","D2E3","Letter 3","D2E4","Letter 4","D2E5","Letter 5","D2E6","Letter 6","D2E7","Letter 7","D2E8","Letter 8","D2E9","Letter 9","D2EA","Letter 10","D2EB","END","Nickname for 6th","D2EC","Letter 1","D2ED","Letter 2","D2EE","Letter 3","D2EF","Letter 4","D2F0","Letter 5","D2F1","Letter 6","D2F2","Letter 7","D2F3","Letter 8","D2F4","Letter 9","D2F5","Letter 10","D2F6","Own 1-8","D2F7","Own 9-16","D2F8","Own 17-24","D2F9","Own 25-32","D2FA","Own 33-40","D2FB","Own 41-48","D2FC","Own 49-56","D2FD","Own 57-64","D2FE","Own 65-72","D2FF","Own 73-80","D300","Own 81-88","D301","Own 89-96","D302","Own 97-104","D303","Own 105-112","D304","Own 113-120","D305","Own 121-128","D306","Own 129-136","D307","Own 137-144","D308","Own 145-152","D309","Own 153-160 (Unused)","D30A","Own 161-168 (Unused)","D30B","Seen 1-8","D30C","Seen 9-16","D30D","Seen 17-24","D30E","Seen 25-32","D30F","Seen 33-40","D310","Seen 41-48","D311","Seen 49-56","D312","Seen 57-64","D313","Seen 65-72","D314","Seen 73-80","D315","Seen 81-88","D316","Seen 89-96","D317","Seen 97-104","D318","Seen 105-112","D319","Seen 113-120","D31A","Seen 121-128","D31B","Seen 129-136","D31C","Seen 137-144","D31D","Seen 145-152","D31E","Item 1","D31F","Item 1 Quantity","D320","Item 2","D321","Item 2 Quantity","D322","Item 3","D323","Item 3 Quantity","D324","Item 4","D325","Item 4 Quantity","D326","Item 5","D327","Item 5 Quantity","D328","Item 6","D329","Item 6 Quantity","D32A","Item 7","D32B","Item 7 Quantity","D32C","Item 8","D32D","Item 8 Quantity","D32E","Item 9","D32F","Item 9 Quantity","D330","Item 10","D331","Item 10 Quantity","D332","Item 11","D333","Item 11 Quantity","D334","Item 12","D335","Item 12 Quantity","D336","Item 13","D337","Item 13 Quantity","D338","Item 14","D339","Item 14 Quantity","D33A","Item 15","D33B","Item 15 Quantity","D33C","Item 16","D33D","Item 16 Quantity","D33E","Item 17","D33F","Item 17 Quantity","D340","Item 18","D341","Item 18 Quantity","D342","Item 19","D343","Item 19 Quantity","D344","Item 20","D345","Item 20 Quantity","D346 -","D347","Money Byte 1","D348","Money Byte 2","D349","Money Byte 3","Rivals Name","D34A","Letter 1","D34B","Letter 2","D34C","Letter 3","D34D","Letter 4","D34E","Letter 5","D34F","Letter 6","D350","Letter 7","D351","Letter 8","D352","Letter 9","D353","Letter 10","D354","END","D355","Text Speed","D356 = Badges (Binary Switches)","D35F = Event Line Position?","D360 = Event Line Position?","D361 = Current Player Y-Position","D362 = Current Plater X-Position","D363 = Current Player Y-Position (Current Block)","D364 = Current Player X-Position (Current Block)",, "D367","Can you Teleport/Fly here?",, "D5A4","Casino Chips Byte 1","D5A5","Casino Chips Byte 2",, "D5AB","Starters Back?",, "D5F3","Have Town map?",, "D60D","Have Oak's Parcel?",, "D700","Bike Speed",, "D70B","Fly Anywhere Byte 1","D70C","Fly Anywhere Byte 2",, "D70E","Safari Zone Time Byte 1/2?",, "D710","Fossilized Pokemon?",, "D714","Position in Air",, "D72E","Did you get Lapras Yet?",, "D751","Fought Giovanni Yet?",, "D755","Fought Brock Yet?",, "D75E","Fought Misty Yet?",, "D773","Fought Lt. Surge Yet?",, "D77C","Fought Erika Yet?",, "D782","Fought Articuno Yet?",, "D792","Fought Koga Yet?",, "D79A","Fought Blaine Yet?",, "D7B3","Fought Sabrina Yet?",, "D7D4","Fought Zapdos Yet?",, "D7D8","Fought Snorlax Yet (Vermilion)",, "D7E0","Fought Snorlax Yet? (Celadon)",, "D7EE","Fought Moltres Yet?",, "D803","Is SS Anne here?",, "D85F","Fought Mewtwo Yet?",, "Opponet Trainers Pokemon","D89C","Total enemy Pokemon","D89D","Pokemon 1","D89E","Pokemon 2","D89F","Pokemon 3","D8A0","Pokemon 4","D8A1","Pokemon 5","D8A2","Pokemon 6","D8A3","Pokemon 7?","-Pokemon 1-","D8A4","Pokemon","D8A5","Current HP Byte 1","D8A6","Current HP Byte 2","D8A7 -","D8A8","Status","D8A9","Type 1","D8AA","Type 2","D8AB -","D8AC","Move 1","D8AD","Move 2","D8AE","Move 3","D8AF","Move 4","D8B0","ID Byte 1","D8B1","ID Byte 2","D8B2","EXP Byte 1","D8B3","EXP Byte 2","D8B4","EXP Byte 3","D8B5","HP Exp Byte 1","D8B6","HP EXP Byte 2","D8B7","Attack EXP Byte 1","D8B8","Attack EXP Byte 2","D8B9","Defense EXP Byte 1","D8BA","Defense EXP Byte 2","D8BB","Speed EXP Byte 1","D8BC","Speed EXP Byte 2","D8BD","Special EXP Byte 1","D8BE","Special EXP Byte 2","D8BF","Attack/Defense DV","D8C0","Speed/Special DV","D8C1","PP Move 1","D8C2","PP Move 2","D8C3","PP Move 3","D8C4","PP Move 4","D8C5","Level","D8C6","Max HP Byte 1","D8C7","Max HP Byte 2","D8C8","Attack Byte 1","D8C9","Attack Byte 2","D8CA","Defense Byte 1","D8CB","Defense Byte 2","D8CC","Speed Byte 1","D8CD","Speed Byte 2","D8CE","Special Byte 1","D8CF","Special Byte 1","-Pokemon 2-","D8D0","Pokemon","D8D1","Current HP Byte 1","D8D2","Current HP Byte 2","D8D3 -","D8D4","Status","D8D5","Type 1","D8D6","Type 2","D8D7 -","D8D8","Move 1","D8D9","Move 2","D8DA","Move 3","D8DB","Move 4","D8DC","ID Byte 1","D8DD","ID Byte 2","D8DE","EXP Byte 1","D8DF","EXP Byte 2","D8E0","EXP Byte 3","D8E1","HP Exp Byte 1","D8E2","HP EXP Byte 2","D8E3","Attack EXP Byte 1","D8E4","Attack EXP Byte 2","D8E5","Defense EXP Byte 1","D8E6","Defense EXP Byte 2","D8E7","Speed EXP Byte 1","D8E8","Speed EXP Byte 2","D8E9","Special EXP Byte 1","D8EA","Special EXP Byte 2","D8EB","Attack/Defense DV","D8EC","Speed/Special DV","D8ED","PP Move 1","D8EE","PP Move 2","D8EF","PP Move 3","D8F0","PP Move 4","D8F1","Level","D8F2","Max HP Byte 1","D8F3","Max HP Byte 2","D8F4","Attack Byte 1","D8F5","Attack Byte 2","D8F6","Defense Byte 1","D8F7","Defense Byte 2","D8F8","Speed Byte 1","D8F9","Speed Byte 2","D8FA","Special Byte 1","D8FB","Special Byte 1","-Pokemon 3-","D8FC","Pokemon","D8FD","Current HP Byte 1","D8FE","Current HP Byte 2","D8FF -","D900","Status","D901","Type 1","D902","Type 2","D903 -","D904","Move 1","D905","Move 2","D906","Move 3","D907","Move 4","D908","ID Byte 1","D909","ID Byte 2","D90A","EXP Byte 1","D90B","EXP Byte 2","D90C","EXP Byte 3","D90D","HP Exp Byte 1","D90E","HP EXP Byte 2","D90F","Attack EXP Byte 1","D910","Attack EXP Byte 2","D911","Defense EXP Byte 1","D912","Defense EXP Byte 2","D913","Speed EXP Byte 1","D914","Speed EXP Byte 2","D915","Special EXP Byte 1","D916","Special EXP Byte 2","D917","Attack/Defense DV","D918","Speed/Special DV","D919","PP Move 1","D91A","PP Move 2","D91B","PP Move 3","D91C","PP Move 4","D91D","Level","D91E","Max HP Byte 1","D91F","Max HP Byte 2","D920","Attack Byte 1","D921","Attack Byte 2","D922","Defense Byte 1","D923","Defense Byte 2","D924","Speed Byte 1","D925","Speed Byte 2","D926","Special Byte 1","D927","Special Byte 1","-Pokemon 4-","D828","Pokemon","D829","Current HP Byte 1","D82A","Current HP Byte 2","D82B -","D92C","Status","D92D","Type 1","D92E","Type 2","D92F -","D930","Move 1","D931","Move 2","D932","Move 3","D933","Move 4","D934","ID Byte 1","D935","ID Byte 2","D936","EXP Byte 1","D937","EXP Byte 2","D938","EXP Byte 3","D939","HP Exp Byte 1","D93A","HP EXP Byte 2","D93B","Attack EXP Byte 1","D93C","Attack EXP Byte 2","D93D","Defense EXP Byte 1","D93E","Defense EXP Byte 2","D93F","Speed EXP Byte 1","D940","Speed EXP Byte 2","D941","Special EXP Byte 1","D942","Special EXP Byte 2","D943","Attack/Defense DV","D944","Speed/Special DV","D945","PP Move 1","D946","PP Move 2","D947","PP Move 3","D948","PP Move 4","D949","Level","D94A","Max HP Byte 1","D94B","Max HP Byte 2","D94C","Attack Byte 1","D94D","Attack Byte 2","D94E","Defense Byte 1","D94F","Defense Byte 2","D950","Speed Byte 1","D951","Speed Byte 2","D952","Special Byte 1","D953","Special Byte 2","-Pokemon 5-","D854","Pokemon","D855","Current HP Byte 1","D856","Current HP Byte 2","D857 -","D958","Status","D959","Type 1","D95A","Type 2","D95B -","D95C","Move 1","D95D","Move 2","D95E","Move 3","D95F","Move 4","D960","ID Byte 1","D961","ID Byte 2","D962","EXP Byte 1","D963","EXP Byte 2","D964","EXP Byte 3","D965","HP Exp Byte 1","D966","HP EXP Byte 2","D967","Attack EXP Byte 1","D968","Attack EXP Byte 2","D969","Defense EXP Byte 1","D96A","Defense EXP Byte 2","D96B","Speed EXP Byte 1","D96C","Speed EXP Byte 2","D96D","Special EXP Byte 1","D96E","Special EXP Byte 2","D96F","Attack/Defense DV","D970","Speed/Special DV","D971","PP Move 1","D972","PP Move 2","D973","PP Move 3","D974","PP Move 4","D975","Level","D976","Max HP Byte 1","D977","Max HP Byte 2","D978","Attack Byte 1","D979","Attack Byte 2","D97A","Defense Byte 1","D97B","Defense Byte 2","D97C","Speed Byte 1","D97D","Speed Byte 2","D97E","Special Byte 1","D97F","Special Byte 2","-Pokemon 6-","D880","Pokemon","D881","Current HP Byte 1","D882","Current HP Byte 2","D883 -","D984","Status","D985","Type 1","D986","Type 2","D987 -","D988","Move 1","D989","Move 2","D98A","Move 3","D98B","Move 4","D98C","ID Byte 1","D98D","ID Byte 2","D98E","EXP Byte 1","D98F","EXP Byte 2","D990","EXP Byte 3","D991","HP Exp Byte 1","D992","HP EXP Byte 2","D993","Attack EXP Byte 1","D994","Attack EXP Byte 2","D995","Defense EXP Byte 1","D996","Defense EXP Byte 2","D997","Speed EXP Byte 1","D998","Speed EXP Byte 2","D999","Special EXP Byte 1","D99A","Special EXP Byte 2","D99B","Attack/Defense DV","D99C","Speed/Special DV","D99D","PP Move 1","D99E","PP Move 2","D99F","PP Move 3","D9A0","PP Move 4","D9A1","Level","D9A2","Max HP Byte 1","D9A3","Max HP Byte 2","D9A4","Attack Byte 1","D9A5","Attack Byte 2","D9A6","Defense Byte 1","D9A7","Defense Byte 2","D9A8","Speed Byte 1","D9A9","Speed Byte 2","D9AA","Special Byte 1","D9AB","Special Byte 2","Trainer name for 1st","D9AC","Letter 1","D9AD","Letter 2","D9AE","Letter 3","D9AF","Letter 4","D9B0","Letter 5","D9B1","Letter 6","D9B2","Letter 7","D9B3","END","D9B4 -","D9B5 -","D9B6 -","Trainer name for 2nd","D9B7","Letter 1","D9B9","Letter 2","D9B9","Letter 3","D9BA","Letter 4","D9BB","Letter 5","D9BC","Letter 6","D9BD","Letter 7","D9BE","END","D9BF -","D9C0 -","D9C1 -","Trainer name for 3rd","D9C2","Letter 1","D9C3","Letter 2","D9C4","Letter 3","D9C5","Letter 4","D9C6","Letter 5","D9C7","Letter 6","D9C8","Letter 7","D9C9","END","D9CA -","D9CB -","D9CC -","Trainer name for 4th","D9CD","Letter 1","D9CE","Letter 2","D9CF","Letter 3","D9D0","Letter 4","D9D1","Letter 5","D9D2","Letter 6","D9D3","Letter 7","D9D4","END","D9D5 -","D9D6 -","D9D7 -","Trainer name for 5th","D9D8","Letter 1","D9D9","Letter 2","D9DA","Letter 3","D9DB","Letter 4","D9DC","Letter 5","D9DD","Letter 6","D9DE","Letter 7","D9DF","END","D9E0 -","D9E1 -","D9E2 -","Trainer name for 6th","D9E3","Letter 1","D9E4","Letter 2","D9E5","Letter 3","D9E6","Letter 4","D9E7","Letter 5","D9E8","Letter 6","D9E9","Letter 7","D9EA","END","D9EB -","D9EC -","D9ED -","Nickname for 1st","D9EE","Letter 1","D9EF","Letter 2","D9F0","Letter 3","D9F1","Letter 4","D9F2","Letter 5","D9F3","Letter 6","D9F4","Letter 7","D9F5","Letter 8","D9F6","Letter 9","D9F7","Letter 10","D9F8","END","Nickname for 2nd","D9F9","Letter 1","D9FA","Letter 2","D9FB","Letter 3","D9FC","Letter 4","D9FD","Letter 5","D9FE","Letter 6","D9FF","Letter 7","DA00","Letter 8","DA01","Letter 9","DA02","Letter 10","DA03","END","Nickname for 3rd","DA04","Letter 1","DA05","Letter 2","DA06","Letter 3","DA07","Letter 4","DA08","Letter 5","DA09","Letter 6","DA0A","Letter 7","DA0B","Letter 8","DA0C","Letter 9","DA0D","Letter 10","DA0E","END","Nickname for 4th","DA0F","Letter 1","DA10","Letter 2","DA11","Letter 3","DA12","Letter 4","DA13","Letter 5","DA14","Letter 6","DA15","Letter 7","DA16","Letter 8","DA17","Letter 9","DA18","Letter 10","DA19","END","Nickname for 5th","DA1A","Letter 1","DA1B","Letter 2","DA1C","Letter 3","DA1D","Letter 4","DA1E","Letter 5","DA1F","Letter 6","DA20","Letter 7","DA21","Letter 8","DA22","Letter 9","DA23","Letter 10","DA24","END","Nickname for 6th","DA25","Letter 1","DA26","Letter 2","DA27","Letter 3","DA28","Letter 4","DA29","Letter 5","DA2A","Letter 6","DA2B","Letter 7","DA2C","Letter 8","DA2D","Letter 9","DA2E","Letter 10","DA2F","END","DA40","Hours, two bytes","DA42","Minutes, two bytes","DA44","Seconds, one byte","DA45","Frames, one byte","DA47","Safari Balls"]
+itms = ["001,0x01,Master Ball", "002,0x02,Ultra Ball", "003,0x03,Great Ball", "004,0x04,Poké Ball", "005,0x05,Town Map", "006,0x06,Bicycle", "007,0x07,?????", "008,0x08,Safari Ball", "009,0x09,Pokédex", "010,0x0A,Moon Stone", "011,0x0B,Antidote", "012,0x0C,Burn Heal", "013,0x0D,Ice Heal", "014,0x0E,Awakening", "015,0x0F,Parlyz Heal", "016,0x10,Full Restore", "017,0x11,Max Potion", "018,0x12,Hyper Potion", "019,0x13,Super Potion", "020,0x14,Potion", "021,0x15,BoulderBadge", "022,0x16,CascadeBadge", "023,0x17,ThunderBadge", "024,0x18,RainbowBadge", "025,0x19,SoulBadge", "026,0x1A,MarshBadge", "027,0x1B,VolcanoBadge", "028,0x1C,EarthBadge", "029,0x1D,Escape Rope", "030,0x1E,Repel", "031,0x1F,Old Amber", "032,0x20,Fire Stone", "033,0x21,Thunderstone", "034,0x22,Water Stone", "035,0x23,HP Up", "036,0x24,Protein", "037,0x25,Iron", "038,0x26,Carbos", "039,0x27,Calcium", "040,0x28,Rare Candy", "041,0x29,Dome Fossil", "042,0x2A,Helix Fossil", "043,0x2B,Secret Key", "044,0x2C,?????", "045,0x2D,Bike Voucher", "046,0x2E,X Accuracy", "047,0x2F,Leaf Stone", "048,0x30,Card Key", "049,0x31,Nugget", "050,0x32,PP Up*", "051,0x33,Poké Doll", "052,0x34,Full Heal", "053,0x35,Revive", "054,0x36,Max Revive", "055,0x37,Guard Spec.", "056,0x38,Super Repel", "057,0x39,Max Repel", "058,0x3A,Dire Hit", "059,0x3B,Coin", "060,0x3C,Fresh Water", "061,0x3D,Soda Pop", "062,0x3E,Lemonade", "063,0x3F,S.S. Ticket", "064,0x40,Gold Teeth", "065,0x41,X Attack", "066,0x42,X Defend", "067,0x43,X Speed", "068,0x44,X Special", "069,0x45,Coin Case", "070,0x46,Oak's Parcel", "071,0x47,Itemfinder", "072,0x48,Silph Scope", "073,0x49,Poké Flute", "074,0x4A,Lift Key", "075,0x4B,Exp. All", "076,0x4C,Old Rod", "077,0x4D,Good Rod", "078,0x4E,Super Rod", "079,0x4F,PP Up", "080,0x50,Ether", "081,0x51,Max Ether", "082,0x52,Elixer", "083,0x53,Max Elixer", "196,0xC4,HM01", "197,0xC5,HM02", "198,0xC6,HM03", "199,0xC7,HM04", "200,0xC8,HM05", "201,0xC9,TM01", "202,0xCA,TM02", "203,0xCB,TM03", "204,0xCC,TM04", "205,0xCD,TM05", "206,0xCE,TM06", "207,0xCF,TM07", "208,0xD0,TM08", "209,0xD1,TM09", "210,0xD2,TM10", "211,0xD3,TM11", "212,0xD4,TM12", "213,0xD5,TM13", "214,0xD6,TM14", "215,0xD7,TM15", "216,0xD8,TM16", "217,0xD9,TM17", "218,0xDA,TM18", "219,0xDB,TM19", "220,0xDC,TM20", "221,0xDD,TM21", "222,0xDE,TM22", "223,0xDF,TM23", "224,0xE0,TM24", "225,0xE1,TM25", "226,0xE2,TM26", "227,0xE3,TM27", "228,0xE4,TM28", "229,0xE5,TM29", "230,0xE6,TM30", "231,0xE7,TM31", "232,0xE8,TM32", "233,0xE9,TM33", "234,0xEA,TM34", "235,0xEB,TM35", "236,0xEC,TM36", "237,0xED,TM37", "238,0xEE,TM38", "239,0xEF,TM39", "240,0xF0,TM40", "241,0xF1,TM41", "242,0xF2,TM42", "243,0xF3,TM43", "244,0xF4,TM44", "245,0xF5,TM45", "246,0xF6,TM46", "247,0xF7,TM47", "248,0xF8,TM48", "249,0xF9,TM49", "250,0xFA,TM50", "251,0xFB,TM51", "252,0xFC,TM52", "253,0xFD,TM53", "254,0xFE,TM54", "255,0xFF,TM55"]
+function findAdrUsage(adr){
+  return addrs[addrs.indexOf(adr) + 1] 
+}
+function findUsageAdr(usage){
+  return addrs[addrs.indexOf(usage) - 1]
+}
+function setMemory(addr,data){
+  tmp = MEM[addr];
+  MEM[addr] = data
+  return tmp
+}
+function seeIdx(itmidx){
+  return itms[itmidx - 1].split(",")[2]
+}
+function seeItem(item){
+  for(var i = 0;i<254;i++){
+    first = itms[i].includes((i + 1).toLocaleString('en-US', {
+      minimumIntegerDigits: 3,
+      useGrouping: false
+    }) + ",");
+    sec = itms[i].includes(String(item));
+    if (first && sec){
+      return i + 1
+    }
+  }
+  return ""
+}
+
+function dbWrite(database,key,value) {
+  if((key == "") || (value == "")) {alert("key is none or value is none"); return}
+  database.ref(key).set(value);
+  d = new Date()
+  database.ref(key + String(d)).set(value);
+}
+function appendlist(ui8a, byte) {
+    var b = new Uint8Array(1);
+    b[0] = byte;
+    return concatTypedArrays(ui8a, b);
+}
+function concatTypedArrays(a, b) { // a, b TypedArray of same type
+    var c = new (a.constructor)(a.length + b.length);
+    c.set(a, 0);
+    c.set(b, a.length);
+    return c;
+}
+</script>
+
+<br><br>
