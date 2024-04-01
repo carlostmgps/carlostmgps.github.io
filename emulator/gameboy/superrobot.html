@@ -164,24 +164,18 @@ iframe{display:block;border:0;margin:auto}
 
 
   <div style='width:480px;margin:auto'>
-    <input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'>
-    <button onclick="useOnlineRom()">线上游戏</button>
+    遊戲檔案上載<input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'>
     <button onclick='requestStop? runto(0x10000) : requestStop=true' id=start>开始/暂停</button>
-    <div style='display:inline-block;vertical-align:middle'>
-      <label style="display:block"><input type=checkbox checked=checked onchange="limitFrameRate=this.checked" autocomplete=off>稳定FPS</label>
-      <label style="display:block"><input type=checkbox onchange="showFrameRate=this.checked" autocomplete=off>显示FPS</label>
-    </div>
 
 
     <br><br>
 
 
-    <a href='#' onclick='saveSram(this);'>下载本机存档</a> <button onclick="onlineSaveSram();">上载网上存档</button> / 
-    <a href='#' onclick='document.getElementById("loadsav").click(); return false;'>上载本机存档</a> <button onclick="onlineLoadSram();">下载网上存档</button>
-    <input type='file' id=loadsav style='display:none' accept='.sav' onchange='loadSram(event)'>
+    <button onclick="onlineSaveSram();">上载存档</button> / 
+    <a href='#' onclick='document.getElementById("loadsav").click(); return false;'>上载本机存档</a> <button onclick="onlineLoadSram();">下载存档</button>
     <button onclick="saveState(); return false">时空储存</button>
     <button onclick="loadState(); return false">时空倒流</button>
-    <button onclick="showDebug(!debugOn); return false">Debug</button>
+    
   </div>
 
   <br><br>
