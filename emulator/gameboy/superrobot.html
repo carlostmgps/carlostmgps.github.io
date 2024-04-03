@@ -190,13 +190,11 @@ font.src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAICAYAAAAGP/oPAAAA
 function fullScreen(e){
   var d= document;
   if (null!=(d.fullscreenElement || d.mozFullScreenElement || d.webkitFullscreenElement || d.msFullscreenElement)) {
-    e.style.height = 100%
-    e.style.width = 200%
+    
     (d.exitFullscreen || d.mozCancelFullScreen || d.webkitExitFullscreen || d.msExitFullscreen).apply(d);
   } else {
     showDebug(false);
-    e.style.height = 100%
-    e.style.width = 100%
+    
     (e.requestFullscreen || e.mozRequestFullScreen || e.webkitRequestFullscreen || e.msRequestFullscreen || (()=>{})).apply(e);
   }
 }
