@@ -164,7 +164,9 @@ iframe{display:block;border:0;margin:auto}
 
 
   <div style='width:480px;margin:auto'>
-    遊戲檔案上載<input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'>
+    遊戲檔案上載<br><input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'><br>
+    <button onclick="useOnlineRom()" style="font-size: 25px;">游戏选择</button>
+    <br>
     <button onclick='requestStop? runto(0x10000) : requestStop=true' id=start>开始/暂停</button>
 
 
