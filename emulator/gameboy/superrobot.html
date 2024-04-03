@@ -3271,8 +3271,8 @@ function triggerstart(){
 }
 function useOnlineRom(){
     alert("OnlineRomSelections");
-    sel = [["red","blue","green","yellow"],["normal"],["dreamland","dreamland2"]];
-    ser = ["pkmn","tama","kirby"];
+    sel = [["red","blue","green","yellow"],["normal"],["dreamland","dreamland2"],["gundam"]];
+    ser = ["pkmn","tama","kirby","superrobot"];
     lan = ["zh","eng"];
     series = select("选择系列: \n 1:宝可梦 \n 2:Tamagotchi \n 3:Kirby ",rangeStr(3));
     version = select("选择版本: \n " + sel[parseInt(series)-1].map((e, i) => String(i + 1) + ":" + String(e)).join(" \n "),rangeStr(sel[parseInt(series)-1].length));
