@@ -746,8 +746,8 @@ body {
 }
 .start div, .select div {
   position: absolute;
-  height: 18px;
-  width: 88px;
+  height: 27px;
+  width: 132px;
   top: 12px;
   left: 12px;
   border-radius: 20px;
