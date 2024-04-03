@@ -190,7 +190,7 @@ function fullScreen(e){
     (d.exitFullscreen || d.mozCancelFullScreen || d.webkitExitFullscreen || d.msExitFullscreen).apply(d);
   } else {
     showDebug(false);
-    document.getElementById('setting').style.display = "hidden"
+    document.getElementById('setting').style.display = "none"
     (e.requestFullscreen || e.mozRequestFullScreen || e.webkitRequestFullscreen || e.msRequestFullscreen || (()=>{})).apply(e);
   }
 }
@@ -230,7 +230,7 @@ function renderDisplayCanvas() {
     dImgData.data[j++ ] = R[dpixels[i]]
     dImgData.data[j++ ] = G[dpixels[i]]
     dImgData.data[j   ] = B[dpixels[i]]
-    j+=4
+    j+=2
   }
   dctx.putImageData(dImgData,0,0)
 
