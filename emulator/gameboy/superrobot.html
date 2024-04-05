@@ -186,8 +186,12 @@ font.src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAICAYAAAAGP/oPAAAA
 function fullScreen(e){
   var d= document;
   if (null!=(d.fullscreenElement || d.mozFullScreenElement || d.webkitFullscreenElement || d.msFullscreenElement)) {
+    document.getElementById("display").style.height = "320px";
+    document.getElementById("display").style.width = "650px";
     (d.exitFullscreen || d.mozCancelFullScreen || d.webkitExitFullscreen || d.msExitFullscreen).apply(d);
   } else {
+    document.getElementById("display").style.height = "1120px";
+    document.getElementById("display").style.width = "2500px";
     showDebug(false);
     (e.requestFullscreen || e.mozRequestFullScreen || e.webkitRequestFullscreen || e.msRequestFullscreen || (()=>{})).apply(e);
   }
