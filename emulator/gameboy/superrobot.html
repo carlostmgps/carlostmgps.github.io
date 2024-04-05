@@ -73,8 +73,8 @@ iframe{display:block;border:0;margin:auto}
           <span>BATTERY</span>
         </div>
   
-        <div class="screen">
-	  <canvas id=display onclick="runto(0x10000);" ondblclick="fullScreen(this)">
+        <div class="screen" id="displaycontain">
+	  <canvas id=display onclick="runto(0x10000);" ondblclick="fullScreen(document.getElementById('displaycontain'));">
           </canvas>
         </div>
       </div>
@@ -160,7 +160,7 @@ iframe{display:block;border:0;margin:auto}
 
 
   <div id='setting' style='width:480px;margin:auto'>
-    <button onclick="fullScreen(document.getElementById('display'));">全萤幕播放</button><br>
+    <button onclick="fullScreen(document.getElementById('displaycontain'));">全萤幕播放</button><br>
     遊戲檔案上載<br><input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'><br>
     <button onclick="useOnlineRom()" style="font-size: 25px;">游戏选择</button>
     <br>
@@ -186,11 +186,9 @@ font.src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAICAYAAAAGP/oPAAAA
 function fullScreen(e){
   var d= document;
   if (null!=(d.fullscreenElement || d.mozFullScreenElement || d.webkitFullscreenElement || d.msFullscreenElement)) {
-    document.getElementById('setting').style.display = "block"
     (d.exitFullscreen || d.mozCancelFullScreen || d.webkitExitFullscreen || d.msExitFullscreen).apply(d);
   } else {
     showDebug(false);
-    document.getElementById('setting').style.display = "none"
     (e.requestFullscreen || e.mozRequestFullScreen || e.webkitRequestFullscreen || e.msRequestFullscreen || (()=>{})).apply(e);
   }
 }
