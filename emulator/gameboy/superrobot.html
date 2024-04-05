@@ -73,7 +73,7 @@ iframe{display:block;border:0;margin:auto}
           <span>BATTERY</span>
         </div>
   
-	  <canvas class="screen" id="displaycontain display" onclick="runto(0x10000);" ondblclick="fullScreen(document.getElementById('displaycontain'));">
+	  <canvas class="screen" id="display" onclick="runto(0x10000);" ondblclick="fullScreen(document.getElementById('display'));">
           </canvas>
       </div>
   
@@ -158,7 +158,7 @@ iframe{display:block;border:0;margin:auto}
 
 
   <div id='setting' style='width:480px;margin:auto'>
-    <button onclick="fullScreen(document.getElementById('displaycontain'));">全萤幕播放</button><br>
+    <button onclick="fullScreen(document.getElementById('display'));">全萤幕播放</button><br>
     遊戲檔案上載<br><input type='file' accept='.gb,.gbc' id=fileinput onchange='openFile(event)'><br>
     <button onclick="useOnlineRom()" style="font-size: 25px;">游戏选择</button>
     <br>
