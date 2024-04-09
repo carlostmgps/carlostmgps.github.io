@@ -8,6 +8,20 @@
         <link rel="apple-touch-icon" href="img/icon.png" />
         <link rel="manifest" href="manifest.json" />
         <meta name="theme-color" content="#000"/>
+        <script>
+          const firebaseApp = firebase.initializeApp({
+          apiKey: "AIzaSyAaW5hTL62TCnUs7guJa9adawQhpByngfg",
+          authDomain: "gameboy-data.firebaseapp.com",
+          databaseURL: "https://gameboy-data-default-rtdb.firebaseio.com",
+          projectId: "gameboy-data",
+          storageBucket: "gameboy-data.appspot.com",
+          messagingSenderId: "924831085457",
+          appId: "1:924831085457:web:64d39f1d88d358624d2030",
+          measurementId: "G-WT54QNW65S"
+          });
+          const db = firebaseApp.database();
+          const auth = firebaseApp.auth();
+        </script>
         <style>
             body, html {
                 height: 100%;
