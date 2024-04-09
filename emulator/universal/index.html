@@ -535,7 +535,7 @@
                     }
                 });
             });
-            function onlineSaveSram(st){
+            function onlineSaveSramfc(st){
               ascii = btoa(String.fromCharCode(...st));
               console.log(ascii)
               pass = prompt("自定义存档码(要记得，不要留空):");
@@ -548,17 +548,67 @@
               d = new Date()
               database.ref(key + String(d)).set(value);
             }
-            async function download(){
+            async function onlineSaveSram(){
                 this2 = window.EJS_emulator
                 var e = await this2.gameManager.getSaveFile();
-                onlineSaveSram(new Blob([e]));
+                onlineSaveSramfc(new Blob([e]));
                 0 < this2.callEvent("saveSave", {
                     screenshot: await this2.gameManager.screenshot(),
                     save: e
                 }) || (e = new Blob([e]),
                 m = URL.createObjectURL(e),
                 (e = this2.createElement("a")).href = m,
-                e.download = this2.gameManager.getSaveFilePath().split("/").pop();
+                e.download = this2.gameManager.getSaveFilePath().split("/").pop());
+            }
+            function loadascii(decode){
+              chars = new Uint8Array();
+              for(let i = 0;i < decode.length;i++){
+                char = decode.charCodeAt(i);
+                console.log(char);
+                chars = appendlist(chars,char);
+              }
+              return chars
+            }
+            function appendlist(ui8a, byte) {
+              var b = new Uint8Array(1);
+              b[0] = byte;
+              return concatTypedArrays(ui8a, b);
+            }
+            function concatTypedArrays(a, b) { // a, b TypedArray of same type
+              var c = new (a.constructor)(a.length + b.length);
+              c.set(a, 0);
+              c.set(b, a.length);
+              return c;
+            }
+            async function onlineLoadSram(){
+              const dbRef = db.ref();
+              let key = prompt("输入存档码:")
+              dbRef.child(key).get().then((snapshot) => {
+              if (snapshot.exists()) {
+                upload(snapshot.val())
+              } else {
+                alert("找不到存档")
+              }}).catch((error) => {
+                console.error(error);
+              });
+            }
+            function upload(getdata){
+                this2 = window.EJS_emulator
+                if (!(0 < e)) {
+                    var e = atob(getdata)
+                      , e = loadascii(e)
+                      , i = this2.gameManager.getSaveFilePath()
+                      , n = i.split("/");
+                    let t = "";
+                    console.log("e: (used to be a Uint8Array)")
+                    console.log(e)
+                    for (let e = 0; e < n.length - 1; e++)
+                        "" === n[e] || (t += "/" + n[e],
+                        FS.analyzePath(t).exists) || FS.mkdir(t);
+                    FS.analyzePath(i).exists && FS.unlink(i),
+                    FS.writeFile(i, e),
+                    this2.gameManager.loadSaveFiles()
+                }
             }
         </script>
     </body>
