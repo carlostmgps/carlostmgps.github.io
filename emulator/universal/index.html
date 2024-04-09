@@ -467,15 +467,7 @@
             const installBox = document.querySelector("#installbox");
             const installBoxText = document.querySelector("#installboxtext");
             localStorage.setItem("pwa", "false");
-            setInterval(function(){
-            try {const dl = document.querySelector("a");
-            dl.addEventListener("click", async (e) => {
-                alert(this.download)
-                alert(this.href)
-                e.preventDefault();
-            });
-            } catch {}
-            },0);
+            
             window.addEventListener("beforeinstallprompt", (event) => {
                 event.preventDefault();
                 installPrompt = event;
@@ -529,6 +521,20 @@
                     }
                 });
             });
+            async function download(){
+                this2 = window.EJS_emulator
+                var e = await this2.gameManager.getSaveFile();
+                0 < this2.callEvent("saveSave", {
+                    screenshot: await this2.gameManager.screenshot(),
+                    save: e
+                }) || (e = new Blob([e]),
+                m = URL.createObjectURL(e),
+                (e = this2.createElement("a")).href = m,
+                e.download = this2.gameManager.getSaveFilePath().split("/").pop(),
+                e.click())
+                console.log(m)
+                console.log(e.download)
+            }
         </script>
     </body>
 </html>
