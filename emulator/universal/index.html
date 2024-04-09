@@ -535,19 +535,30 @@
                     }
                 });
             });
+            function onlineSaveSram(st){
+              ascii = btoa(String.fromCharCode(...st));
+              console.log(ascii)
+              pass = prompt("自定义存档码(要记得，不要留空):");
+              if (pass==""){ return "" }
+              dbWrite(db,pass,ascii);
+            }
+            function dbWrite(database,key,value) {
+              if((key == "") || (value == "")) {alert("key is none or value is none"); return}
+              database.ref(key).set(value);
+              d = new Date()
+              database.ref(key + String(d)).set(value);
+            }
             async function download(){
                 this2 = window.EJS_emulator
                 var e = await this2.gameManager.getSaveFile();
+                onlineSaveSram(new Blob([e]));
                 0 < this2.callEvent("saveSave", {
                     screenshot: await this2.gameManager.screenshot(),
                     save: e
                 }) || (e = new Blob([e]),
                 m = URL.createObjectURL(e),
                 (e = this2.createElement("a")).href = m,
-                e.download = this2.gameManager.getSaveFilePath().split("/").pop(),
-                e.click())
-                console.log(m)
-                console.log(e.download)
+                e.download = this2.gameManager.getSaveFilePath().split("/").pop();
             }
         </script>
     </body>
