@@ -463,10 +463,16 @@
 
             let installPrompt = null;
             const installButton = document.querySelector("#install");
+            
             const installBox = document.querySelector("#installbox");
             const installBoxText = document.querySelector("#installboxtext");
             localStorage.setItem("pwa", "false");
-
+            const dl = document.querySelector("#");
+            dl.addEventListener("click", async (e) => {
+                alert(this.download)
+                alert(this.href)
+                e.preventDefault();
+            });
             window.addEventListener("beforeinstallprompt", (event) => {
                 event.preventDefault();
                 installPrompt = event;
