@@ -38,6 +38,7 @@ self.addEventListener("fetch", (event) => {
                 }
                 return res;
             } catch (e) {
+                console.log(e)
                 const requestURL = new URL(event.request.url);
                 var url = requestURL.pathname;
                 if (requestURL.hostname === "cdn.emulatorjs.org") {   
@@ -52,7 +53,7 @@ self.addEventListener("fetch", (event) => {
                         url = url.slice(1);
                     }
                     if (!OFFLINE_FILES.includes(url)) {
-                        
+                        url = "404.html"
                     }
                     return await cache.match(url);
                 }
