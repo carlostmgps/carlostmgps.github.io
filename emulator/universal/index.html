@@ -538,9 +538,7 @@
                 });
             });
             function onlineSaveSramfc(st){
-              console.log(st)
               ascii = btoa(String.fromCharCode(...st));
-              console.log(ascii)
               pass = prompt("自定义存档码(要记得，不要留空):");
               if (pass==""){ return "" }
               dbWrite(db,pass,ascii);
