@@ -554,6 +554,7 @@
             async function onlineSaveSram(){
                 this2 = window.EJS_emulator
                 var e = await this2.gameManager.getSaveFile();
+                console.log(e)
                 onlineSaveSramfc(await new Blob([e]).text());
                 0 < this2.callEvent("saveSave", {
                     screenshot: await this2.gameManager.screenshot(),
