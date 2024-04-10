@@ -625,7 +625,7 @@
             function btoabetter(str){
               return window.btoa(unescape(encodeURIComponent(str)))
             }
-            function btoabetter(str){
+            function btoabetter(b64){
               return decodeURIComponent(escape(window.atob(b64)));
             }
         </script>
