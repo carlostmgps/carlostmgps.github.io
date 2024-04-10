@@ -620,11 +620,19 @@
             function atobbetter(b64){
               return decodeURIComponent(escape(window.atob(b64)));
             }
-            function stringtouint8(str){
-              return decode(atobbetter(str))
+            //function stringtouint8(str){
+              //return decode(atobbetter(str))
+            //}
+            //function uint8tostring(uint8){
+              //return btoabetter(encode(uint8))
+            //}
+            function uint8ToString(uint8) {
+              return String.fromCharCode.apply(null, uint8);
             }
-            function uint8tostring(uint8){
-              return btoabetter(encode(uint8))
+            function stringToUint8(string) {
+              return new Uint8Array(string.split('').map(function(c) {
+                return c.charCodeAt(0);
+              }));
             }
         </script>
     </body>
