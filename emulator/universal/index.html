@@ -554,6 +554,7 @@
             async function onlineSaveSram(){
                 this2 = window.EJS_emulator
                 var e = await this2.gameManager.getSaveFile();
+                console.log("saving file...")
                 console.log(e)
                 onlineSaveSramfc(await new Blob([e]).text());
                 0 < this2.callEvent("saveSave", {
@@ -568,7 +569,6 @@
               chars = new Uint8Array();
               for(let i = 0;i < decode.length;i++){
                 char = decode.charCodeAt(i);
-                console.log(char);
                 chars = appendlist(chars,char);
               }
               return chars
@@ -597,6 +597,8 @@
               });
             }
             function upload(getdata){
+                console.log("uploading")
+                console.log(getdata)
                 this2 = window.EJS_emulator
                 if (!(0 < e)) {
                     var e = atob(getdata)
@@ -604,7 +606,7 @@
                       , i = this2.gameManager.getSaveFilePath()
                       , n = i.split("/");
                     let t = "";
-                    console.log("e: (used to be a Uint8Array)")
+                    
                     console.log(e)
                     for (let e = 0; e < n.length - 1; e++)
                         "" === n[e] || (t += "/" + n[e],
