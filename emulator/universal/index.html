@@ -622,6 +622,12 @@
               var string = new TextDecoder().decode(uint8array);
               return string
             }
+            function btoabetter(str){
+              return window.btoa(unescape(encodeURIComponent(str)))
+            }
+            function btoabetter(str){
+              return decodeURIComponent(escape(window.atob(b64)));
+            }
         </script>
     </body>
 </html>
