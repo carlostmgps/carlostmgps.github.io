@@ -52,7 +52,7 @@ self.addEventListener("fetch", (event) => {
                         url = url.slice(1);
                     }
                     if (!OFFLINE_FILES.includes(url)) {
-                        url = "404.html";
+                        
                     }
                     return await cache.match(url);
                 }
