@@ -272,6 +272,7 @@
         </div>
         <div class="popup-overlay"></div>
         <script>
+            var flaginterface = 0;
             if ("serviceWorker" in navigator) {
                 navigator.serviceWorker.register("sw.js");
             };
@@ -381,7 +382,7 @@
 
                 sub.id = "game"
                 div.id = "display"
-
+                
                 const top = document.getElementById("top");
                 const version = document.getElementById("version");
                 top.remove();
@@ -389,7 +390,7 @@
                 box.remove();
                 div.appendChild(sub)
                 document.body.appendChild(div);
-                window.EJS_ready = interface();
+                window.EJS_onGameStart = function() { if (flaginterface == 0) { interface(); flaginterface = 1; } };
                 window.EJS_player = "#game";
                 window.EJS_gameName = parts.shift();
                 window.EJS_biosUrl = "";
