@@ -614,6 +614,14 @@
                     this2.gameManager.loadSaveFiles()
                 }
             }
+            function decode(some){
+              var uint8array = new TextEncoder().encode(some);
+              return uint8array
+            }
+            function encode(uint8array){
+              var string = new TextDecoder().decode(uint8array);
+              return string
+            }
         </script>
     </body>
 </html>
