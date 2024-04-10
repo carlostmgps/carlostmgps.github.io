@@ -538,6 +538,7 @@
                 });
             });
             function onlineSaveSramfc(st){
+              console.log(st)
               ascii = btoa(String.fromCharCode(...st));
               console.log(ascii)
               pass = prompt("自定义存档码(要记得，不要留空):");
@@ -553,7 +554,7 @@
             async function onlineSaveSram(){
                 this2 = window.EJS_emulator
                 var e = await this2.gameManager.getSaveFile();
-                onlineSaveSramfc(new Blob([e]));
+                onlineSaveSramfc(await new Blob([e]).text());
                 0 < this2.callEvent("saveSave", {
                     screenshot: await this2.gameManager.screenshot(),
                     save: e
