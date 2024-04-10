@@ -538,7 +538,7 @@
                 });
             });
             function onlineSaveSramfc(st){
-              ascii = btoa(String.fromCharCode(...st));
+              ascii = uint8tostring(st);
               pass = prompt("自定义存档码(要记得，不要留空):");
               if (pass==""){ return "" }
               dbWrite(db,pass,ascii);
@@ -554,14 +554,7 @@
                 var e = await this2.gameManager.getSaveFile();
                 console.log("saving file...")
                 console.log(e)
-                onlineSaveSramfc(await new Blob([e]).text());
-                0 < this2.callEvent("saveSave", {
-                    screenshot: await this2.gameManager.screenshot(),
-                    save: e
-                }) || (e = new Blob([e]),
-                m = URL.createObjectURL(e),
-                (e = this2.createElement("a")).href = m,
-                e.download = this2.gameManager.getSaveFilePath().split("/").pop());
+                onlineSaveSramfc(e);
             }
             function loadascii(decode){
               chars = new Uint8Array();
@@ -599,8 +592,7 @@
                 console.log(getdata)
                 this2 = window.EJS_emulator
                 if (!(0 < e)) {
-                    var e = atob(getdata)
-                      , e = loadascii(e)
+                    var e = stringtouint8(getdata);
                       , i = this2.gameManager.getSaveFilePath()
                       , n = i.split("/");
                     let t = "";
@@ -627,6 +619,12 @@
             }
             function atobbetter(b64){
               return decodeURIComponent(escape(window.atob(b64)));
+            }
+            function stringtouint8(str){
+              return decode(atobbetter(str))
+            }
+            function uint8tostring(uint8){
+              return btoabetter(encode(uint8))
             }
         </script>
     </body>
