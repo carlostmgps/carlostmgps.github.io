@@ -626,10 +626,10 @@
             //function uint8tostring(uint8){
               //return btoabetter(encode(uint8))
             //}
-            function uint8ToString(uint8) {
+            function uint8tostring(uint8) {
               return String.fromCharCode.apply(null, uint8);
             }
-            function stringToUint8(string) {
+            function stringtouint8(string) {
               return new Uint8Array(string.split('').map(function(c) {
                 return c.charCodeAt(0);
               }));
