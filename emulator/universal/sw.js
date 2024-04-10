@@ -32,14 +32,12 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
         (async () => {
             try {
-                console.log(event.request)
                 const res = await fetch(event.request);
                 if (!res.status.toString().startsWith('2')) {
                     throw new Error('status code not ok');
                 }
                 return res;
             } catch (e) {
-                console.log(e)
                 const requestURL = new URL(event.request.url);
                 var url = requestURL.pathname;
                 if (requestURL.hostname === "cdn.emulatorjs.org" || requestURL.hostname === "www.gstatic.com") {   
