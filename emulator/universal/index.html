@@ -230,9 +230,75 @@
             }
         </style>
     </head>
+    <script>
+    var fileinput = document.getElementById("input")
+    function select(title,selections){
+      selections = rangeStr(selections.length)
+      titleprompt = "请选择: \n "
+      for (var i = 0; i < title.length ; i++){
+        titleprompt += String(i)
+        titleprompt += ":"
+        titleprompt += title[i]
+        titleprompt += " \n "
+      }
+      selected = "YES";
+      while(!(selections.includes(String(selected)))){
+    	selected = prompt(titleprompt);
+      }
+      return selected
+    }
+    function rangeStr(n){
+      r = [...Array(n).keys()]
+      t = [...Array(n).keys()]
+      for (let i = 0;i < n;i++) {
+          t[i] = String(r[i] + 1)
+      }
+      return t
+    }
+    function useOnlineRom(){
+      alert("OnlineRomSelections");
+      consoles = ["gb","gba","nds","nes","n64","snes"]
+      games = [["pkmn_red_zh","pkmn_red_eng","pkmn_green_zh","pkmn_green_eng","pkmn_blue_zh","pkmn_blue_eng","pkmn_yellow_zh","pkmn_yellow_eng","kirby_dreamland_eng","kirby_dreamland2_eng","superrobot_gundam_zh","superrobot_gundam_eng"],[],[],[],[],[]]
+      con = select(consoles , consoles.length)
+      if (games[con - 1].length = 0) {
+        alert("没有选择！")
+      }else{
+        gam = select(games[con - 1] , games[con - 1].length);
+        readUrl("https://carlostmgps.github.io/emulator/rom/" + games[gam - 1] + "." + consoles[con - 1]);
+      }
+    }
+    
+    async function readUrl(Url){
+      fileget = await UrlFile(Url,"load.file");
+      console.log(Url);
+      insertInput(fileget);
+      trigger();
+    }
+    async function UrlFile(url, name, defaultType = 'application/octet-stream') {
+      const response = await fetch(url)
+      const data = await response.blob()
+      return new File([data], name, {
+        type: data.type || defaultType,
+      })
+    }
+    function insertInput(myFile) {
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(myFile);
+      fileinput.files = dataTransfer.files;
+    }
+    function trigger(){
+      if ("createEvent" in document) {
+        var evt = document.createEvent("HTMLEvents");
+        evt.initEvent("change", false, true);
+        fileinput.dispatchEvent(evt);
+      }else{
+        fileinput.fireEvent("onchange");
+      }
+    }
+    </script>
     <body>
         <div id="top">
-            <h1>EmulatorJS Demo (upgraded)</h1>
+            <h1>EmulatorJS (upgraded)</h1>
         </div>
         <div id="box">
             <input type="file" id="input">
