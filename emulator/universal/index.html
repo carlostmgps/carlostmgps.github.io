@@ -233,7 +233,7 @@
     <script>
     var fileinput = document.getElementById("input")
     function select(title,selections){
-      selections = rangeStr(selections.length)
+      selections = rangeStr(selections)
       titleprompt = "请选择: \n "
       for (var i = 0; i < title.length ; i++){
         titleprompt += String(i)
