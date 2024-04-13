@@ -256,10 +256,13 @@
       return t
     }
     function storeFileInString(file) {
-      const fileReader = new FileReader();
-      return fileReader.readAsDataURL(file);
+      fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = function (e) {
+        console.log(fileReader.result)
+      }
     }
-     function switchBackToFileObject(dataurl) {
+    function switchBackToFileObject(dataurl) {
       var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
         bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
       while(n--) {
@@ -389,7 +392,8 @@
             }
             input.onchange = async () => {
                 bolb = new Blob([input.files[0]])
-                console.log(input.files);
+                console.log(input.files[0]);
+                storeFileInString(input.files[0])
                 const url = URL.createObjectURL(bolb)
                 const parts = input.files[0].name.split(".")
 
