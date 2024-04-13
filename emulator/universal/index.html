@@ -283,27 +283,8 @@
         readUrl("https://carlostmgps.github.io/emulator/rom/" + games[parseInt(con) - 1][parseInt(gam) - 1] + "." + consoles[parseInt(con) - 1]);
       }
     }
-    function useEncyrptRom(){
-      fileinput = document.getElementById("input")
-      alert("EncyrptRomSelections");
-      consoles = ["nds.zip"]
-      games = [["pkmn_heartgold_eng","pkmn_soulsilver_eng","pkmn_plat_eng","pkmn_diamond_eng","pkmn_pearl_eng","pkmn_white_eng","pkmn_white2_eng","pkmn_black_eng","pkmn_black2_eng","pvz_nds_eng","supermario_bros_eng","kirby_ultra_eng"]]
-      con = select(consoles , consoles.length)
-      if (games[parseInt(con) - 1].length == 0) {
-        alert("没有选择！")
-      }else{
-        gam = select(games[parseInt(con) - 1] , games[parseInt(con) - 1].length);
-        readEncyrptUrl("https://carlostmgps.github.io/emulator/rom/txt/" + games[parseInt(con) - 1][parseInt(gam) - 1] + "." + consoles[parseInt(con) - 1] + ".txt");
-      }
-    }
     async function readUrl(Url){
       fileget = await UrlFile(Url,"load.file");
-      console.log(Url);
-      insertInput(fileget);
-      trigger();
-    }
-    async function readEncyrptUrl(Url){
-      fileget = await UrlEnFile(Url,"load.file");
       console.log(Url);
       insertInput(fileget);
       trigger();
@@ -316,13 +297,6 @@
       return new File([data], name, {
         type: data.type || defaultType,
       })
-    }
-    async function UrlEnFile(url, name, defaultType = 'application/octet-stream') {
-      const response = await fetch(url)
-      const data = await response.blob().text()
-      console.log(response)
-      console.log(data)
-      return switchBackToFileObject(data);
     }
     function insertInput(myFile) {
       const dataTransfer = new DataTransfer();
@@ -343,8 +317,7 @@
         <div id="top">
             <h1>EmulatorJS (upgraded)</h1>
         </div>
-        <button onclick="useOnlineRom();">OnlineROMs</button>
-        <button onclick="useEncyrptRom();">NewEncyrptRoms</button>
+        <button onclick="useOnlineRom();" id="onlinerom">OnlineROMs</button>
         <div id="box">
             <input type="file" id="input">
            
@@ -520,6 +493,7 @@
                 
                 const top = document.getElementById("top");
                 const version = document.getElementById("version");
+                document.getElementById("onlinerom").remove();
                 top.remove();
                 version.remove();
                 box.remove();
