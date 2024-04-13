@@ -273,26 +273,37 @@
     function useOnlineRom(){
       fileinput = document.getElementById("input")
       alert("OnlineRomSelections");
-      consoles = ["gb","gba","nds.zip","nes","n64","snes"]
-      games = [["pkmn_red_zh","pkmn_red_eng","pkmn_green_zh","pkmn_green_eng","pkmn_blue_zh","pkmn_blue_eng","pkmn_yellow_zh","pkmn_yellow_eng","kirby_dreamland_eng","kirby_dreamland2_eng","superrobot_gundam_zh","superrobot_gundam_eng"],[],[],[],[],[]]
+      consoles = ["gb","gba"]
+      games = [["pkmn_red_zh","pkmn_red_eng","pkmn_green_zh","pkmn_green_eng","pkmn_blue_zh","pkmn_blue_eng","pkmn_yellow_zh","pkmn_yellow_eng","kirby_dreamland_eng","kirby_dreamland2_eng","superrobot_gundam_zh","superrobot_gundam_eng"],["pkmn_emerald_eng","pkmn_ruby_eng","pkmn_sapphire_eng"]]
       con = select(consoles , consoles.length)
       if (games[parseInt(con) - 1].length == 0) {
         alert("没有选择！")
       }else{
         gam = select(games[parseInt(con) - 1] , games[parseInt(con) - 1].length);
-        //readUrl("https://carlostmgps.github.io/emulator/rom/" + games[parseInt(con) - 1][parseInt(gam) - 1] + "." + consoles[parseInt(con) - 1]);
+        readUrl("https://carlostmgps.github.io/emulator/rom/" + games[parseInt(con) - 1][parseInt(gam) - 1] + "." + consoles[parseInt(con) - 1]);
       }
     }
     function useEncyrptRom(){
       fileinput = document.getElementById("input")
       alert("EncyrptRomSelections");
-      string = prompt("Encyrpted Files:");
-      file = switchBackToFileObject(string)
-      insertInput(file);
-      trigger();
+      consoles = ["nds.zip"]
+      games = [["pkmn_heartgold_eng","pkmn_soulsilver_eng","pkmn_plat_eng","pkmn_diamond_eng","pkmn_pearl_eng","pkmn_white_eng","pkmn_white2_eng","pkmn_black_eng","pkmn_black2_eng","pvz_nds_eng","supermario_bros_eng","kirby_ultra_eng"]]
+      con = select(consoles , consoles.length)
+      if (games[parseInt(con) - 1].length == 0) {
+        alert("没有选择！")
+      }else{
+        gam = select(games[parseInt(con) - 1] , games[parseInt(con) - 1].length);
+        readEncyrptUrl("https://carlostmgps.github.io/emulator/rom/txt/" + games[parseInt(con) - 1][parseInt(gam) - 1] + "." + consoles[parseInt(con) - 1] + ".txt");
+      }
     }
     async function readUrl(Url){
       fileget = await UrlFile(Url,"load.file");
+      console.log(Url);
+      insertInput(fileget);
+      trigger();
+    }
+    async function readEncyrptUrl(Url){
+      fileget = await UrlEnFile(Url,"load.file");
       console.log(Url);
       insertInput(fileget);
       trigger();
@@ -305,6 +316,13 @@
       return new File([data], name, {
         type: data.type || defaultType,
       })
+    }
+    async function UrlEnFile(url, name, defaultType = 'application/octet-stream') {
+      const response = await fetch(url)
+      const data = await response.blob().text()
+      console.log(response)
+      console.log(data)
+      return switchBackToFileObject(data);
     }
     function insertInput(myFile) {
       const dataTransfer = new DataTransfer();
