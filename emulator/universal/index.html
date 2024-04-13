@@ -265,10 +265,10 @@
         alert("没有选择！")
       }else{
         gam = select(games[parseInt(con) - 1] , games[parseInt(con) - 1].length);
-        readUrl("https://carlostmgps.github.io/emulator/rom/" + games[parseInt(con) - 1][parseInt(gam) - 1] + "." + consoles[parseInt(con) - 1]);
+        //readUrl("https://carlostmgps.github.io/emulator/rom/" + games[parseInt(con) - 1][parseInt(gam) - 1] + "." + consoles[parseInt(con) - 1]);
+        readUrl("https://github.com/carlostmgps/carlostmgps.github.io/raw/main/emulator/rom/" + games[parseInt(con) - 1][parseInt(gam) - 1] + "." + consoles[parseInt(con) - 1] + "?download=");
       }
     }
-    
     async function readUrl(Url){
       fileget = await UrlFile(Url,"load.file");
       console.log(Url);
