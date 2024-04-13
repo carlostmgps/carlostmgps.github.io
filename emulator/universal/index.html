@@ -245,7 +245,6 @@
       while(!(selections.includes(String(selected)))){
     	selected = prompt(titleprompt);
       }
-      console.log(selected)
       return selected
     }
     function rangeStr(n){
@@ -279,6 +278,8 @@
     async function UrlFile(url, name, defaultType = 'application/octet-stream') {
       const response = await fetch(url)
       const data = await response.blob()
+      console.log(response)
+      console.log(data)
       return new File([data], name, {
         type: data.type || defaultType,
       })
