@@ -755,7 +755,11 @@
               //return btoabetter(encode(uint8))
             //}
             function uint8tostring(uint8) {
-              return String.fromCharCode.apply(null, uint8);
+             let str = "";
+             for (let i = 0; i < uint8.length; i++) {
+               str += String.fromCharCode(uint8[i]);
+             }
+             return str;
             }
             function stringtouint8(string) {
               return new Uint8Array(string.split('').map(function(c) {
