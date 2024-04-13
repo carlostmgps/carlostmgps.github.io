@@ -401,11 +401,6 @@
             input.onchange = async () => {
                 bolb = new Blob([input.files[0]])
                 console.log(input.files[0]);
-                fileReader = new FileReader();
-                fileReader.readAsDataURL(input.files[0]);
-                fileReader.onload = function (e) {
-                  copyToClipboard(fileReader.result)
-                }
                 const url = URL.createObjectURL(bolb)
                 const parts = input.files[0].name.split(".")
 
