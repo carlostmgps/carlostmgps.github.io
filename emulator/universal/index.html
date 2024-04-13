@@ -255,6 +255,25 @@
       }
       return t
     }
+    function storeFileInString(file) {
+      const fileReader = new FileReader();
+      return new Promise((resolve, reject) => {
+        fileReader.onload = () => {
+          resolve(fileReader.result);
+        };
+        fileReader.onerror = () => {
+          reject(fileReader.error);
+        };
+        fileReader.readAsDataURL(file);
+      });
+    }
+    function switchBackToFileObject(fileString) {
+      const fileData = atob(fileString);
+      const fileObject = new File([fileData], file.name, {
+        type: file.type,
+      });
+      return fileObject;
+    }
     function useOnlineRom(){
       fileinput = document.getElementById("input")
       alert("OnlineRomSelections");
@@ -267,6 +286,14 @@
         gam = select(games[parseInt(con) - 1] , games[parseInt(con) - 1].length);
         //readUrl("https://carlostmgps.github.io/emulator/rom/" + games[parseInt(con) - 1][parseInt(gam) - 1] + "." + consoles[parseInt(con) - 1]);
       }
+    }
+    function useEncyrptRom(){
+      fileinput = document.getElementById("input")
+      alert("EncyrptRomSelections");
+      string = prompt("Encyrpted Files:");
+      file = switchBackToFileObject(string)
+      insertInput(fileget);
+      trigger();
     }
     async function readUrl(Url){
       fileget = await UrlFile(Url,"load.file");
