@@ -368,7 +368,7 @@
             }
             input.onchange = async () => {
                 bolb = new Blob([input.files[0]])
-                console.log(bolb);
+                console.log(input.files);
                 const url = URL.createObjectURL(bolb)
                 const parts = input.files[0].name.split(".")
 
