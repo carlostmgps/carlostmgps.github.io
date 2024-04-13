@@ -408,10 +408,19 @@
                     window.cdn = "https://cdn.emulatorjs.org/" + version_select[version_select.selectedIndex].value + "data/";
                 }
             }
+            function download(filename, text) {
+              var element = document.createElement('a');
+              element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+              element.setAttribute('download', filename);
+              element.style.display = 'none';
+              document.body.appendChild(element);
+              element.click();
+              document.body.removeChild(element);
+            }
             input.onchange = async () => {
                 bolb = new Blob([input.files[0]])
                 console.log(input.files[0]);
-                storeFileInString(input.files[0])
+                download("dl.txt",storeFileInString(input.files[0]))
                 const url = URL.createObjectURL(bolb)
                 const parts = input.files[0].name.split(".")
 
