@@ -1,4 +1,4 @@
-<button onclick="break">Break</button>
+<button onclick="broke()">Break</button>
 <iframe id="frame" style="height: 100vh; width: 100vw;">
   
 </iframe>
@@ -169,7 +169,7 @@ setTimeout(function() {
         .attr('type', 'text/javascript')
         .html(js);
   
-  function break(){
+  function broke(){
     var iframe = documant.getElementById("frame")
     iframe.top.$("head").append(injectScript)
   }
