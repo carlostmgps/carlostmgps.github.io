@@ -9,7 +9,7 @@
     var iframe = documant.getElementById("frame")
     iframe.src = urlParams.get("link")
   }
-  var js = "
+  var js = `
 
 var fir = []
 var sec = []
@@ -163,7 +163,8 @@ setTimeout(function() {
       alert(String(i + 1) + "的答案是" + checked[(i + 1) + "ans"])
     }
   }, 4000)
-}, 2000)"
+}, 2000)
+`
   var injectScript = window.top.$('<script>')
         .attr('type', 'text/javascript')
         .html(js);
