@@ -1,0 +1,175 @@
+<button onclick="break">Break</button>
+<iframe id="frame" style="height: 100vh; width: 100vw;">
+  
+</iframe>
+<script>
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  if(urlParams.has("link")){
+    var iframe = documant.getElementById("frame")
+    iframe.src = urlParams.get("link")
+  }
+  var js = "
+
+var fir = []
+var sec = []
+var thi = []
+var fot = []
+var keys = []
+function getForm() { return xajax.getFormValues('frm_ex_exercise_mc') }
+function autoAddAns() {
+  keys = []
+  data = document.getElementById("frm_ex_exercise_mc").innerHTML
+  ansnum = 0
+  questnum = 1
+  while (data.indexOf('style="font-size:12pt; font-family:微軟正黑體">') != (-1)) {
+    ansnum += 1
+    if (ansnum == 5) {
+      ansnum = 1
+      questnum += 1
+    }
+
+    extractedold = extractTextBetweenStrings(data, 'style="font-size:12pt; font-family:微軟正黑體">', "</font>")
+    extracted = extractedold.replaceAll('\n', '')
+    extracted = extracted.replaceAll('\t', '')
+    console.log(extracted)
+    if (questnum == 1) {
+      fir = [...fir, extracted]
+    }
+    if (questnum == 2) {
+      sec = [...sec, extracted]
+    }
+    if (questnum == 3) {
+      thi = [...thi, extracted]
+    }
+    if (questnum == 4) {
+      fot = [...fot, extracted]
+    }
+    data = data.replace('style="font-size:12pt; font-family:微軟正黑體">' + extractedold + '</font>', '')
+  }
+  questnum = 1
+  while (data.indexOf('<span id="ans_img') != (-1)) {
+    extractedold = extractTextBetweenStrings(data, '<span id="ans_img', '"></span>')
+    extracted = extractedold.replaceAll('\n', '')
+    extracted = extracted.replaceAll('\t', '')
+    console.log(parseInt(extracted))
+    keys = [...keys, parseInt(extracted)]
+    data = data.replace('<span id="ans_img' + extractedold + '"></span>', '')
+  }
+}
+
+
+
+
+
+
+const shuffle = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
+
+
+
+
+
+function breakAns() {
+  fir = shuffle(fir);
+  sec = shuffle(sec);
+  thi = shuffle(thi);
+  fot = shuffle(fot);
+  for (var h = 0; h < 4; h++) {
+    if (keys.length < 3) {
+      data = getForm()
+      test = data
+      test["question" + keys[0]] = fir[h]
+      test["question" + keys[1]] = sec[h]
+      xajax_check_answer_mc(test);
+    } else {
+      data = getForm()
+      test = data
+      test["question" + keys[0]] = fir[h]
+      test["question" + keys[1]] = sec[h]
+      test["question" + keys[2]] = thi[h]
+      test["question" + keys[3]] = fot[h]
+      xajax_check_answer_mc(test);
+    }
+  }
+  checked1 = 0
+  checked2 = 0
+  checked3 = 0
+  checked4 = 0
+}
+
+
+function exit() {
+  xajax.executeCommand = function(obj) {
+    if (xajax.commands[obj.cmd]) {
+      if (obj.id)
+        obj.objElement = xajax.$(obj.id);
+      if (false == xajax.commands[obj.cmd](obj)) {
+        xajax.tools.queue.pushFront(xajax.response, obj);
+        return false;
+      }
+    }
+    return true;
+  }
+}
+checked = {
+  1: 0,
+  2: 0,
+  3: 0,
+  4: 0,
+  "1ans": "",
+  "2ans": "",
+  "3ans": "",
+  "4ans": ""
+}
+
+xajax.executeCommand = function(obj) {
+  if (obj.cmd == "as" && obj.id != 'checking' && obj.id != 'innerHTML') {
+    ans = extractTextBetweenStrings(obj.data, "正確答案:&nbsp;&nbsp;", "</font>")
+    index = keys.indexOf(parseInt(obj.id.replace('answer', ''))) + 1
+    console.log(obj.data)
+    if (!(ans == "") && checked[index] == 0) {
+      checked[index] = 1
+      console.log(String(index) + "的答案是" + ans)
+      checked[index + "ans"] = ans
+    }
+  }
+}
+
+function extractTextBetweenStrings(text, startString, endString) {
+  const startIndex = text.indexOf(startString);
+  const endIndex = text.indexOf(endString, startIndex + startString.length);
+
+  if (startIndex === -1 || endIndex === -1) {
+    return '';
+  }
+
+  const extractedText = text.substring(startIndex + startString.length, endIndex);
+  return extractedText;
+}
+autoAddAns();
+setTimeout(function() {
+  breakAns();
+  setTimeout(function() {
+    exit();
+    alert("finished");
+    for (var i = 0; i < 4; i++) {
+      alert(String(i + 1) + "的答案是" + checked[(i + 1) + "ans"])
+    }
+  }, 4000)
+}, 2000)"
+  var injectScript = window.top.$('<script>')
+        .attr('type', 'text/javascript')
+        .html(js);
+  
+  function break(){
+    var iframe = documant.getElementById("frame")
+    iframe.top.$("head").append(injectScript)
+  }
+</script>
