@@ -66,12 +66,14 @@
                     Math.random(),
                 ]
                 this.i = 0
-                ctx.clearRect(0, 0, 500, 500)
-                ctx.fillStyle = 'red'
-                ctx.fillRect(this.goal[0] * 500, this.goal[1] * 500, 10, 10)
-                // draw point
-                ctx.fillStyle = 'blue'
-                ctx.fillRect(this.agent[0] * 500, this.agent[1] * 500, 10, 10)
+                if(localStorage.screen == 1){
+                  ctx.clearRect(0, 0, 500, 500)
+                  ctx.fillStyle = 'red'
+                  ctx.fillRect(this.goal[0] * 500, this.goal[1] * 500, 10, 10)
+                  // draw point
+                  ctx.fillStyle = 'blue'
+                  ctx.fillRect(this.agent[0] * 500, this.agent[1] * 500, 10, 10)
+                }
                 return  [this.agent[0], this.agent[1], this.goal[0], this.goal[1]]
             }
         }
