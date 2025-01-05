@@ -1,5 +1,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/ppo-tfjs"></script>
+<script>
 class Env {
     constructor() {
         this.actionSpace = {
@@ -64,3 +65,4 @@ const ppo = new PPO(env, config)
         }
     })
 })()
+</script>
