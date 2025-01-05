@@ -43,12 +43,14 @@
                 if (reward > -0.01) {
                     console.log('Goal reached:', reward)
                 }
-                ctx.fillStyle = 'blue'
-                ctx.fillRect(this.agent[0] * 500, this.agent[1] * 500, 2, 2)
-                ctx.beginPath()
-                ctx.moveTo(oldAgent[0] * 500, oldAgent[1] * 500)
-                ctx.lineTo(this.agent[0] * 500, this.agent[1] * 500)
-                ctx.stroke()
+                if(localStorage.screen == 1){
+                  ctx.fillStyle = 'blue'
+                  ctx.fillRect(this.agent[0] * 500, this.agent[1] * 500, 2, 2)
+                  ctx.beginPath()
+                  ctx.moveTo(oldAgent[0] * 500, oldAgent[1] * 500)
+                  ctx.lineTo(this.agent[0] * 500, this.agent[1] * 500)
+                  ctx.stroke()
+                }
                 await new Promise(resolve => setTimeout(resolve, 1))
                 return [
                     [this.agent[0], this.agent[1], this.goal[0], this.goal[1]],
