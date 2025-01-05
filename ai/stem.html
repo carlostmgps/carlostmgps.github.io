@@ -83,7 +83,7 @@
         const ppo = new PPO(env, {'nSteps': 1024, 'nEpochs': 50, 'verbose': 1})
         ;(async () => {
             await ppo.learn({
-                'totalTimesteps': parseInt(prompt("TimeStep?")),
+                'totalTimesteps': parseInt(10000),
                 'callback': {
                     'onTrainingStart': function (p) {
                         console.log(p.config)
