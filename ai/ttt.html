@@ -218,7 +218,7 @@
             // Switch players
             this.cPlayer = this.cPlayer === "X" ? "O" : "X";
             this.uMessage(`Player ${this.cPlayer}'s turn`);
-	    setTimeout(this.airun(this.cPlayer,this.state),1)
+	    this.airun(this.cPlayer,this.state)
         }
     },
 
