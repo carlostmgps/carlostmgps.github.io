@@ -170,7 +170,7 @@
 		  console.log(act)
 		  var cho = myNetwork.activate(act)
 		  var choose = indexOfMax(cho)
-		  while(!thisstate[choose]){
+		  while(thisstate[choose] != 0){
 		      cho[choose] = -1000000000000000000
 		      choose = indexOfMax(cho)
 		  }
