@@ -128,6 +128,9 @@
         data = prompt("Paste Network.txt here:");
         myNetwork = Network.fromJSON(data)
       }
+
+
+	    
       const TicTac = {
     cPlayer: "X", // Tracks current player (X or O)
     state: Array(9).fill(null), // Board state (null for empty cells)
@@ -208,11 +211,11 @@
             this.highlight(winCombo);
             this.uMessage(`Player ${this.cPlayer} wins!`);
             this.gameOver = true;
-            setTimeout(this.reset,1000)
+            setTimeout(hardreset,1000)
         } else if (this.state.every((cell) => cell)) {
             this.uMessage("It's a tie!");
             this.gameOver = true;
-	    setTimeout(this.reset,1000)
+	    setTimeout(hardreset,1000)
         } else {
             // Switch players
             this.cPlayer = this.cPlayer === "X" ? "O" : "X";
@@ -261,6 +264,9 @@
 
 // Start the game
 TicTac.init();
+	function hardreset(){
+	  TicTac.reset()
+	}
     </script>
 </head>
 
