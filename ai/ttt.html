@@ -1,4 +1,17 @@
 <html>
+<body>
+    <div id="main">
+        <h1>TIC TAC TOE</h1>
+        <p id="ins">
+            Tap on a box to play.<br><br>
+            <b>Player X</b> starts first, followed by <b>Player O</b>.
+        </p>
+        <div id="board" class="board"></div>
+        <br>
+        <button id="reset" class="reset">RESET</button>
+        <p id="message" class="message"></p>
+    </div>
+</body>
 
 <head>
     <style>
@@ -130,15 +143,15 @@
 
     // Create the game board dynamically
     cBoard() {
-        this.board = document.getElementById("board");
-        this.board.innerHTML = ""; // Clear previous board
+        const board = document.getElementById("board");
+        board.innerHTML = ""; // Clear previous board
         this.state.forEach((_, i) => {
             const cell = document.createElement("div");
             cell.classList.add("cell");
             cell.dataset.index = i;
-            this.board.appendChild(cell);
+            board.appendChild(cell);
         });
-        this.board.addEventListener("click", (e) => this.handleClick(e)); // Handle clicks on the board
+        board.addEventListener("click", (e) => this.handleClick(e)); // Handle clicks on the board
         this.uMessage(`Player ${this.cPlayer}'s turn`);
     },
 
@@ -236,18 +249,5 @@ TicTac.init();
     </script>
 </head>
 
-<body>
-    <div id="main">
-        <h1>TIC TAC TOE</h1>
-        <p id="ins">
-            Tap on a box to play.<br><br>
-            <b>Player X</b> starts first, followed by <b>Player O</b>.
-        </p>
-        <div id="board" class="board"></div>
-        <br>
-        <button id="reset" class="reset">RESET</button>
-        <p id="message" class="message"></p>
-    </div>
-</body>
 
 </html>
