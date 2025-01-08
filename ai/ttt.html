@@ -156,7 +156,7 @@
     },
 
     // Handle a cell click
-    ai(){
+    airun(){
 	if(localStorage.fuckyourself){
 		var condition = true
 	    }else{
@@ -180,7 +180,7 @@
 	console.log(this.state[i])
         // Ignore clicks if game is over or cell is taken
 	if (!cell.classList.contains("cell") || this.state[i]){
-            setTimeout(airun,1)
+            setTimeout(this.airun,1)
 	}
         if (this.gameOver || !cell.classList.contains("cell") || this.state[i])
             return;
@@ -209,7 +209,7 @@
             // Switch players
             this.cPlayer = this.cPlayer === "X" ? "O" : "X";
             this.uMessage(`Player ${this.cPlayer}'s turn`);
-	    setTimeout(airun,1)
+	    setTimeout(this.airun,1)
         }
     },
 
