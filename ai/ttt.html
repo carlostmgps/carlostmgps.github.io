@@ -156,15 +156,15 @@
     },
 
     // Handle a cell click
-    airun(){
+    airun(thiscPlayer,thisstate){
 	if(localStorage.fuckyourself){
 		var condition = true
 	    }else{
-		var condition = (this.cPlayer == "O")
+		var condition = (thiscPlayer == "O")
 	    }
 	    if(condition){
 		    
-		var act = this.state
+		var act = thisstate
 	        
 	        act = act.map((x) => filter(x,-1,1))
 		console.log(act)
@@ -185,7 +185,7 @@
 	    train[i] = 0
 	    myNetwork.propagate(0.3, train);
 	    console.log("please rechoose,AI")
-            this.airun()
+            setTimeout(this.airun(this.cPlayer,this.state),1)
 	}
         if (this.gameOver || !cell.classList.contains("cell") || this.state[i])
             return;
@@ -216,7 +216,7 @@
             // Switch players
             this.cPlayer = this.cPlayer === "X" ? "O" : "X";
             this.uMessage(`Player ${this.cPlayer}'s turn`);
-	    this.airun()
+	    setTimeout(this.airun(this.cPlayer,this.state),1)
         }
     },
 
