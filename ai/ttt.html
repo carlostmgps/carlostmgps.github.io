@@ -163,30 +163,32 @@
 		var condition = (thiscPlayer == "O")
 	    }
 	    if(condition){
-		    
-		var act = thisstate
-	        
-	        act = act.map((x) => filter(x,-1,1))
-		console.log(act)
-		var cho = myNetwork.activate(act)
-		var choose = indexOfMax(cho)
-		    console.log(cho)
-		    console.log("choosed:" + choose)
-		document.querySelectorAll('[data-index="' + choose + '"]')[0].click();
+                while(true){
 		
+		  var act = thisstate
+	        
+	          act = act.map((x) => filter(x,-1,1))
+		  console.log(act)
+		  var cho = myNetwork.activate(act)
+		  var choose = indexOfMax(cho)
+		  console.log(cho)
+		  console.log("choosed:" + choose)
+		  if (thisstate[cho]){
+                    var train = Array(9).fill(1)
+    	            train[i] = 0
+	            myNetwork.propagate(0.3, train);
+	            console.log("please rechoose,AI")
+		    continue
+	          }
+		  document.querySelectorAll('[data-index="' + choose + '"]')[0].click();
+		  return
+		}
 	    }
     },
     handleClick(e) {
         const cell = e.target;
         const i = cell.dataset.index;
         // Ignore clicks if game is over or cell is taken
-	if (!cell.classList.contains("cell") || this.state[i]){
-            var train = Array(9).fill(1)
-	    train[i] = 0
-	    myNetwork.propagate(0.3, train);
-	    console.log("please rechoose,AI")
-            setTimeout(this.airun(this.cPlayer,this.state),1)
-	}
         if (this.gameOver || !cell.classList.contains("cell") || this.state[i])
             return;
 
