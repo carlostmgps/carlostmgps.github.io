@@ -221,11 +221,11 @@
             this.highlight(winCombo);
             this.uMessage(`Player ${this.cPlayer} wins!`);
             this.gameOver = true;
-            setTimeout(hardreset, localStorage.fuckyourself * 1000)
+            setTimeout(hardreset, (localStorage.fuckyourself == "ofcourse!") * 1000)
         } else if (this.state.every((cell) => cell)) {
             this.uMessage("It's a tie!");
             this.gameOver = true;
-	    setTimeout(hardreset, localStorage.fuckyourself * 1000)
+	    setTimeout(hardreset, (localStorage.fuckyourself == "ofcourse!") * 1000)
         } else {
             // Switch players
             this.cPlayer = this.cPlayer === "X" ? "O" : "X";
