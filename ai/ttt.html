@@ -161,6 +161,23 @@
         const i = cell.dataset.index;
 
         // Ignore clicks if game is over or cell is taken
+	if (!cell.classList.contains("cell") || this.state[i]){
+            if(localStorage.fuckyourself){
+		var condition = this.cPlayer == "O"
+	    }else{
+		var condition = true
+	    }
+	    
+	    if(condition){
+		var act = [...this.state]
+	act.map((x) => filter(x,1,-1))
+		var choose = indexOfMax(myNetwork.activate(act))
+		var arg = e
+		arg.target.dataset.index = choose
+		this.handleClick(arg)
+		
+	    }
+	}
         if (this.gameOver || !cell.classList.contains("cell") || this.state[i])
             return;
 
