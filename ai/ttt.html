@@ -156,14 +156,8 @@
     },
 
     // Handle a cell click
-    handleClick(e) {
-        const cell = e.target;
-        const i = cell.dataset.index;
-        console.log(cell.classList.contains("cell"))
-	console.log(this.state[i])
-        // Ignore clicks if game is over or cell is taken
-	if (!cell.classList.contains("cell") || this.state[i]){
-            if(localStorage.fuckyourself){
+    ai(){
+	if(localStorage.fuckyourself){
 		var condition = true
 	    }else{
 		var condition = this.cPlayer == "O"
@@ -178,6 +172,15 @@
 		this.handleClick(arg)
 		
 	    }
+    },
+    handleClick(e) {
+        const cell = e.target;
+        const i = cell.dataset.index;
+        console.log(cell.classList.contains("cell"))
+	console.log(this.state[i])
+        // Ignore clicks if game is over or cell is taken
+	if (!cell.classList.contains("cell") || this.state[i]){
+            setTimeout(airun,1)
 	}
         if (this.gameOver || !cell.classList.contains("cell") || this.state[i])
             return;
@@ -206,21 +209,7 @@
             // Switch players
             this.cPlayer = this.cPlayer === "X" ? "O" : "X";
             this.uMessage(`Player ${this.cPlayer}'s turn`);
-	    if(localStorage.fuckyourself){
-		var condition = true
-	    }else{
-		var condition = this.cPlayer == "O"
-	    }
-	    
-	    if(condition){
-		var act = [...this.state]
-	act.map((x) => filter(x,1,-1))
-		var choose = indexOfMax(myNetwork.activate(act))
-		var arg = e
-		arg.target.dataset.index = choose
-		this.handleClick(arg)
-		
-	    }
+	    setTimeout(airun,1)
         }
     },
 
