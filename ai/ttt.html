@@ -175,7 +175,7 @@
 		  console.log("choosed:" + choose)
 		  if (thisstate[choose]){
                     var train = Array(9).fill(1)
-    	            train[choose] = 0
+    	            train[choose] = -10000
 	            myNetwork.propagate(0.3, train);
 	            console.log("please rechoose,AI")
 		    continue
