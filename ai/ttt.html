@@ -181,6 +181,9 @@
         const i = cell.dataset.index;
         // Ignore clicks if game is over or cell is taken
 	if (!cell.classList.contains("cell") || this.state[i]){
+            var train = Array(9).fill(1)
+	    train[i] = 0
+	    myNetwork.propagate(0.3, train);
 	    console.log("please rechoose,AI")
             this.airun()
 	}
