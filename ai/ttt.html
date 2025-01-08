@@ -211,11 +211,11 @@
             this.highlight(winCombo);
             this.uMessage(`Player ${this.cPlayer} wins!`);
             this.gameOver = true;
-            setTimeout(hardreset,1000)
+            setTimeout(hardreset, localStorage.fuckyourself * 1000)
         } else if (this.state.every((cell) => cell)) {
             this.uMessage("It's a tie!");
             this.gameOver = true;
-	    setTimeout(hardreset,1000)
+	    setTimeout(hardreset, localStorage.fuckyourself * 1000)
         } else {
             // Switch players
             this.cPlayer = this.cPlayer === "X" ? "O" : "X";
@@ -264,8 +264,16 @@
 
 // Start the game
 TicTac.init();
+	function getRandomInt(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
+}
 	function hardreset(){
 	  TicTac.reset()
+	  if(localStorage.fuckyourself){
+		document.querySelectorAll('[data-index="' + getRandomInt(0, 10) + '"]')[0].click();
+	  }
 	}
     </script>
 </head>
