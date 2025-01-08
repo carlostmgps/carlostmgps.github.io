@@ -166,6 +166,7 @@
 		  var act = thisstate
 	        
 	          act = act.map((x) => filter(x,-1,1))
+		  console.log("Act------------------")
 		  console.log(act)
 		  var cho = myNetwork.activate(act)
 		  var choose = indexOfMax(cho)
@@ -189,6 +190,7 @@
         // Update board state and UI
 	var act = this.state
 	act = act.map((x) => filter(x,-1,1))
+	console.log("Teach------------------")
         console.log(myNetwork.activate(act));
         var train = Array(9).fill(0)
         this.state[i] = this.cPlayer;
