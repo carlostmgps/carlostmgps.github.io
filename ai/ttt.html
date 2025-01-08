@@ -157,13 +157,11 @@
 
     // Handle a cell click
     airun(){
-	console.log(this.cPlayer)
 	if(localStorage.fuckyourself){
 		var condition = true
 	    }else{
 		var condition = (this.cPlayer == "O")
 	    }
-	    console.log(condition)
 	    if(condition){
 		    
 		var act = this.state
@@ -181,8 +179,6 @@
     handleClick(e) {
         const cell = e.target;
         const i = cell.dataset.index;
-        console.log(cell.classList.contains("cell"))
-	console.log(this.state[i])
         // Ignore clicks if game is over or cell is taken
 	if (!cell.classList.contains("cell") || this.state[i]){
             this.airun()
