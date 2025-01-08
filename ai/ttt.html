@@ -8,7 +8,7 @@
         </p>
         <div id="board" class="board"></div>
         <br>
-        <button id="reset" class="reset">RESET</button>
+        <button id="reset" class="reset">RESET</button><button id="auto" class="auto" onclick=auto>Auto</button>
         <p id="message" class="message"></p>
     </div>
 </body>
@@ -67,6 +67,16 @@
 }
 
 .reset {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: whitesmoke;
+    border: 1px solid dodgerblue;
+    color: dodgerblue;
+    border-radius: 8px;
+}
+.auto {
     margin-top: 20px;
     padding: 10px 20px;
     font-size: 16px;
@@ -273,6 +283,13 @@ TicTac.init();
 	  TicTac.reset()
 	  if(localStorage.fuckyourself){
 		document.querySelectorAll('[data-index="' + getRandomInt(0, 10) + '"]')[0].click();
+	  }
+	}
+	function auto(){
+	  if(localStorage.fuckyourself){
+	    delete(localStorage.fuckyourself)
+	  }else{
+	    localStorage.fuckyourself = "ofcourse!"
 	  }
 	}
     </script>
