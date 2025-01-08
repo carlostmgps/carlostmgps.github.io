@@ -167,8 +167,9 @@
 	    if(condition){
 		    
 		var act = this.state
-	        console.log(act)
+	        
 	        act = act.map((x) => filter(x,-1,1))
+		console.log(act)
 		var cho = myNetwork.activate(act)
 		var choose = indexOfMax(cho)
 		    console.log(cho)
