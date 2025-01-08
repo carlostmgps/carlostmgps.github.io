@@ -198,14 +198,8 @@
 		var act = [...this.state]
 	act.map((x) => filter(x,1,-1))
 		var choose = indexOfMax(myNetwork.activate(act))
-		var arg = {
-		    target:{
-			dataset:{
-			    index:
-				choose
-			}
-		    }
-		}
+		var arg = e
+		arg.target.dataset.index = choose
 		this.handleClick(arg)
 		
 	    }
