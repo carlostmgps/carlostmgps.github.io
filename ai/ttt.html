@@ -169,9 +169,11 @@
 		var act = this.state
 	        console.log(act)
 	        act = act.map((x) => filter(x,-1,1))
-		var choose = indexOfMax(myNetwork.activate(act))
+		var cho = myNetwork.activate(act)
+		var choose = indexOfMax(cho)
+		    console.log(cho)
 		    console.log("choosed:" + choose)
-		document.querySelectorAll('[data-index="' + choose + '"]').click();
+		document.querySelectorAll('[data-index="' + choose + '"]')[0].click();
 		
 	    }
     },
