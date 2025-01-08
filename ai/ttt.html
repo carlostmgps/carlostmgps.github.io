@@ -114,7 +114,7 @@
     return maxIndex;
 }
       function filter(x,a,b){
-	      if(x=="X"){ return a } else if (x=="O"){ return b }else{ return null }
+	      if(x=="X"){ return a } else if (x=="O"){ return b }else{ return 0 }
       }
       var myNetwork = new Network({
 	      input: inputLayer,
@@ -192,7 +192,7 @@
         // Update board state and UI
 	var act = this.state
 	act = act.map((x) => filter(x,-1,1))
-        myNetwork.activate(act);
+        console.log(myNetwork.activate(act));
         var train = Array(9)
         this.state[i] = this.cPlayer;
 	
