@@ -163,26 +163,20 @@
 		var condition = (thiscPlayer == "O")
 	    }
 	    if(condition){
-                while(true){
-		
 		  var act = thisstate
 	        
 	          act = act.map((x) => filter(x,-1,1))
 		  console.log(act)
 		  var cho = myNetwork.activate(act)
 		  var choose = indexOfMax(cho)
+		  while(!thisstate[choose]){
+		      cho[choose] = -1000000000000000000
+		      choose = indexOfMax(cho)
+		  }
 		  console.log(cho)
 		  console.log("choosed:" + choose)
-		  if (thisstate[choose]){
-                    var train = Array(9).fill(1)
-    	            train[choose] = -10000
-	            myNetwork.propagate(0.3, train);
-	            console.log("please rechoose,AI")
-		    continue
-	          }
+		  
 		  document.querySelectorAll('[data-index="' + choose + '"]')[0].click();
-		  return
-		}
 	    }
     },
     handleClick(e) {
