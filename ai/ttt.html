@@ -345,7 +345,7 @@ TicTac.init();
 	  if(localStorage.fuckyourself){
 		var test = getRandomInt(0, 9.99)
 		document.querySelectorAll('[data-index="' + test + '"]')[0].click();
-		this.history.push([[0,0,0,0,0,0,0,0,0],test,"O"])
+		TicTac.history.push([[0,0,0,0,0,0,0,0,0],test,"O"])
 		console.log("history added")
 	  }
 	}
