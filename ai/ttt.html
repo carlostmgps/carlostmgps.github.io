@@ -259,7 +259,7 @@
     historylearn(winone,deduct){
 	this.historyrewrite()
 	console.log("Learning History.....................")
-	var deductmark = deduct
+	var deductmark = 0-(deduct)
 	var award = deduct
 	console.log(this.history)
 	for(var i = this.history.length - 1; i > 0 ; i--){
@@ -271,8 +271,8 @@
               train[record[1]] = award
 	      award--
 	    }else{
-	      train[record[1]] = deduct
-	      deduct++
+	      train[record[1]] = deductmark
+	      deductmark++
 	    }
 	    console.log(record)
 	    console.log(train)
