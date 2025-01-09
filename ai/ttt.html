@@ -175,7 +175,9 @@
         board.addEventListener("click", (e) => this.handleClick(e)); // Handle clicks on the board
         this.uMessage(`Player ${this.cPlayer}'s turn`);
 	if(this.cPlayer == "O"){
-	  document.querySelectorAll('[data-index="' + getRandomInt(0, 9.99) + '"]')[0].click();
+	  var test = getRandomInt(0, 9.99)
+	  document.querySelectorAll('[data-index="' + test + '"]')[0].click();
+	  this.history.push([[0,0,0,0,0,0,0,0,0],test,"O"])
 	}
     },
 
@@ -325,7 +327,9 @@ TicTac.init();
 	function hardreset(){
 	  TicTac.reset()
 	  if(localStorage.fuckyourself){
-		document.querySelectorAll('[data-index="' + getRandomInt(0, 9.99) + '"]')[0].click();
+		var test = getRandomInt(0, 9.99)
+		document.querySelectorAll('[data-index="' + test + '"]')[0].click();
+		this.history.push([[0,0,0,0,0,0,0,0,0],test,"O"])
 	  }
 	}
 	function auto(){
