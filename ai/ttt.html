@@ -251,7 +251,7 @@
     filterhis(x){
 	if(x == undefined){
 	    return false
-	}else if((!typeof x[1] === 'string') || (!x[1] instanceof String)){
+	}else if(typeof x[1] === "number"){
 	    return false
 	}
 	return true
