@@ -178,6 +178,7 @@
 	  var test = getRandomInt(0, 9.99)
 	  document.querySelectorAll('[data-index="' + test + '"]')[0].click();
 	  this.history.push([[0,0,0,0,0,0,0,0,0],test,"O"])
+	  console.log("history added")
 	}
     },
 
@@ -240,6 +241,7 @@
             this.cPlayer = this.cPlayer === "X" ? "O" : "X";
             this.uMessage(`Player ${this.cPlayer}'s turn`);
 	    this.history.push(this.airun(this.cPlayer,this.state))
+	    console.log("history added")
         }
     },
     historyrewrite(){
@@ -330,6 +332,7 @@ TicTac.init();
 		var test = getRandomInt(0, 9.99)
 		document.querySelectorAll('[data-index="' + test + '"]')[0].click();
 		this.history.push([[0,0,0,0,0,0,0,0,0],test,"O"])
+		console.log("history added")
 	  }
 	}
 	function auto(){
