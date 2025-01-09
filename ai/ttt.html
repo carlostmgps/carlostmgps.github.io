@@ -227,7 +227,7 @@
             this.highlight(winCombo);
             this.uMessage(`Player ${this.cPlayer} wins!`);
             this.gameOver = true;
-	    this.historylearn(this.cPlayer,10)
+	    this.historylearn(this.cPlayer,0.5)
             setTimeout(hardreset, (localStorage.fuckyourself != "ofcourse!") * 1000)
         } else if (this.state.every((cell) => cell)) {
             this.uMessage("It's a tie!");
@@ -260,13 +260,13 @@
 	    var record = this.history[i]
 	    // [act,choose,thiscPlayer]
 	    myNetwork.activate(record[0])
-	    var train = Array(9).fill(10)
+	    var train = Array(9).fill(0.5)
 	    if(winone == record[2]){
               train[record[1]] += award
-	      award--
+	      award = award * 0.8
 	    }else{
 	      train[record[1]] += deductmark
-	      deductmark++
+	      deductmark = deductmark * 0.8
 	    }
 	    console.log(record)
 	    console.log(train)
