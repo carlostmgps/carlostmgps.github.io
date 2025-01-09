@@ -175,7 +175,7 @@
         board.addEventListener("click", (e) => this.handleClick(e)); // Handle clicks on the board
         this.uMessage(`Player ${this.cPlayer}'s turn`);
 	if(this.cPlayer == "O"){
-	    this.history.push(this.airun(this.cPlayer,this.state))
+	  document.querySelectorAll('[data-index="' + getRandomInt(0, 9.99) + '"]')[0].click();
 	}
     },
 
