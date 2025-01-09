@@ -4,7 +4,6 @@
         <h1>TIC TAC TOE</h1>
         <p id="ins">
             Tap on a box to play.<br><br>
-            <b>Player X</b> starts first, followed by <b>Player O</b>.
         </p>
         <div id="board" class="board"></div>
         <br>
@@ -90,6 +89,14 @@
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/synaptic/1.1.4/synaptic.js"></script>
     <script defer>
+      function transcript(act,XO){
+	if (XO == "X"){
+	  return act.map((x) => filter(x,1,-1))
+	}else{
+	  return act.map((x) => filter(x,-1,1))
+	}
+	
+      }
       const { Layer, Network } = window.synaptic;
       var inputLayer = new Layer(9);
       var hiddenLayer = new Layer(91);
@@ -149,6 +156,7 @@
     // Initialize the game
     init() {
         this.cBoard();
+	this.history = [];
         document
             .getElementById("reset")
             .addEventListener("click", () => this.reset());
@@ -178,7 +186,7 @@
 	    if(condition){
 		  var act = thisstate
 	        
-	          act = act.map((x) => filter(x,-1,1))
+	          act = transcript(act,thiscPlayer)
 		  console.log("Act------------------")
 		  console.log(act)
 		  var cho = myNetwork.activate(act)
@@ -192,6 +200,7 @@
 		  console.log("choosed:" + choose)
 		  
 		  document.querySelectorAll('[data-index="' + choose + '"]')[0].click();
+	          return [act,choose,thiscPlayer]
 	    }
     },
     handleClick(e) {
@@ -203,37 +212,57 @@
 
         // Update board state and UI
 	var act = this.state
-	act = act.map((x) => filter(x,-1,1))
+	act = transcript(act,this.cPlayer)
 	console.log("Teach------------------")
         console.log(myNetwork.activate(act));
         var train = Array(9).fill(0)
         this.state[i] = this.cPlayer;
-	
-        train[i] = 1
+        train[i] = 10
 	console.log(train)
         myNetwork.propagate(0.3, train);
         cell.textContent = this.cPlayer;
         cell.classList.add("taken");
-
+        this.history.push([act,i,this.cPlayer])
         // Check for winner or tie
         const winCombo = this.checkWin();
         if (winCombo) {
             this.highlight(winCombo);
             this.uMessage(`Player ${this.cPlayer} wins!`);
             this.gameOver = true;
+	    historylearn(this.cPlayer,10)
             setTimeout(hardreset, (localStorage.fuckyourself != "ofcourse!") * 1000)
         } else if (this.state.every((cell) => cell)) {
             this.uMessage("It's a tie!");
             this.gameOver = true;
+	    historylearn(this.cPlayer,5)
 	    setTimeout(hardreset, (localStorage.fuckyourself != "ofcourse!") * 1000)
         } else {
             // Switch players
             this.cPlayer = this.cPlayer === "X" ? "O" : "X";
             this.uMessage(`Player ${this.cPlayer}'s turn`);
-	    this.airun(this.cPlayer,this.state)
+	    this.history.push(this.airun(this.cPlayer,this.state))
         }
     },
-
+    historylearn(winone,decuct){
+	console.log("Learning History.....................")
+	var deductmark = deduct
+	var award = deduct
+	for(var i = this.history.length - 1; i > 0 ; i--){
+	    var record = this.history[i]
+	    // [act,choose,thiscPlayer]
+	    myNetwork.activate([act])
+	    var train = Array(9).fill(0)
+	    if(winone == record[3]){
+              train[choose] = award
+	      award--
+	    }else{
+	      train[choose] = decuct
+	      deduct++
+	    }
+	    console.log(train)
+            myNetwork.propagate(0.3, train);
+	}
+    },
     // Check if there's a winning combination
     checkWin() {
         const wins = [
@@ -262,7 +291,11 @@
     reset() {
         this.state = Array(9).fill(null);
         this.cPlayer = "X";
+	if((getRandomInt(0, 1.1) == 1)){
+	  this.cPlayer = "O"
+	}
         this.gameOver = false;
+	this.history = [];
         this.cBoard();
     },
 
