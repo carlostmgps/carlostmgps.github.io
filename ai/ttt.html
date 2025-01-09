@@ -234,7 +234,6 @@
         } else if (this.state.every((cell) => cell)) {
             this.uMessage("It's a tie!");
             this.gameOver = true;
-	    this.historylearn(this.cPlayer,5)
 	    setTimeout(hardreset, (localStorage.fuckyourself != "ofcourse!") * 1000)
         } else {
             // Switch players
