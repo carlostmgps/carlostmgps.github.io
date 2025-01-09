@@ -214,10 +214,13 @@
             return;
 
         // Update board state and UI
-        this.state[i] = this.cPlayer;
+        
         cell.textContent = this.cPlayer;
         cell.classList.add("taken");
+	var act = this.state
+	act = transcript(act,this.cPlayer)
         this.history.push([act,i,this.cPlayer])
+	this.state[i] = this.cPlayer;
         // Check for winner or tie
         const winCombo = this.checkWin();
         if (winCombo) {
