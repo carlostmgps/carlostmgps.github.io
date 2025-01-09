@@ -276,12 +276,12 @@
 	      train[record[1]] += deductmark
 	      deductmark = deductmark * 0.8
 	    }
-	    while(map.contains(1)){
+	    while(map.includes(1)){
 		var n = map.indexOf(1)
 		train[n] = 0
 		map[n] = -100
 	    }
-	    while(map.contains(-1)){
+	    while(map.includes(-1)){
 		var n = map.indexOf(-1)
 		train[n] = 0
 		map[n] = -100
