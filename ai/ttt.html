@@ -256,8 +256,6 @@
 	console.log("Learning History.....................")
 	var deductmark = 0-(deduct)
 	var award = deduct
-	console.log(winone)
-	console.log(this.history)
 	for(var i = this.history.length - 1; i > 0 ; i--){
 	    var record = this.history[i]
 	    // [act,choose,thiscPlayer]
@@ -272,7 +270,7 @@
 	    }
 	    console.log(record)
 	    console.log(train)
-            myNetwork.propagate(0.3, train);
+            myNetwork.propagate(getRandomInt(10,20)/ 100, train);
 	}
     },
     // Check if there's a winning combination
