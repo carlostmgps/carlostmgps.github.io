@@ -214,15 +214,7 @@
             return;
 
         // Update board state and UI
-	var act = this.state
-	act = transcript(act,this.cPlayer)
-	console.log("Teach------------------")
-        console.log(myNetwork.activate(act));
-        var train = Array(9).fill(0)
         this.state[i] = this.cPlayer;
-        train[i] = 10
-	console.log(train)
-        myNetwork.propagate(0.3, train);
         cell.textContent = this.cPlayer;
         cell.classList.add("taken");
         this.history.push([act,i,this.cPlayer])
