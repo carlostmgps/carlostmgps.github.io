@@ -258,7 +258,9 @@
     },
     historylearn(winone,deduct){
 	this.historyrewrite()
+	
 	console.log("Learning History.....................")
+	console.log(this.history)
 	var deductmark = 0-(deduct)
 	var award = deduct
 	for(var i = this.history.length - 1; i > 0 ; i--){
