@@ -260,12 +260,12 @@
 	    var record = this.history[i]
 	    // [act,choose,thiscPlayer]
 	    myNetwork.activate(record[0])
-	    var train = Array(9).fill(-1)
+	    var train = Array(9).fill(10)
 	    if(winone == record[2]){
-              train[record[1]] = award
+              train[record[1]] += award
 	      award--
 	    }else{
-	      train[record[1]] = deductmark
+	      train[record[1]] += deductmark
 	      deductmark++
 	    }
 	    console.log(record)
