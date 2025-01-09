@@ -245,10 +245,23 @@
 	    this.history.push(this.airun(this.cPlayer,this.state))
         }
     },
+    historyrewrite(){
+	this.history = this.history.filter(itm => this.filterhis(itm));
+    },
+    filterhis(x){
+	if(x == undefined){
+	    return false
+	}else if((!typeof x[0] === 'string') || (!x[0] instanceof String)){
+	    return false
+	}
+	return true
+    },
     historylearn(winone,deduct){
+	historyrewrite()
 	console.log("Learning History.....................")
 	var deductmark = deduct
 	var award = deduct
+	console.log(this.history)
 	for(var i = this.history.length - 1; i > 0 ; i--){
 	    var record = this.history[i]
 	    // [act,choose,thiscPlayer]
@@ -261,6 +274,7 @@
 	      train[record[1]] = deduct
 	      deduct++
 	    }
+	    console.log(record)
 	    console.log(train)
             myNetwork.propagate(0.3, train);
 	}
