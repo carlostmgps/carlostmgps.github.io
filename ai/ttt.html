@@ -245,7 +245,7 @@
 	    this.history.push(this.airun(this.cPlayer,this.state))
         }
     },
-    historylearn(winone,decuct){
+    historylearn(winone,deduct){
 	console.log("Learning History.....................")
 	var deductmark = deduct
 	var award = deduct
@@ -258,7 +258,7 @@
               train[choose] = award
 	      award--
 	    }else{
-	      train[choose] = decuct
+	      train[choose] = deduct
 	      deduct++
 	    }
 	    console.log(train)
